@@ -1,0 +1,37 @@
+miRvestigator web server requires the following:
+ * Python 2.4 or 2.6 (www.python.org)
+ * Pyro 3.9.1 (http://www.xs4all.nl/~irmen/pyro3/)
+ * Apache2 HTTP server (httpd.apache.org)
+ * mod_pyton 3.3.1 (www.modpython.org)
+ * Weeder1.4.2 (http://159.149.109.9/modtools/)
+
+The two miRvestigator web server client files (miRvestigator.py and Scientists.org) are then installed into an Apache web served directory with the following settings:
+
+DirectoryIndex miRvestigator.py
+<Directory /web/served/directory>
+    AddHandler mod_python .py
+    PythonHandler mod_python.publisher
+    PythonDebug On
+</Directory>
+
+miRvestigator web server client files:
+ * miRvestigator.py - A mod_python script to do the runs.
+ * Scientists.gif - An animated gif to add some levity to a compicated process.
+
+The server can be installed anywhere but the server must be able to access the Weeder programs. We typically put these into a bin that is part of the PATH and modify the C code to point specifically at the other programs needed and the FreqFiles.
+
+The server files are:
+ * miRvestigator_server_V3.py - Creates a Pyro daemon which serves up the miRvestigator class.
+ * miRvestigator.py - Different than the client miRvestigator.py above, as this is the actual class that does the work for miRvestigator.
+ * pssm.py - A class designed to be a container for a Positon Specific Scoring Matrix (PSSM).
+ * p3utrSeqs_Homo_sapiens.csv - A csv file containing all the 3' UTR seqeunces for genes with genomic coordinates annotated with Entrez gene IDs.
+
+The miRvestigator_server_V3.py script will need to be modified to:  1. make sure that weederlauncher program location is correct, 2. make sure that the location of the URI saved file is in the web served directory and that it is writabel by the sever. Then we start up a screen instance and inside that start the daemon by:
+
+python miRvestigator_server_V3.py
+
+The daemon should spit out the URI and then be ready for a client to access it and run the miRvestigator framework. Test it by navigating your browser to the IP of the machine and test it out with one of the buttons that load sample data. Then you are ready to try it with some of your own data.
+
+If you want to change out the seqeunce data this can be done by modifying the p3utrSeqs_Homo_sapiens.csv file.
+
+We have been able to get this up and running on EC2 and will provide an image that can easily be started soon.
