@@ -1,3 +1,22 @@
+#################################################################
+# @Program: miRvestigator_server_V3.py                          #
+# @Version: 3                                                   #
+# @Author: Chris Plaisier                                       #
+# @Sponsored by:                                                #
+# Nitin Baliga, ISB                                             #
+# Institute for Systems Biology                                 #
+# 1441 North 34th Street                                        #
+# Seattle, Washington  98103-8904                               #
+# (216) 732-2139                                                #
+# @Also Sponsored by:                                           #
+# Luxembourg Systems Biology Grant                              #
+#                                                               #
+# If this program is used in your analysis please mention who   #
+# built it. Thanks. :-)                                         #
+#                                                               #
+# Copyrighted by Chris Plaisier  10/23/2010                     #
+#################################################################
+
 import sys, re, os, math, shutil
 from subprocess import *
 from copy import deepcopy
