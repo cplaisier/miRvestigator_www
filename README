@@ -1,4 +1,6 @@
-miRvestigator web server requires the following:
+We developed this to provide a natively python web server implementation of the miRvestigator framework (please see http://github.com/cplaisier/miRvestigator). The impementation is broken up into a daemon serving up the miRvestigator python object and a client that used mod_python in an Apache2 web server to communicate with the daemon.
+
+miRvestigator web server has the following dependencies:
  * Python 2.4 or 2.6 (www.python.org)
  * Pyro 3.9.1 (http://www.xs4all.nl/~irmen/pyro3/)
  * Apache2 HTTP server (httpd.apache.org)
