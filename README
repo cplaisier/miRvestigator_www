@@ -36,4 +36,4 @@ The daemon should spit out the URI and then be ready for a client to access it a
 
 If you want to change out the seqeunce data this can be done by modifying the p3utrSeqs_Homo_sapiens.csv file.
 
-We have been able to get this up and running on EC2 and will provide an image that can easily be started soon. Using an EC2 High-CPU Medium Instance (1.7GB of memory, 5 EC2 compute units (2 virtual cores with 2.5 EC2 Compute Units Each, 350GB of local instance storage, 32bit OS) it took 2 minutes to analyze 13 genes in miRvestigator, and with 106 genes it took 7.4 minutes.
+We have been able to get this up and running on EC2 using Ubuntu 10.04 LTS Lucid instance-store image (ami-da0cf8b3) from alestic.com and will provide an image that can easily be started soon. Using an EC2 High-CPU Medium Instance (1.7GB of memory, 5 EC2 compute units (2 virtual cores with 2.5 EC2 Compute Units Each, 350GB of local instance storage, 32bit OS) it took 2 minutes to analyze 13 genes in miRvestigator, and with 106 genes it took 7.4 minutes.
