@@ -1,22 +1,3 @@
-#################################################################
-# @Program: miRvestigator_server_V3.py                          #
-# @Version: 3                                                   #
-# @Author: Chris Plaisier                                       #
-# @Sponsored by:                                                #
-# Nitin Baliga, ISB                                             #
-# Institute for Systems Biology                                 #
-# 1441 North 34th Street                                        #
-# Seattle, Washington  98103-8904                               #
-# (216) 732-2139                                                #
-# @Also Sponsored by:                                           #
-# Luxembourg Systems Biology Grant                              #
-#                                                               #
-# If this program is used in your analysis please mention who   #
-# built it. Thanks. :-)                                         #
-#                                                               #
-# Copyrighted by Chris Plaisier  10/23/2010                     #
-#################################################################
-
 import sys, re, os, math, shutil
 from subprocess import *
 from copy import deepcopy
@@ -235,7 +216,7 @@ def alignSeed(alignment, seed, motif):
 class miRwww(Pyro.core.ObjBase):
     def __init__(self):
         Pyro.core.ObjBase.__init__(self)
-    def run(self, genes, seedModels, wobble, cut, bgModel, motifSizes):
+    def run(self, genes, seedModels, wobble, cut, bgModel, motifSizes, jobName, eMailAddr='',topRet=10):
         cut = float(cut)
         curRunNum = randint(0,1000000)
 
@@ -262,6 +243,7 @@ class miRwww(Pyro.core.ObjBase):
         fastaFile.close()
         
         # 4. Run weeder
+        print 'Running weeder!'
         weederPSSMs1 = weeder(seqFile='tmp/fasta/tmp'+str(curRunNum)+'.fasta', percTargets=50, revComp=False, bgModel=bgModel)
         
         # 4a. Take only selected size motifs
@@ -300,13 +282,29 @@ class miRwww(Pyro.core.ObjBase):
         os.remove('tmp/fasta/tmp'+str(curRunNum)+'.fasta.html')
 
         # 7. Return results
-        s = '<html><body bgcolor=\'#333333\' link=\'cc0000\' vlink=\'cc0000\'><font face=\'arial\'><center><table bgcolor=\'#999966\' cellpadding=\'10%\'><tr><td><center>'
+        s = '<html>'
+	s+= '<script language=JavaScript> var _gaq = _gaq || []; _gaq.push([\'_setAccount\', \'UA-19292534-1\']); _gaq.push([\'_trackPageview\']); (function() { var ga = document.createElement(\'script\'); ga.type = \'text/javascript\'; ga.async = true; ga.src = (\'https:\' == document.location.protocol ? \'https://ssl\' : \'http://www\') + \'.google-analytics.com/ga.js\'; var s = document.getElementsByTagName(\'script\')[0]; s.parentNode.insertBefore(ga, s); })();'
+        s += 'function toggleVisible(id) {\nif (document.getElementById) {\nobj = document.getElementById(id);\nif (obj) {\nif (obj.style.display == \'none\') {\nobj.style.display = \'\'\n} else {\nobj.style.display = \'none\'\n}\n}\n}\n}\n'
+        s += '</script></head>'
+	s+= '<body bgcolor=\'#333333\' link=\'cc0000\' vlink=\'cc0000\'><font face=\'arial\'><center><table bgcolor=\'#999966\' cellpadding=\'10%\'><tr><td><center>'
         for pssm1 in weederPSSMs1:
-            s += '<table width=\'100%\' bgcolor=\'#333333\' cellpadding=\'15%\'><tr><td align=\'center\' valign=\'center\'><font size=6><b><font color=\'#ff0000\'>miR</font><font color=\'#cccc00\'>vestigator Framework Results</font></b></font></td></tr></table>'
-            s += '<p><table width=\'100%\' bgcolor=\'#333333\' cellpadding=\'15%\'><tr><td align=\'center\' valign=\'center\'><font size=4><b><font color=\'#cccc00\'>Top Ten miRNAS Matching the Weeder Motif</font> <font color=\'#ff0000\'>'+str(pssm1.getName())+'</font></b></font></td></tr></table>'
+            s += '<table width=\'100%\' cellpadding=\'15%\'><tr><td align=\'center\' valign=\'center\' bgcolor=\'#333333\'><font size=6><b><font color=\'#ff0000\'>miR</font><font color=\'#cccc00\'>vestigator Framework Results</font></b></font></a></td></tr>'
+            s += '<p><table width=\'100%\'cellpadding=\'15%\'><tr><td align=\'center\' valign=\'center\' bgcolor=\'#333333\'><a href="#results" onclick="toggleVisible(\'results\'); return false;" style=\'color: rgb(204,204,0); text-decoration: none\'><font size=4><b><font color=\'#cccc00\'>'
+            if not topRet=='all':
+                s += 'Top <font color=\'#ff0000\' size=4>'+str(topRet)+'</font>'
+            elif topRet=='all':
+                s += '<font color=\'#ff0000\' size=4>'+str(topRet)+'</font>'
+            s += ' miRNAS Matching the Weeder Motif</font> <font color=\'#ff0000\'>'+str(pssm1.getName())+'</font> &nbsp; <font color="#ff0000">[?]</font></b></font></a></td></tr>\n'
+            s += '<tr id="results" style="display: none;" width=600><td bgcolor="#333333"><font color="#ffffff">\n'
+            s += '<b>What do the columns mean?</b> <p><ul><li><b>miRNA Name</b> = The name of the name(s) for the unique seed sequence. There may be more than one miRNA annotated for a unique seed seqeunce because they vary in the 3\' terminus of the mature miRNA. Each miRNA is a link to it\'s entry on <a href="http://www.mirbase.org" style="color: rgb(204,204,0)" target="_blank">miRBase</a></li> <li><b>miRNA Seed</b> = The sequence for seed that aligned best to the over-represetned motif. The seed will be as long as the seed model described in the next column.</li> <li><b>Seed Model</b> = One of the seed models described in the figure below.<center><img src="http://mirvestigator.systemsbiology.net/seedModels.gif" width=400></center></li> <li><b>Length of Alignment</b> = The length of matching (or wobble if enabled) base-pairs that align between the sequence motif and the miRNA seed sequence.</li> <li><b>Alignment</b> = The alignment of the over-represented sequence motif on top 5\'&rarr;3\' to the miRNA seed sequence given the seed model 3\'&rarr;5\'. (<b>Note:</b> "<font color="#ff0000">|</font>" = a match, "<font color="#0000ff">:</font>" = a wobble, " " (space) = not a match, and for the seqeucnes "<font color="#cccccc">-</font>" = a gapping at the start or end.)</li> <li><b>Viterbi P-Value</b> = Significance of match between the over-represented sequence motif and the miRNA seed sequence. (<b>Note:</b> A perfect match for an 8mer seed model is 1.5e-05, for a 7mer seed model 6.1e-05, and for a 6mer seed model 0.00024.)</li></ul> <b>What is considered a good match?</b> <p>This will depend upon your data and what downstream analysis you plan to do with it. But a good rule of thumb is that if you find a perfect match for a 7mer or 8mer (Viterbi P-Value &cong; 6.1e-05 and 1.5e-05; respectively) this is likely to be of interest. Follow up with experimental studies will help to determine the false discovery rate for your dataset.</p></font></td></tr>'
+            s += '</table>'
             scoreList = mV.getScoreList(pssm1.getName())
+            if topRet=='all':
+                topRet = len(scoreList)
+            else:
+                topRet = int(topRet)
             s += '<table width=\'100%\' cellpadding=\'15%\'><tr><td bgcolor=\'#333333\'><center><b><font color=\'#ffffff\'>miRNA Name</font></b></center></td><td bgcolor=\'#333333\'><center><b><font color=\'#ffffff\'>miRNA Seed</font></b></center></td><td bgcolor=\'#333333\'><center><b><font color=\'#ffffff\'>Seed Model</font></b></center></td><td bgcolor=\'#333333\'><center><b><font color=\'#ffffff\'>Length of</br>Alignment</font></b></center></td><td bgcolor=\'#333333\'><center><b><font color=\'#ffffff\'>Alignment</font></b></center></td><td bgcolor=\'#333333\'><center><b><font color=\'#ffffff\'>Viterbi P-Value</font></b></center></td></tr>'
-            for k in range(10):
+            for k in range(topRet):
                 i = scoreList[k]
                 align1 = alignSeed(i['statePath'], i['miRNA.seed'], pssm1.getName())
                 s += '<tr><td bgcolor=\'#ffffff\'><center>'+str('</br>'.join(['<a href=\'http://mirbase.org/cgi-bin/mature.pl?mature_acc='+str(miRNADict[j.strip()])+'\' target=\'_blank\'>'+str(j.strip())+'</a>' for j in i['miRNA.name'].split('_')]))+'</center></td><td bgcolor=\'#ffffff\'><center>'+conv2rna(reverseComplement(str(i['miRNA.seed'])))+'</center></td><td bgcolor=\'#ffffff\'><center>'+str(i['model'])+'</center></td><td bgcolor=\'#ffffff\'><center>'+str(align1[3])+'</center></td><td bgcolor=\'#ffffff\'>'
