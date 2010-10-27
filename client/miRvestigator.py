@@ -27,6 +27,16 @@ def index():
                 ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
                 var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
             })();
+            function addMir1()
+            {
+                document.forms[0].genes.value="103, 302, 303, 304, 376, 767, 1652, 1875, 1939, 2079, 2697, 3021, 3400, 4201, 4580, 5201, 5226, 5440, 5756, 5867, 5928, 6391, 6422, 6457, 7114, 7295, 8407, 8624, 8655, 8683, 10244, 26123, 26578, 26580, 28985, 29058, 29078, 30850, 51175, 51465, 54780, 55276, 55315, 55744, 57446, 57696, 64425, 79022, 80306, 81671, 83787, 84278, 84747, 90522, 140809, 143458, 200916, 201562, 253512, 341306, 352909, 378464, 390498, 440151, 440388, 440921, 441454, 441456"
+                document.forms[0].bgModel.value='HS'
+                document.forms[0].seedModel_6.value=6
+                document.forms[0].seedModel_7.value=7
+                document.forms[0].seedModel_8.value=8
+                document.forms[0].wobble.value='no'
+                document.forms[0].jobName.value='hsa-miR-1 (Sample)'
+            }
             function addMir9()
             {
                 document.forms[0].genes.value="79073, 900, 29957, 11167, 4154, 84270, 84061, 4001, 26503, 4086, 51585, 4734, 5873"
@@ -35,15 +45,7 @@ def index():
                 document.forms[0].seedModel_7.value=7
                 document.forms[0].seedModel_8.value=8
                 document.forms[0].wobble.value='no'
-            }
-            function addMir132()
-            {
-                document.forms[0].genes.value="23271, 51099, 1968, 5814, 1655, 4254, 5925, 5534, 1852, 1490, 4683, 5921, 7266, 8140, 8776, 2764, 4673, 9467, 2965, 3612, 3925, 4001, 4664, 10438, 642538, 642521, 642812, 8539, 6388, 25842, 23413, 27043, 22834, 23002, 23219, 25798, 730010, 60496, 25963, 26065, 51496, 51763, 6607, 6606, 54765, 23264, 55366, 55871, 644019, 79003, 90268, 139285, 145773, 150468, 219902, 51585, 23443, 757, 169200, 81555"
-                document.forms[0].bgModel.value='HS'
-                document.forms[0].seedModel_6.value=6
-                document.forms[0].seedModel_7.value=7
-                document.forms[0].seedModel_8.value=8
-                document.forms[0].wobble.value='no'
+                document.forms[0].jobName.value='hsa-miR-9 (Sample)'
             }
             function addMir16()
             {
@@ -53,24 +55,17 @@ def index():
                 document.forms[0].seedModel_7.value=7
                 document.forms[0].seedModel_8.value=8
                 document.forms[0].wobble.value='no'
+                document.forms[0].jobName.value='hsa-miR-16 (Sample)'
             }
-            function addMir184()
+            function addMir132()
             {
-                document.forms[0].genes.value="140576, 396, 4150, 197370, 1487, 8644, 9516, 1605, 993, 64837, 8613, 6455, 84876, 56262, 208, 100130776, 51299"
+                document.forms[0].genes.value="23271, 51099, 1968, 5814, 1655, 4254, 5925, 5534, 1852, 1490, 4683, 5921, 7266, 8140, 8776, 2764, 4673, 9467, 2965, 3612, 3925, 4001, 4664, 10438, 642538, 642521, 642812, 8539, 6388, 25842, 23413, 27043, 22834, 23002, 23219, 25798, 730010, 60496, 25963, 26065, 51496, 51763, 6607, 6606, 54765, 23264, 55366, 55871, 644019, 79003, 90268, 139285, 145773, 150468, 219902, 51585, 23443, 757, 169200, 81555"
                 document.forms[0].bgModel.value='HS'
                 document.forms[0].seedModel_6.value=6
                 document.forms[0].seedModel_7.value=7
                 document.forms[0].seedModel_8.value=8
                 document.forms[0].wobble.value='no'
-            }
-            function addMir1()
-            {
-                document.forms[0].genes.value="103, 302, 303, 304, 376, 767, 1652, 1875, 1939, 2079, 2697, 3021, 3400, 4201, 4580, 5201, 5226, 5440, 5756, 5867, 5928, 6391, 6422, 6457, 7114, 7295, 8407, 8624, 8655, 8683, 10244, 26123, 26578, 26580, 28985, 29058, 29078, 30850, 51175, 51465, 54780, 55276, 55315, 55744, 57446, 57696, 64425, 79022, 80306, 81671, 83787, 84278, 84747, 90522, 140809, 143458, 200916, 201562, 253512, 341306, 352909, 378464, 390498, 440151, 440388, 440921, 441454, 441456"
-                document.forms[0].bgModel.value='HS'
-                document.forms[0].seedModel_6.value=6
-                document.forms[0].seedModel_7.value=7
-                document.forms[0].seedModel_8.value=8
-                document.forms[0].wobble.value='no'
+                document.forms[0].jobName.value='hsa-miR-132 (Sample)'
             }
             function addMir142()
             {
@@ -80,6 +75,17 @@ def index():
                 document.forms[0].seedModel_7.value=7
                 document.forms[0].seedModel_8.value=8
                 document.forms[0].wobble.value='no'
+                document.forms[0].jobName.value='hsa-miR-132 (Sample)'
+            }
+            function addMir184()
+            {
+                document.forms[0].genes.value="140576, 396, 4150, 197370, 1487, 8644, 9516, 1605, 993, 64837, 8613, 6455, 84876, 56262, 208, 100130776, 51299"
+                document.forms[0].bgModel.value='HS'
+                document.forms[0].seedModel_6.value=6
+                document.forms[0].seedModel_7.value=7
+                document.forms[0].seedModel_8.value=8
+                document.forms[0].wobble.value='no'
+                document.forms[0].jobName.value='hsa-miR-184 (Sample)'
             }
             </script>
             <title>miRvestigator Framework: Detect the miRNAs Driving Co-Expression Signatures</title>
@@ -101,6 +107,7 @@ def index():
 <p>Currently the miRvestigator framework is able to take <a href='http://www.ncbi.nlm.nih.gov/gene' style=\'color: rgb(204,204,0)\' target='_blank'>Entrez gene IDs</a> as input. To convert any other type of identifier to the Entrez gene IDs please use the <a href='http://david.abcc.ncifcrf.gov/home.jsp' style=\'color: rgb(204,204,0)\' target='_blank'>DAVID</a> bioinformatics resource <a href='http://david.abcc.ncifcrf.gov/conversion.jsp' style=\'color: rgb(204,204,0)\' target='_blank'>gene ID conversion tool</a>. The DAVID gene ID conversion tool has a great <a href='http://david.abcc.ncifcrf.gov/helps/conversion.html' style=\'color: rgb(204,204,0)\' target='_blank'>help page</a> please visit it if you have any questions.</p>
 <b>What types of <a href='http://en.wikipedia.org/wiki/Delimiter' style=\'color: rgb(255,255,255)\' target='_blank'>delimiters</a> can be entered into the form?</b>
 <p>You can enter the Entrez gene IDs separated by commas, spaces, tabs or <a href='http://en.wikipedia.org/wiki/Newline' style=\'color: rgb(204,204,0)\' target='_blank'>newlines</a>.</p></font></td></tr>
+            <tr><td bgcolor='#333333'><b><center><font color='#ffffff'>Name the gene list:</font></center></b></td><td bgcolor='#666666'><table width='100%' cellpadding='5%'><tr><td bgcolor='#ffffff'><center><input type='text' name='jobName' size=50></center></td></tr></table></td></tr>
             <tr><td colspan=2 bgcolor='#333333'><b><font color='#ffffff'>Enter Entrez IDs for the co-expressed genes:</font></b></br><font color='#ffffff'>(Acceptable <a href='http://en.wikipedia.org/wiki/Delimiter' style=\'color: rgb(204,204,0)\' target='_blank'>delimiters</a> include: comma, space, tab or newline)</font></td></tr>
             <tr><td colspan=2 bgcolor='#666666'><center><textarea rows=20 cols=70 name='genes'></textarea></center></td></tr>
             <tr><td bgcolor='#333333'><center><a href="#sampData" onclick="toggleVisible('sampData'); return false;" style=\'color: rgb(255,255,255); text-decoration: none\'><b><font color='#ffffff'><b>Or load sample data:</b></font> <font color="#ff0000">[?]</font></a></center></td><td bgcolor='#666666'><table width='100%' cellpadding='5%'><tr><td bgcolor='#ffffff'><center><input type='button' value='hsa-miR-1' onClick='javascript:addMir1()'></center></td><td bgcolor='#ffffff'><center><input type='button' value='hsa-miR-9' onClick='javascript:addMir9()'></center></td><td bgcolor='#ffffff'><center><input type='button' value='hsa-miR-16' onClick='javascript:addMir16()'></center></td></tr>
@@ -142,6 +149,7 @@ def index():
             <tr><td bgcolor='#333333'><b><center><font color='#ffffff'>Model Wobble Base-Pairing:</font></center></b></td><td bgcolor='#666666'><table width='100%' cellpadding='5%'><tr><td bgcolor='#ffffff'><center><b>Yes</b><input type='radio' name='wobble' value='yes'></input> <b>No</b><input type='radio' name='wobble' value='no' checked></input></center></td><td bgcolor='#ffffff'><center><b>Min. Freq. of G or U:</b> <input type='text' name='cut' value='0.25' size=2></input></center></td></tr></table></td></tr>
             <tr><td><td></tr>
             <tr><td bgcolor='#000000' colspan=2><center><font color='#cccc00' size=4><b>Submit the Job</b></font></center></b></font></td></tr>
+            <tr><td bgcolor='#333333'><center><b><font color='#ffffff'>Top miRNAs to return:</font></b></center></td><td bgcolor='#666666'><table cellpadding='5%' width='100%'><tr><td bgcolor='#ffffff'><center><select name='topRet'><option value='10' selected>Top 10</option><option value='25'>Top 25</option><option value='50'>Top 50</option><option value='75'>Top 75</option><option value='100'>Top 100</option><option value='all'>All</option></select></center></td></tr></table></td></tr>
             <tr><td bgcolor='#333333' colspan=2><center><table cellpadding='5%'><tr><td bgcolor='#ffffff'><input style='font-weight: bold' type='submit' value='         Submit         '></td></tr></table></center></tr></td></table>
             </form></p>
             
@@ -174,6 +182,8 @@ def plsWait(req):
     cut = str(req.form.getfirst('cut',''))
     m6 = str(req.form.getfirst('motif_6',''))
     m8 = str(req.form.getfirst('motif_8',''))
+    topRet = str(req.form.getfirst('topRet',''))
+    jobName = str(req.form.getfirst('jobName',''))
     #return out, s6, s7, s8, bgModel, wobble, cut, m6, m8
     seedModels = []
     if not s6=='' and int(s6)==6:
@@ -197,8 +207,11 @@ def plsWait(req):
     elif bgModel=='HS3P':
         blab = '3\' UTR Specific Model'
     s = "<html><head> <script language=JavaScript> var _gaq = _gaq || []; _gaq.push(['_setAccount', 'UA-19292534-1']); _gaq.push(['_trackPageview']); (function() { var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true; ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js'; var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s); })();</script>"
-    s+= "<meta http-equiv=refresh content='0; URL=doit?s6="+s6+"&s7="+s7+"&s8="+s8+"&genes="+','.join([i for i in genes if i])+"&bgModel="+bgModel+"&wobble="+wobble+"&cut="+cut+"&m6="+m6+"&m8="+m8+"'></head>"
-    s += "<body bgcolor='#333333'><font face='arial'><center><table width=620 bgcolor='#999966' cellpadding='10%'><tr><td><center><table width='100%' cellpadding='15%'><tr><td align='center' valign='center' bgcolor='#000000'><font size=6><b><font color='#ff0000'>miR</font><font color='#cccc00'>vestigator Framework</font></b></font></td></tr></table><table width='100%' cellpadding='10%'><tr><td bgcolor='#333333'><center><b><font color='#cccc00' size=5>Parameters for Run</font></b></center><p><center><table width='100%' bgcolor='#ffffff' cellpadding='5%'><tr><td><center><b><p>Thank you for submitting <font color='#ff0000'>"+str(len(genes))+" genes</font> for analysis.</p> <p>You requested that Weeder be run with <font color='#ff0000'>"+str(motifSizes)+"</font> motif size(s) and the <font color='#ff0000'>"+str(blab)+"</font> background model.</p><p>The miRvestigator HMM will use <font color='#ff0000'>"+str(seedModels)+" seed model(s)</font> and <font color='#ff0000'>will"+wobble1+" </font> model wobble base pairing.</p></center></td></tr></table></center><p><center><p><font color='#cccc00' size=5>Please wait while your request is processed...</font></p></b></font></br><img src='http://spero.systemsbiology.net/miRvestigator/Scientists.gif'></center></td></tr></table></center><p><table width='100%' cellpadding='5%'><tr><td bgcolor='#c0c0c0'><center>Need help? Please contact <font color='#0000ff'>cplaisier(at)systemsbiology.org</font> if you have any questions, comments or concerns.<br>Developed at the <a href='http://www.systemsbiology.org' target='_blank' style=\'color: rgb(0,0,255)\'>Institute for Systems Biology</a> in the <a href='http://baliga.systemsbiology.net/' target='_blank' style=\'color: rgb(0,0,255)\'>Baliga Lab</a>.</center></td></tr></table></p></td></tr></table></center></font></body>"
+    s+= "<meta http-equiv=refresh content='0; URL=doit?s6="+s6+"&s7="+s7+"&s8="+s8+"&genes="+','.join([i for i in genes if i])+"&bgModel="+bgModel+"&wobble="+wobble+"&cut="+cut+"&m6="+m6+"&m8="+m8+"&jobName="+jobName+"&topRet="+str(topRet)+"'></head>"
+    s += "<body bgcolor='#333333'><font face='arial'><center><table width=620 bgcolor='#999966' cellpadding='10%'><tr><td><center><table width='100%' cellpadding='15%'><tr><td align='center' valign='center' bgcolor='#000000'><font size=6><b><font color='#ff0000'>miR</font><font color='#cccc00'>vestigator Framework</font></b></font></td></tr></table><table width='100%' cellpadding='10%'><tr><td bgcolor='#333333'><center><b><font color='#cccc00' size=5>Parameters for Run"
+    if not jobName=='':
+        s += " on <font color='#ff0000'>"+str(jobName)+"</font>"
+    s+= "</font></b></center><p><center><table width='100%' bgcolor='#ffffff' cellpadding='5%'><tr><td><center><b><p>Thank you for submitting <font color='#ff0000'>"+str(len(genes))+" genes</font> for analysis.</p> <p>You requested that Weeder be run with <font color='#ff0000'>"+str(motifSizes)+"</font> motif size(s) and the <font color='#ff0000'>"+str(blab)+"</font> background model.</p><p>The miRvestigator HMM will use <font color='#ff0000'>"+str(seedModels)+" seed model(s)</font> and <font color='#ff0000'>will"+wobble1+" </font> model wobble base pairing.</p><p>Returning <font color='#ff0000'>"+topRet+"</font> top miRNAs.</p></center></td></tr></table></center><p><center><p><font color='#cccc00' size=5>Please wait while your request is processed...</font></p></b></font></br><img src='http://spero.systemsbiology.net/miRvestigator/Scientists.gif'></center></td></tr></table></center><p><table width='100%' cellpadding='5%'><tr><td bgcolor='#c0c0c0'><center>Need help? Please contact <font color='#0000ff'>cplaisier(at)systemsbiology.org</font> if you have any questions, comments or concerns.<br>Developed at the <a href='http://www.systemsbiology.org' target='_blank' style=\'color: rgb(0,0,255)\'>Institute for Systems Biology</a> in the <a href='http://baliga.systemsbiology.net/' target='_blank' style=\'color: rgb(0,0,255)\'>Baliga Lab</a>.</center></td></tr></table></p></td></tr></table></center></font></body>"
     req.content_type='text/html'
     return s
 
@@ -236,6 +249,8 @@ def doit(req):
         m8 = int(data['m8'])
     else:
         m8 = ''
+    jobName = str(data['jobName'])
+    topRet = str(data['topRet'])
     """
     out = req.form.getfirst('genes','').strip()
     s6 = req.form.getfirst('seedModel_6','')
@@ -272,6 +287,6 @@ def doit(req):
                     for m in l.strip().split(' '):
                         if m:
                             genes.append(l)
-    scoreList = miRwww.run(genes, seedModels, wobble, cut, bgModel, motifSizes)
+    scoreList = miRwww.run(genes, seedModels, wobble, cut, bgModel, motifSizes, jobName, topRet)
     return scoreList
 
