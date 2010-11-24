@@ -20,7 +20,7 @@ def start_worker(id, q):
         job = q.get()
         if (job==SHUTDOWN_FLAG):
             break
-        update_job_status(job, "start on worker %d" % (id))
+        update_job_status(job, "started on worker %d" % (id))
         print("worker %d computing job %s." % (id, job['id']))
 
         # parse params out of job
