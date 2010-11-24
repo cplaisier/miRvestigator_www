@@ -44,6 +44,7 @@
               $("#status_output").append("<p>" + status.updated_at + " " + status.status + "</p>");
               if (status.status=="done") {
                 clearInterval(polling_timer);
+                window.location = "/results/" + job_id + "/";
               }
             },
             error: function(xmlHttpRequest, textStatus, errorThrown) {
