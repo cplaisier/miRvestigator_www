@@ -60,6 +60,7 @@ def results(req):
 
 <body>
   <p>results!</p>
+  <p>""" + req.form.getfirst('id','no id found?') + """</p>
 </body>
 
 </html>
