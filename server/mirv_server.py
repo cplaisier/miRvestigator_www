@@ -2,7 +2,7 @@ import Pyro.core
 import datetime
 import time
 import uuid
-import MySQLdb
+from mirv_db import create_job_in_db, update_job_status
 from miRvestigator_job import Job
 from multiprocessing import Process, Queue, cpu_count
 import mirv_worker
@@ -11,46 +11,6 @@ import mirv_worker
 SHUTDOWN_FLAG = -1
 
 
-def _get_db_connection():
-    return MySQLdb.connect("localhost","mirv","mirvestigator","mirvestigator")
-
-def create_job_in_db(job):
-    conn = _get_db_connection()
-    try:
-        created_at = datetime.datetime.now()
-        cursor = conn.cursor()
-        cursor.execute("insert into jobs (uuid, created_at, updated_at, status) values ('%s', '%s', '%s', '%s');"
-                       % (job['id'], created_at.isoformat(), created_at.isoformat(), 'queued'))
-    finally:
-        try:
-            cursor.close()
-        except Exception as exception:
-            print("Exception closing cursor: ")
-            print(exception)
-        try:
-            conn.close()
-        except Exception as exception:
-            print("Exception closing conection: ")
-            print(exception)
-
-def update_job_status(job, status):
-    conn = _get_db_connection()
-    try:
-        now = datetime.datetime.now()
-        cursor = conn.cursor()
-        cursor.execute("update jobs set status='%s', updated_at='%s' where uuid='%s';"
-                       % (status, now.isoformat(), job['id'],))
-    finally:
-        try:
-            cursor.close()
-        except Exception as exception:
-            print("Exception closing cursor: ")
-            print(exception)
-        try:
-            conn.close()
-        except Exception as exception:
-            print("Exception closing conection: ")
-            print(exception)
 
 
 # wait to take a job from the queue and do it
@@ -60,6 +20,7 @@ def start_worker(id, q):
         job = q.get()
         if (job==SHUTDOWN_FLAG):
             break
+        update_job_status(job, "start on worker %d" % (id))
         print("worker %d computing job %s." % (id, job['id']))
 
         # parse params out of job
@@ -74,7 +35,7 @@ def start_worker(id, q):
         seedModels = [int(job[s]) for s in ['s6','s7','s8'] if s in job and job[s]]
         motifSizes = [int(job[m]) for m in ['m6', 'm8'] if m in job and job[m]]
 
-        mirv_worker.run(genes, seedModels, wobble, cut, bgModel, motifSizes, jobName, topRet=10, eMailAddr='')
+        #mirv_worker.run(genes, seedModels, wobble, cut, bgModel, motifSizes, jobName, topRet=10, eMailAddr='')
 
         print("worker %d done job %s." % (id, job['id']))
         update_job_status(job, 'done')
@@ -113,7 +74,7 @@ if __name__ == '__main__':
         print("can't detect number of cpus")
         print(e)
 
-    # start workers
+    # start worker child processes
     workers = []
     for i in range(num_workers):
         p = Process(target=start_worker, args=(i,q,))
