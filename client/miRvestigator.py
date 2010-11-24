@@ -187,6 +187,8 @@ def submitJob(req):
     job['cut'] = str(req.form.getfirst('cut',''))
     job['m6'] = str(req.form.getfirst('motif_6',''))
     job['m8'] = str(req.form.getfirst('motif_8',''))
+    job['topRet'] = str(req.form.getfirst('topRet',''))
+    job['jobName'] = str(req.form.getfirst('jobName',''))
 
     # connect to miR server via Pyro                                                                  
     uriFile = open('/var/www/uri','r')

@@ -4,10 +4,12 @@ import time
 import uuid
 import MySQLdb
 from miRvestigator_job import Job
-from multiprocessing import Process, Queue
+from multiprocessing import Process, Queue, cpu_count
+import mirv_worker
+
 
 SHUTDOWN_FLAG = -1
-NUM_WORKERS = 3
+
 
 def _get_db_connection():
     return MySQLdb.connect("localhost","mirv","mirvestigator","mirvestigator")
@@ -59,14 +61,21 @@ def start_worker(id, q):
         if (job==SHUTDOWN_FLAG):
             break
         print("worker %d computing job %s." % (id, job['id']))
-        update_job_status(job, 'in progress')
-        time.sleep(1)
-        update_job_status(job, 'more progress')
-        time.sleep(1)
-        update_job_status(job, 'lots more progress')
-        time.sleep(1)
-        update_job_status(job, 'holy crap, look at all that progress')
-        time.sleep(2)
+
+        # parse params out of job
+        genes = job['genes']
+        bgModel = job['bgModel']
+        wobble = (job['wobble'] == 'yes')
+        cut = float(job['cut'])
+        jobName = job['jobName']
+        topRet = data['topRet']
+
+        # condense seed models and motif sizes into arrays of ints
+        seedModels = [int(job[s]) for s in ['s6','s7','s8'] if s in job and job[s]]
+        motifSizes = [int(job[m]) for m in ['m6', 'm8'] if m in job and job[m]]
+
+        mirv_worker.run(genes, seedModels, wobble, cut, bgModel, motifSizes, jobName, topRet=10, eMailAddr='')
+
         print("worker %d done job %s." % (id, job['id']))
         update_job_status(job, 'done')
     print("worker %d done." % (id))
@@ -86,6 +95,7 @@ class TestServer(Pyro.core.ObjBase):
         job['id'] = id
         print("Job %s created %s" % (job['id'], job['created'].strftime('%Y.%m.%d %H:%M:%S')))
         create_job_in_db(job)
+        # put params in DB
         q.put(job)
         return id
 
@@ -94,9 +104,18 @@ class TestServer(Pyro.core.ObjBase):
 if __name__ == '__main__':
     q = Queue()
 
+    num_workers = 4
+
+    try:
+        cores = cpu_count()
+        num_workers = cores
+    except Exception as e:
+        print("can't detect number of cpus")
+        print(e)
+
     # start workers
     workers = []
-    for i in range(NUM_WORKERS):
+    for i in range(num_workers):
         p = Process(target=start_worker, args=(i,q,))
         p.start()
         workers.append(p)

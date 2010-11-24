@@ -8,8 +8,6 @@ import cPickle
 from miRvestigator import miRvestigator
 from pssm import pssm
 
-# Library for Pyro - Remote Object Communication
-import Pyro.core
 
 # Reverse complement
 def reverseMe(seq):
@@ -213,73 +211,76 @@ def alignSeed(alignment, seed, motif):
     seedAlign +=  '<font color=\'#ffffff\'>_</font>5\'<font color=\'#ffffff\'>_</font><font color=\'#cc0000\'><b>miRNA Seed</b></font>'
     return [motifAlign, aligned, seedAlign, lenMatch]
 
-class miRwww(Pyro.core.ObjBase):
-    def __init__(self):
-        Pyro.core.ObjBase.__init__(self)
-    def run(self, genes, seedModels, wobble, cut, bgModel, motifSizes, jobName, topRet=10, eMailAddr=''):
-        cut = float(cut)
-        curRunNum = randint(0,1000000)
 
-        # 1. Read in sequences
-        seqFile = open('p3utrSeqs_Homo_sapiens.csv','r')
-        seqLines = seqFile.readlines()
-        ids = [i.strip().split(',')[0].upper() for i in seqLines]
-        sequences = [i.strip().split(',')[1] for i in seqLines]
-        seqs = dict(zip(ids,sequences))
-        seqFile.close()
+def run(genes, seedModels, wobble, cut, bgModel, motifSizes, jobName, topRet=10, eMailAddr=''):
+    cut = float(cut)
+    curRunNum = randint(0,1000000)
+    
+    # 1. Read in sequences
+    seqFile = open('p3utrSeqs_Homo_sapiens.csv','r')
+    seqLines = seqFile.readlines()
+    ids = [i.strip().split(',')[0].upper() for i in seqLines]
+    sequences = [i.strip().split(',')[1] for i in seqLines]
+    seqs = dict(zip(ids,sequences))
+    seqFile.close()
 
-        # 2. Get sequences for each target
-        miRSeqs = {}
-        for gene in genes:
-            if gene in seqs:
-                miRSeqs[gene] = seqs[gene]
+    # 2. Get sequences for each target
+    miRSeqs = {}
+    for gene in genes:
+        if gene in seqs:
+            miRSeqs[gene] = seqs[gene]
 
-        # 3. Make a FASTA file
-        if not os.path.exists('tmp/fasta'):
-            os.makedirs('tmp/fasta')
-        fastaFile = open('tmp/fasta/tmp'+str(curRunNum)+'.fasta','w')
-        for seq in miRSeqs:
-            fastaFile.write('>'+str(seq)+'\n'+str(miRSeqs[seq])+'\n')
-        fastaFile.close()
+    # TODO insert number of annotated gene sequences
+
+    # 3. Make a FASTA file
+    if not os.path.exists('tmp/fasta'):
+        os.makedirs('tmp/fasta')
+    fastaFile = open('tmp/fasta/tmp'+str(curRunNum)+'.fasta','w')
+    for seq in miRSeqs:
+        fastaFile.write('>'+str(seq)+'\n'+str(miRSeqs[seq])+'\n')
+    fastaFile.close()
         
-        # 4. Run weeder
-        print 'Running weeder!'
-        weederPSSMs1 = weeder(seqFile='tmp/fasta/tmp'+str(curRunNum)+'.fasta', percTargets=50, revComp=False, bgModel=bgModel)
+    # 4. Run weeder
+    print 'Running weeder!'
+    weederPSSMs1 = weeder(seqFile='tmp/fasta/tmp'+str(curRunNum)+'.fasta', percTargets=50, revComp=False, bgModel=bgModel)
         
-        # 4a. Take only selected size motifs
-        weederPSSMsTmp = []
-        for pssm1 in weederPSSMs1:
-            if 6 in motifSizes and len(pssm1.getName())==6:
-                weederPSSMsTmp.append(deepcopy(pssm1))
-            if 8 in motifSizes and len(pssm1.getName())==8:
-                weederPSSMsTmp.append(deepcopy(pssm1))
-        weederPSSMs1 = deepcopy(weederPSSMsTmp)
-        del weederPSSMsTmp
+    # 4a. Take only selected size motifs
+    weederPSSMsTmp = []
+    for pssm1 in weederPSSMs1:
+        if 6 in motifSizes and len(pssm1.getName())==6:
+            weederPSSMsTmp.append(deepcopy(pssm1))
+        if 8 in motifSizes and len(pssm1.getName())==8:
+            weederPSSMsTmp.append(deepcopy(pssm1))
+    weederPSSMs1 = deepcopy(weederPSSMsTmp)
+    del weederPSSMsTmp
 
-        # 5. Run miRvestigator HMM
-        mV = miRvestigator(weederPSSMs1,seqs.values(),seedModel=seedModels,minor=True,p5=True,p3=True,wobble=wobble,wobbleCut=cut,textOut=False)
+    # 5. Run miRvestigator HMM
+    mV = miRvestigator(weederPSSMs1,seqs.values(),seedModel=seedModels,minor=True,p5=True,p3=True,wobble=wobble,wobbleCut=cut,textOut=False)
         
-        # 6. Read in miRNAs to get mature miRNA ids
-        import gzip
-        miRNAFile = gzip.open('mature.fa.gz','r')
-        miRNADict = {}
-        while 1:
-            miRNALine = miRNAFile.readline()
-            seqLine = miRNAFile.readline()
-            if not miRNALine:
-                break
-            # Get the miRNA name
-            miRNAData = miRNALine.lstrip('>').split(' ')
-            curMiRNA = miRNAData[0]
-            if (curMiRNA.split('-'))[0]=='hsa':
-                miRNADict[curMiRNA] = miRNAData[1]
-        miRNAFile.close()
+    # 6. Read in miRNAs to get mature miRNA ids
+    import gzip
+    miRNAFile = gzip.open('mature.fa.gz','r')
+    miRNADict = {}
+    while 1:
+        miRNALine = miRNAFile.readline()
+        seqLine = miRNAFile.readline()
+        if not miRNALine:
+            break
+        # Get the miRNA name
+        miRNAData = miRNALine.lstrip('>').split(' ')
+        curMiRNA = miRNAData[0]
+        if (curMiRNA.split('-'))[0]=='hsa':
+            miRNADict[curMiRNA] = miRNAData[1]
+    miRNAFile.close()
 
-        # 6. Clean-up after yerself
-        os.remove('tmp/fasta/tmp'+str(curRunNum)+'.fasta')
-        os.remove('tmp/fasta/tmp'+str(curRunNum)+'.fasta.wee')
-        os.remove('tmp/fasta/tmp'+str(curRunNum)+'.fasta.mix')
-        os.remove('tmp/fasta/tmp'+str(curRunNum)+'.fasta.html')
+    # 6. Clean-up after yerself
+    os.remove('tmp/fasta/tmp'+str(curRunNum)+'.fasta')
+    os.remove('tmp/fasta/tmp'+str(curRunNum)+'.fasta.wee')
+    os.remove('tmp/fasta/tmp'+str(curRunNum)+'.fasta.mix')
+    os.remove('tmp/fasta/tmp'+str(curRunNum)+'.fasta.html')
+
+
+
 
         # 7. Return results
         s = '<html>\n'
@@ -332,15 +333,4 @@ class miRwww(Pyro.core.ObjBase):
         s += '</center></td></tr></table></center></body></html>'
         return s
 
-Pyro.core.initServer()
-daemon = Pyro.core.Daemon()
-miRwww = miRwww()
-uri = daemon.connect(miRwww, 'miRwww')
-
-print uri
-uriOut = open('/var/www/uri','w')
-uriOut.write(str(uri))
-uriOut.close()
-
-daemon.requestLoop()
 
