@@ -1,5 +1,10 @@
 from mod_python import apache
 from mod_python import util
+import re
+import Pyro.core
+import datetime
+import MySQLdb
+
 
 def index():
     s = """\
@@ -98,7 +103,7 @@ def index():
             <font face='arial'><center>
             <table width=620 bgcolor='#999966' cellpadding='10%'><tr><td><center>
             <table width=600 bgcolor='#333333' cellpadding='15%'><tr><td align='center' valign='center'><font size=6><b><font color='#ff0000'>miR</font><font color='#cccc00'>vestigator Framework</font></b></font></td></tr></table>
-            <p><form action='miRvestigator.py/plsWait' method='post'>
+            <p><form action='miRvestigator.py/submitJob' method='post'>
             <table cellpadding='5%' cellspacing=3 width='100%'>
             <tr><td bgcolor='#000000' colspan=2><center><font color='#cccc00' size=4><a href="#whatIsMV" onclick="toggleVisible('whatIsMV'); return false;" style=\'color: rgb(204,204,0); text-decoration: none\'><b>What is the miRvestigator Framework? &nbsp; <font color="#ff0000">[?]</font></b></a></font></center></td></tr>
             <tr id="whatIsMV" style="display: none;"><td colspan=2 bgcolor='#333333'><font color='#ffffff'><p>The miRvestigator framework is designed to take as input a list of co-expressed genes and will return the most likely <a href='http://en.wikipedia.org/wiki/MicroRNA' style=\'color: rgb(204,204,0)\' target='_blank'>miRNA</a> regulating these genes. It does this by searching for over-represented sequence motifs in the <a href="http://en.wikipedia.org/wiki/3\'_UTR" style=\'color: rgb(204,204,0)\' target='_blank'>3' untranslated regions (UTRs)</a> of the genes using <a href='http://159.149.109.9/modtools/' style=\'color: rgb(204,204,0)\' target='_blank'>Weeder</a> and then comparing this to the miRNA seed sequences in <a href='http://www.mirbase.org' style=\'color: rgb(204,204,0)\' target='_blank'>miRBase</a> using our custom built <a href='http://github.com/cplaisier/miRvestigator/wiki/miRvestigator-hidden-Markov-Model-(HMM)' target='_blank' style=\'color: rgb(204,204,0)\'>miRvestigator hidden Markov model (HMM)</a>.</p></font></td></tr>
@@ -164,6 +169,74 @@ def index():
     return s
 
 # </br><a href=''>Information about sample data.</a> - Need to add this back later.
+
+
+# stuff parameters into a dictionary and pop those onto a queue
+def submitJob(req):
+    # create a job object which will be queued                                                        
+    job = {}
+    job['created'] = datetime.datetime.now()
+
+    # Get the variables                                                                               
+    job['genes'] = re.split('\s*[,;\s]\s*', req.form.getfirst('genes','').strip())
+    job['s6'] = str(req.form.getfirst('seedModel_6',''))
+    job['s7'] = str(req.form.getfirst('seedModel_7',''))
+    job['s8'] = str(req.form.getfirst('seedModel_8',''))
+    job['bgModel'] = str(req.form.getfirst('bgModel',''))
+    job['wobble'] = str(req.form.getfirst('wobble',''))
+    job['cut'] = str(req.form.getfirst('cut',''))
+    job['m6'] = str(req.form.getfirst('motif_6',''))
+    job['m8'] = str(req.form.getfirst('motif_8',''))
+
+    # connect to miR server via Pyro                                                                  
+    uriFile = open('/var/www/uri','r')
+    uri = uriFile.readline().strip()
+    uriFile.close()
+    miR_server = Pyro.core.getProxyForURI(uri)
+    Pyro.core.initClient()
+
+    # submit job to server process and redirect to status page                                        
+    job_id = miR_server.submit_job(job)
+    util.redirect(req, req.construct_url("/status/%s/" % (job_id)))
+
+
+def _get_db_connection():
+    return MySQLdb.connect("localhost","mirv","mirvestigator","mirvestigator")
+
+def _get_job_status(id):
+    conn = _get_db_connection()
+    try:
+        created_at = datetime.datetime.now()
+        cursor = conn.cursor()
+        cursor.execute("select * from jobs where uuid=%s;", (id,))
+        row = cursor.fetchone()
+        created_at = row[1];
+        updated_at = row[2];
+        status = row[3];
+        return (created_at, updated_at, status,)
+    finally:
+        try:
+            cursor.close()
+        except Exception as exception:
+            print("Exception closing cursor: ")
+            print(exception)
+        try:
+            conn.close()
+        except Exception as exception:
+            print("Exception closing conection: ")
+            print(exception)
+
+# return a JSON string encoding job status                                                            
+def status(req):
+    id = str(req.form.getfirst('id',''))
+    req.content_type='application/json'
+    return "{ \"created_at\": \"%s\", \"updated_at\": \"%s\", \"status\": \"%s\" }" % _get_job_status(id)
+
+
+
+
+
+
 
 # Please wait while we churn the butter...
 def plsWait(req):
