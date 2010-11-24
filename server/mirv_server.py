@@ -2,8 +2,8 @@ import Pyro.core
 import datetime
 import time
 import uuid
+
 from mirv_db import create_job_in_db, update_job_status
-from miRvestigator_job import Job
 from multiprocessing import Process, Queue, cpu_count
 import mirv_worker
 
@@ -29,7 +29,7 @@ def start_worker(id, q):
         wobble = (job['wobble'] == 'yes')
         cut = float(job['cut'])
         jobName = job['jobName']
-        topRet = data['topRet']
+        topRet = job['topRet']
 
         # condense seed models and motif sizes into arrays of ints
         seedModels = [int(job[s]) for s in ['s6','s7','s8'] if s in job and job[s]]

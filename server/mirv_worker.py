@@ -291,7 +291,7 @@ def run(genes, seedModels, wobble, cut, bgModel, motifSizes, jobName, topRet=10,
 
 
 
-        # 7. Return results
-        return s
+    # 7. Return results
+    return s
 
 

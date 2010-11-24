@@ -51,8 +51,22 @@ def results(req):
     # need mV
     # miRNADict[j.strip()] ??
     # functions: conv2rna, reverseComplement
-    
-    
+
+    s = """
+<html>
+<head>
+  <title>Test results</title>
+</head>
+
+<body>
+  <p>results!</p>
+</body>
+
+</html>
+"""
+
+    """
+
     s = '<html>\n'
     s+= '<script language=JavaScript>\n\tvar _gaq = _gaq || [];\n\t_gaq.push([\'_setAccount\', \'UA-19292534-1\']);\n\t_gaq.push([\'_trackPageview\']);\n\t(function() {\n\t\tvar ga = document.createElement(\'script\');\n\t\tga.type = \'text/javascript\';\n\t\tga.async = true;\n\t\tga.src = (\'https:\' == document.location.protocol ? \'https://ssl\' : \'http://www\') + \'.google-analytics.com/ga.js\';\n\t\tvar s = document.getElementsByTagName(\'script\')[0];\n\t\ts.parentNode.insertBefore(ga, s);\n\t})();\n'
     s += 'function toggleVisible(id) {\n\tif (document.getElementById) {\n\t\tobj = document.getElementById(id);\n\t\tif (obj) {\n\t\t\tif (obj.style.display == \'none\') {\n\t\t\t\tobj.style.display = \'\'\n\t\t\t} else {\n\t\t\t\tobj.style.display = \'none\'\n\t\t\t}\n\t\t}\n\t}\n}\n'
@@ -101,6 +115,7 @@ def results(req):
         s += '</table></p>'
     s += '<p><table width=\'100%\' cellpadding=\'5%\'><tr><td bgcolor=\'#c0c0c0\'><center>Need help? Please contact <font color=\'#0000ff\'>cplaisier(at)systemsbiology.org</font> if you have any questions, comments or concerns.<br>Developed at the <a href=\'http://www.systemsbiology.org\' target=\'_blank\' style=\'color: rgb(0,0,255)\'>Institute for Systems Biology</a> in the <a href=\'http://baliga.systemsbiology.net/\' target=\'_blank\' style=\'color: rgb(0,0,255)\'>Baliga Lab</a>.</center></td></tr></table></p>'
     s += '</center></td></tr></table></center></body></html>'
+    """
     return s
 
 
