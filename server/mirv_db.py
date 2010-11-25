@@ -19,9 +19,10 @@ def create_job_in_db(job):
         
         cursor.execute("insert into jobs (uuid, created_at, updated_at, status) values ('%s', '%s', '%s', '%s');"
                        % (job['id'], created_at.isoformat(), created_at.isoformat(), 'queued'))
-#        for k, v in job.iteritems():
-#            if k!='id':
-#                cursor.execute("insert into parameters (job_uuid, key, value) (%s, %s, %s)", (job['id'], k, str(v)))
+        for k, v in job.iteritems():
+            if k!='id':
+                cursor.execute("insert into parameters (job_uuid, key, value) (%s, %s, %s)",
+                               (job['id'], k, str(v)) )
     finally:
         try:
             cursor.close()

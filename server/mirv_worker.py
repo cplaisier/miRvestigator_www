@@ -288,10 +288,6 @@ def run(genes, seedModels, wobble, cut, bgModel, motifSizes, jobName, topRet=10,
     os.remove('tmp/fasta/tmp'+str(curRunNum)+'.fasta.mix')
     os.remove('tmp/fasta/tmp'+str(curRunNum)+'.fasta.html')
 
-
-
-
-    # 7. Return results
-    return s
+    # 7. write output to database
 
 
