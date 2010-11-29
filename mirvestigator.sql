@@ -17,33 +17,48 @@ create table parameters (
     INDEX (job_uuid)
 );
 
-create table pssms (
-    id int NOT NULL AUTO_INCREMENT PRIMARY KEY,
-    position int NOT NULL,
-    a float,
-    t float,
-    c float,
-    g float
+create table genes (
+    job_uuid char(36) NOT NULL,
+    name varchar(100),
+    sequence boolean,
+    index(job_uuid)
 );
 
 create table motifs (
     id int NOT NULL AUTO_INCREMENT PRIMARY KEY,
-    consensus varchar(20)
+    job_uuid char(36) NOT NULL,
+    name varchar(100),
+    score float
+);
+
+create table pssms (
+    id int NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    motif_id int NOT NULL,
+    a float,
+    t float,
+    c float,
+    g float,
+    index(motif_id)
 );
 
 create table sites (
     id int NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    motif_id int NOT NULL,
     entrez_gene_id int,
-    sequence,
-    short,
-    start,
-    quality
+    sequence varchar(12),
+    start int,
+    quality varchar(100),
+    index(motif_id)
 );
 
-create table mirvestigator (
+create table mirvestigator_scores (
     id int NOT NULL AUTO_INCREMENT PRIMARY KEY,
-    mirna_name varchar(100),
-    mirna_seed,
-    viterbi_p float,
+    motif_id int NOT NULL,
+    mirna_name varchar(100),              -- miRNA.name
+    mirna_seed varchar(8),                -- miRNA.seed
+    seedModel varchar(12),                -- model
+    alignment varchar(100),               -- statePath
+    viterbi_p float,                      -- vitPValue
+    index(motif_id)
 );
 

@@ -1,16 +1,17 @@
 TODO
 
+in mirv_worker.py ditch deepcopys?
+in mirv_worker.py try/catch for reporting errors?
+
+
 add to AMI:
 ssh keys for github access
 delete git_mirv? just use git clone?
 
 
-record instructions for configuring mod_rewrite
 
 
-
-
-configure apache2 in /etc/apache2/sites-enabled/000-default
+configure mod_rewrite for apache2 in /etc/apache2/sites-enabled/000-default
 
 <Directory /var/www/>
 ...
@@ -19,5 +20,6 @@ RewriteEngine ON
 RewriteRule ^status/([a-fA-F0-9\-]+)/$ /status/index.html
 RewriteRule ^results/([a-fA-F0-9\-]+)/$ /miRvestigator.py/results?id=$1
 </Directory>
+
 
 

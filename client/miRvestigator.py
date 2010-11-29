@@ -7,6 +7,91 @@ from mirv_db import get_job_status
 
 
 
+
+# Reverse complement
+def reverseComplement(seq):
+    seq = list(seq)
+    seq.reverse()
+    return ''.join(complement(seq))
+
+# Complement
+def complement(seq):
+    complement = {'A':'T', 'T':'A', 'C':'G', 'G':'C', 'N':'N', 'U':'A'}
+    complseq = [complement[base] for base in seq]
+    return complseq
+
+# Convert to RNA
+def conv2rna(seq):
+    conversion = {'A':'A', 'T':'U', 'C':'C', 'G':'G', 'N':'N', 'U':'U'}
+    rnaSeq = [conversion[base] for base in list(seq)]
+    return ''.join(rnaSeq)
+
+
+def alignSeed(alignment, seed, motif):
+    alignment.pop() # Get rid of the extra state which is added by the forwardViterbi function
+    start = 1    
+    if alignment[0]=='NM1':
+        for i in alignment:
+            if i=='NM1':
+                start += 1
+    # Alignment
+    motifAlign = '<font color=\'#CC0000\'><b>Motif</b></font><font color=\'#ffffff\'>_</font>5\'<font color=\'#ffffff\'>_</font>'
+    seed = list(conv2rna(complement(seed)))
+    seedAlign = '<font color=\'#ffffff\'>______</font>3\'<font color=\'#ffffff\'>_</font>'
+    motif = list(conv2rna(motif))
+    alignMe = alignment
+    aligned = '<font color=\'#ffffff\'>_________</font>'
+    lenMatch = 0
+    # First get them zero'd to the same point
+    if start>1:
+        for i in range(start-1):
+            seedAlign += seed.pop(0)
+            aligned += '<font color=\'#ffffff\'>_</font>'
+            motifAlign += '-'
+            alignMe.pop(0)
+    if len(alignMe)>0 and not alignMe[0]=='PSSM0' and not alignMe[0]=='WOBBLE0':
+        if alignMe[0][0]=='P':
+            upTo = int(alignMe[0][4])
+        elif alignMe[0][0]=='W':
+            upTo = int(alignMe[0][6])
+        for i in range(upTo):
+            seedAlign += '<font color=\'#cccccc\'>-</font>'
+            aligned += '<font color=\'#ffffff\'>_</font>'
+            motifAlign += motif.pop(0)
+    # Then add the parts that align
+    while 1:
+        if len(alignMe)==0 or alignMe[0]=='NM2':
+            break
+        seedAlign += seed.pop(0)
+        if alignMe[0][0]=='P':
+            aligned += '<font color=\'#ff0000\'>|</font>'
+        elif alignMe[0][0]=='W':
+            aligned += '<font color=\'#0000ff\'>:</font>'
+        lenMatch += 1
+        motifAlign += motif.pop(0)
+        alignMe.pop(0)
+    # Then do the ending
+    if len(alignMe)>0:
+        for i in alignMe:
+            seedAlign += seed[0]
+            seed = seed[1:]
+            aligned += '<font color=\'#ffffff\'>_</font>'
+            motifAlign += '<font color=\'#cccccc\'>-</font>'
+        alignMe = []
+    if len(motif)>0 and len(alignMe)==0:
+        for i in motif:
+            seedAlign += '<font color=\'#cccccc\'>-</font>'
+            aligned += '<font color=\'#ffffff\'>_</font>'
+            motifAlign += i
+    motifAlign += '<font color=\'#ffffff\'>_</font>3\'<font color=\'#ffffff\'>___________</font>'
+    aligned +=    '<font color=\'#ffffff\'>______________</font>'
+    seedAlign +=  '<font color=\'#ffffff\'>_</font>5\'<font color=\'#ffffff\'>_</font><font color=\'#cc0000\'><b>miRNA Seed</b></font>'
+    return [motifAlign, aligned, seedAlign, lenMatch]
+
+
+
+
+
 # stuff parameters into a dictionary and pop those onto a queue
 def submitJob(req):
     # create a job object which will be queued

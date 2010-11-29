@@ -60,13 +60,13 @@ def get_job_status(id):
             print(exception)
 
 
-def update_job_status(job, status):
+def update_job_status(job_uuid, status):
     conn = _get_db_connection()
     try:
         now = datetime.datetime.now()
         cursor = conn.cursor()
         cursor.execute("update jobs set status='%s', updated_at='%s' where uuid='%s';"
-                       % (status, now.isoformat(), job['id'],))
+                       % (status, now.isoformat(), job_uuid,))
     finally:
         try:
             cursor.close()
@@ -78,3 +78,82 @@ def update_job_status(job, status):
         except Exception as exception:
             print("Exception closing conection: ")
             print(exception)
+
+
+def store_motif(job_uuid, pssm):
+    conn = _get_db_connection()
+    try:
+        cursor = conn.cursor()
+
+        cursor.execute(
+            """
+            insert into motifs (job_uuid, name, score) values (%s, %s, %f);
+            select LAST_INSERT_ID();
+            """,
+            (job_uuid, pssm.getName(), pssm.getEValue()))
+        motif_id = cursor.fetchone()[0]
+
+        # write pssm matrix
+        for scores in pssm.getMatrix():
+            cursor.execute("insert into pssms (motif_id, a, t, c, g) values (%s,%f,%f,%f,%f);",
+                (motif_id, scores[0], scores[1], scores[2], scores[3]))
+                
+        # motif_id int NOT NULL,
+        # entrez_gene_id int,
+        # sequence,
+        # start,
+        # quality
+                
+        # sites is a dictionary w/ keys: gene, start, match, site
+        sites = pssm.nsites
+        for site in sites:
+            cursor.execute("insert into sites (motif_id, entrez_gene_id, sequence, start, quality) values (%d, %d, %s, %d, %s)",
+                (motif_id, site['gene'], site['site'], site['start'], site['match']))
+        
+        return motif_id
+
+    finally:
+        try:
+            cursor.close()
+        except Exception as exception:
+            print("Exception closing cursor: ")
+            print(exception)
+        try:
+            conn.close()
+        except Exception as exception:
+            print("Exception closing conection: ")
+            print(exception)
+
+
+def store_mirvestigator_scores(motif_id, scores):
+    conn = _get_db_connection()
+    try:
+        cursor = conn.cursor()
+
+        # motif_id int NOT NULL,
+        # mirna_name varchar(100),              -- miRNA.name
+        # mirna_seed varchar(8),                -- miRNA.seed
+        # seedModel varchar(12),                -- model
+        # alignment varchar(100),               -- statePath
+        # viterbi_p float,                      -- vitPValue
+
+        for score in scores:
+            cursor.execute(
+                """
+                insert into mirvestigator_scores (motif_id, mirna_name, mirna_seed, seedModel, alignment, viterbi_p)
+                                          values (%d, %s, %s, %s, %s, %f);
+                """,
+                (motif_id, score['miRNA.name'], score['miRNA.seed'], score['model'], ";".join(score['statePath']), score['vitPValue']))
+
+    finally:
+        try:
+            cursor.close()
+        except Exception as exception:
+            print("Exception closing cursor: ")
+            print(exception)
+        try:
+            conn.close()
+        except Exception as exception:
+            print("Exception closing conection: ")
+            print(exception)
+    

@@ -20,7 +20,7 @@ def start_worker(id, q):
         job = q.get()
         if (job==SHUTDOWN_FLAG):
             break
-        update_job_status(job, "started on worker %d" % (id))
+        update_job_status(job['id'], "started on worker %d" % (id))
         print("worker %d computing job %s." % (id, job['id']))
 
         # parse params out of job
@@ -35,15 +35,15 @@ def start_worker(id, q):
         seedModels = [int(job[s]) for s in ['s6','s7','s8'] if s in job and job[s]]
         motifSizes = [int(job[m]) for m in ['m6', 'm8'] if m in job and job[m]]
 
-        #mirv_worker.run(genes, seedModels, wobble, cut, bgModel, motifSizes, jobName, topRet=10, eMailAddr='')
+        mirv_worker.run(job['id'], genes, seedModels, wobble, cut, bgModel, motifSizes, jobName, topRet)
 
         print("worker %d done job %s." % (id, job['id']))
-        update_job_status(job, 'done')
+        update_job_status(job['id'], 'done')
     print("worker %d done." % (id))
 
 
 # Pyro remote object
-class TestServer(Pyro.core.ObjBase):
+class MiRvestigatorServer(Pyro.core.ObjBase):
 
     def __init__(self):
         Pyro.core.ObjBase.__init__(self)
@@ -83,7 +83,7 @@ if __name__ == '__main__':
 
     Pyro.core.initServer()
     daemon = Pyro.core.Daemon()
-    test_server = TestServer()
+    test_server = MiRvestigatorServer()
     test_server.setQueue(q)
     uri = daemon.connect(test_server, 'miR_server')
 
