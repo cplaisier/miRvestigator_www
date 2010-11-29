@@ -23,7 +23,7 @@ def create_job_in_db(job):
                        % (job_uuid, created_at.isoformat(), created_at.isoformat(), 'queued'))
         for k, v in job.iteritems():
             if k!='id':
-                cursor.execute("insert into parameters (job_uuid, name, value) (%s, %s, %s)",
+                cursor.execute("insert into parameters (job_uuid, name, value) values (%s, %s, %s);",
                                (job_uuid, k, str(v),) )
     finally:
         try:
