@@ -167,6 +167,7 @@ def run(genes, seedModels, wobble, cut, bgModel, motifSizes, jobName, topRet=10,
 
     # 4. Run weeder
     print 'Running weeder!'
+    update_job_status(job_uuid, "running weeder")
     weederPSSMs1 = weeder(seqFile='tmp/fasta/tmp'+str(curRunNum)+'.fasta', percTargets=50, revComp=False, bgModel=bgModel)
 
     # 4a. Take only selected size motifs
@@ -180,6 +181,7 @@ def run(genes, seedModels, wobble, cut, bgModel, motifSizes, jobName, topRet=10,
     del weederPSSMsTmp
 
     # 5. Run miRvestigator HMM
+    update_job_status(job_uuid, "computing miRvestigator HMM")
     mV = miRvestigator(weederPSSMs1, seqs.values(),
                        seedModel=seedModels,
                        minor=True,
@@ -212,9 +214,9 @@ def run(genes, seedModels, wobble, cut, bgModel, motifSizes, jobName, topRet=10,
     # 7. write output to database
     update_job_status(job_uuid, "compiling results")
 
-    for pssm1 in weederPSSMs1:
+    for pssm in weederPSSMs1:
         motif_id = store_motif(job_uuid, pssm)
-        scores = mV.getScoreList(pssm1.getName())
+        scores = mV.getScoreList(pssm.getName())
         store_mirvestigator_scores(motif_id, scores)
 
     update_job_status(job_uuid, "done")

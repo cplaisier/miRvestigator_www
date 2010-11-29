@@ -16,13 +16,15 @@ def create_job_in_db(job):
     try:
         created_at = datetime.datetime.now()
         cursor = conn.cursor()
+
+        job_uuid = job['id']
         
         cursor.execute("insert into jobs (uuid, created_at, updated_at, status) values ('%s', '%s', '%s', '%s');"
-                       % (job['id'], created_at.isoformat(), created_at.isoformat(), 'queued'))
+                       % (job_uuid, created_at.isoformat(), created_at.isoformat(), 'queued'))
         for k, v in job.iteritems():
             if k!='id':
-                cursor.execute("insert into parameters (job_uuid, key, value) (%s, %s, %s)",
-                               (job['id'], k, str(v)) )
+                cursor.execute("insert into parameters (job_uuid, name, value) (%s, %s, %s)",
+                               (job_uuid, k, str(v),) )
     finally:
         try:
             cursor.close()
@@ -36,12 +38,12 @@ def create_job_in_db(job):
             print(exception)
 
 
-def get_job_status(id):
+def get_job_status(job_uuid):
     conn = _get_db_connection()
     try:
         created_at = datetime.datetime.now()
         cursor = conn.cursor()
-        cursor.execute("select * from jobs where uuid=%s;", (id,))
+        cursor.execute("select * from jobs where uuid=%s;", (job_uuid,))
         row = cursor.fetchone()
         created_at = row[1];
         updated_at = row[2];
@@ -96,7 +98,7 @@ def store_motif(job_uuid, pssm):
         # write pssm matrix
         for scores in pssm.getMatrix():
             cursor.execute("insert into pssms (motif_id, a, t, c, g) values (%s,%f,%f,%f,%f);",
-                (motif_id, scores[0], scores[1], scores[2], scores[3]))
+                (motif_id, scores[0], scores[1], scores[2], scores[3],))
                 
         # motif_id int NOT NULL,
         # entrez_gene_id int,
@@ -108,7 +110,7 @@ def store_motif(job_uuid, pssm):
         sites = pssm.nsites
         for site in sites:
             cursor.execute("insert into sites (motif_id, entrez_gene_id, sequence, start, quality) values (%d, %d, %s, %d, %s)",
-                (motif_id, site['gene'], site['site'], site['start'], site['match']))
+                (motif_id, site['gene'], site['site'], site['start'], site['match'],))
         
         return motif_id
 
@@ -143,7 +145,7 @@ def store_mirvestigator_scores(motif_id, scores):
                 insert into mirvestigator_scores (motif_id, mirna_name, mirna_seed, seedModel, alignment, viterbi_p)
                                           values (%d, %s, %s, %s, %s, %f);
                 """,
-                (motif_id, score['miRNA.name'], score['miRNA.seed'], score['model'], ";".join(score['statePath']), score['vitPValue']))
+                (motif_id, score['miRNA.name'], score['miRNA.seed'], score['model'], ";".join(score['statePath']), score['vitPValue'],))
 
     finally:
         try:

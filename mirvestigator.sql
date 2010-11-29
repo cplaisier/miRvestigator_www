@@ -1,5 +1,4 @@
-create database mirvestigator;
-
+#create database mirvestigator;
 # create user 'mirv'@'localhost' identified by <some password>;
 # grant all privileges on mirvestigator.* to 'mirv'@'localhost';
 
@@ -12,9 +11,9 @@ create table jobs (
 
 create table parameters (
     job_uuid char(36) NOT NULL,
-    key varchar(100) NOT NULL,
-    value varchar(255) NOT NULL,
-    INDEX (job_uuid)
+    name varchar(100),
+    value varchar(255),
+    index(job_uuid)
 );
 
 create table genes (
