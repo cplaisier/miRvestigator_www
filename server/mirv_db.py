@@ -94,6 +94,9 @@ def store_motif(job_uuid, pssm):
         a = (job_uuid, pssm.getName(), float(pssm.getEValue()),)
         for x in a:
             print("type = " + str(type(x)))
+            
+        print("""insert into motifs (job_uuid, name, score) values (%s, %s, %f);
+           select LAST_INSERT_ID();""" % a)
 
         cursor.execute(
             """
