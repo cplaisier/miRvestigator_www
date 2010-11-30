@@ -83,6 +83,7 @@ def update_job_status(job_uuid, status):
 
 
 def store_motif(job_uuid, pssm):
+    print("storing motif...")
     conn = _get_db_connection()
     try:
         cursor = conn.cursor()

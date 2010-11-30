@@ -178,6 +178,7 @@ def run(job_uuid, genes, seedModels, wobble, cut, bgModel, motifSizes, jobName, 
             weederPSSMsTmp.append(deepcopy(pssm1))
         if 8 in motifSizes and len(pssm1.getName())==8:
             weederPSSMsTmp.append(deepcopy(pssm1))
+        print("pssm name = " + pssm1.getName())
     weederPSSMs1 = deepcopy(weederPSSMsTmp)
     del weederPSSMsTmp
 

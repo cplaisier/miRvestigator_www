@@ -5,6 +5,7 @@
 
       var job_id = null;
       var polling_timer = null;
+      var current_status = null;
 
 
       function toggleVisible(id) {
@@ -41,7 +42,10 @@
             context: document.body,
             dataType: "json",
             success: function(status) {
-              $("#status_output").append("<p>" + status.updated_at + " " + status.status + "</p>");
+              if (current_status != status.status) {
+                current_status = status.status
+                $("#status_output").append("<p>" + status.updated_at + " " + status.status + "</p>");
+              }
               if (status.status=="done") {
                 clearInterval(polling_timer);
                 window.location = "/results/" + job_id + "/";
