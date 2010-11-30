@@ -43,8 +43,8 @@ create table pssms (
 create table sites (
     id int NOT NULL AUTO_INCREMENT PRIMARY KEY,
     motif_id int NOT NULL,
-    entrez_gene_id int,
-    sequence varchar(12),
+    entrez_gene_id varchar(20),
+    sequence varchar(20),
     start int,
     quality varchar(100),
     index(motif_id)
@@ -55,7 +55,7 @@ create table mirvestigator_scores (
     motif_id int NOT NULL,
     mirna_name varchar(100),              -- miRNA.name
     mirna_seed varchar(8),                -- miRNA.seed
-    seedModel varchar(12),                -- model
+    seedModel varchar(20),                -- model
     alignment varchar(100),               -- statePath
     viterbi_p float,                      -- vitPValue
     index(motif_id)

@@ -90,7 +90,10 @@ def store_motif(job_uuid, pssm):
 
         # did this way rather than using execute's string substitution because I
         # kept getting a TypeError: float argument required, not str:
-        sql = """insert into motifs (job_uuid, name, score) values ('%s', '%s', %f);""" % (str(job_uuid), pssm.getName(), float(pssm.getEValue()),)
+        sql = """
+            insert into motifs
+            (job_uuid, name, score)
+            values ('%s', '%s', %f);""" % (str(job_uuid), pssm.getName(), float(pssm.getEValue()),)
         print("sql = " + sql)
 
         cursor.execute(sql)
@@ -100,7 +103,10 @@ def store_motif(job_uuid, pssm):
         # write pssm matrix
         for scores in pssm.getMatrix():
             print("storing matrix")
-            sql = "insert into pssms (motif_id, a, t, c, g) values ('%s',%f,%f,%f,%f);" % (motif_id, float(scores[0]), float(scores[1]), float(scores[2]), float(scores[3]),)
+            sql = """
+                insert into pssms
+                (motif_id, a, t, c, g)
+                values ('%s',%f,%f,%f,%f);""" % (motif_id, float(scores[0]), float(scores[1]), float(scores[2]), float(scores[3]),)
             cursor.execute(sql)
                 
         # motif_id int NOT NULL,
@@ -113,8 +119,11 @@ def store_motif(job_uuid, pssm):
         sites = pssm.nsites
         for site in sites:
             print("storing site")
-            cursor.execute("insert into sites (motif_id, entrez_gene_id, sequence, start, quality) values (%d, %d, %s, %d, %s)",
-                (motif_id, site['gene'], site['site'], site['start'], site['match'],))
+            cursor.execute("""
+                insert into sites
+                (motif_id, entrez_gene_id, sequence, start, quality)
+                values (%d, '%s', '%s', %d, '%s')""",
+                (motif_id, str(site['gene']), site['site'], int(site['start']), site['match'],))
         
         print("done storing motif")
         return motif_id
