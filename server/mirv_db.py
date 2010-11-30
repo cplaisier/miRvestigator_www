@@ -5,7 +5,19 @@
 import MySQLdb
 import datetime
 import time
+import re
 
+## Note that several of these methods use python's string formatting
+## to build SQL strings, which is bad. This was done due to a problem
+## with getting cursor.execute("insert into foo values (%s, %f, %d)", (a,b,c))
+## to work with either decimal or floating point values.
+
+
+# a simplistic form of sanitizing input
+# drop characters that are special to sql
+_sanitize_re = re.compile(r"[\\\"\';]")
+def _sanitize(str):
+    return _sanitize_re.sub("", str)
 
 def _get_db_connection():
     return MySQLdb.connect("localhost","mirv","mirvestigator","mirvestigator")
@@ -19,12 +31,16 @@ def create_job_in_db(job):
 
         job_uuid = job['id']
         
+        # store entry in jobs table
         cursor.execute("insert into jobs (uuid, created_at, updated_at, status) values ('%s', '%s', '%s', '%s');"
                        % (job_uuid, created_at.isoformat(), created_at.isoformat(), 'queued'))
+        
+        # store parameters
         for k, v in job.iteritems():
-            if k!='id':
+            if k!='id' and k!='genes':
                 cursor.execute("insert into parameters (job_uuid, name, value) values (%s, %s, %s);",
                                (job_uuid, k, str(v),) )
+
     finally:
         try:
             cursor.close()
@@ -69,6 +85,34 @@ def update_job_status(job_uuid, status):
         cursor = conn.cursor()
         cursor.execute("update jobs set status='%s', updated_at='%s' where uuid='%s';"
                        % (status, now.isoformat(), job_uuid,))
+    finally:
+        try:
+            cursor.close()
+        except Exception as exception:
+            print("Exception closing cursor: ")
+            print(exception)
+        try:
+            conn.close()
+        except Exception as exception:
+            print("Exception closing conection: ")
+            print(exception)
+
+
+def store_genes(genes, sequence_dict):
+    conn = _get_db_connection()
+    try:
+        created_at = datetime.datetime.now()
+        cursor = conn.cursor()
+
+        job_uuid = job['id']
+
+        #store genes
+        genes = job['genes']
+        if (genes):
+            for gene in genes:
+                gene = _sanitize(gene)[0:20]
+                cursor.execute("insert into genes (job_uuid, name, sequence) values ('%s', '%s', %s);" %
+                               (job_uuid, gene, str(gene in sequence_dict),) )
     finally:
         try:
             cursor.close()

@@ -24,6 +24,9 @@ create table parameters (
     index(job_uuid)
 );
 
+# name is the entrez id of the gene
+# sequence indicates whether sequence for this gene exists
+# in file extracted from genbank
 create table genes (
     job_uuid char(36) NOT NULL,
     name varchar(100),

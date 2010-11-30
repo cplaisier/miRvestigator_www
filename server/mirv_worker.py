@@ -7,7 +7,7 @@ import cPickle
 # Custom libraries
 from miRvestigator import miRvestigator
 from pssm import pssm
-from mirv_db import update_job_status, store_motif, store_mirvestigator_scores
+from mirv_db import update_job_status, store_genes, store_motif, store_mirvestigator_scores
 
 
 
@@ -156,7 +156,8 @@ def run(job_uuid, genes, seedModels, wobble, cut, bgModel, motifSizes, jobName, 
         if gene in seqs:
             miRSeqs[gene] = seqs[gene]
 
-    # TODO insert number of annotated gene sequences
+    # record genes and whether a sequence was found for each
+    store_genes(genes, miRSeqs)
 
     # 3. Make a FASTA file
     if not os.path.exists('tmp/fasta'):
