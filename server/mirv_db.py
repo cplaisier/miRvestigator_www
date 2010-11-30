@@ -87,23 +87,13 @@ def store_motif(job_uuid, pssm):
     conn = _get_db_connection()
     try:
         cursor = conn.cursor()
-        
-        print("type(pssm.getEValue()) = " + str(type(pssm.getEValue())))
-        print("type(float(pssm.getEValue())) = " + str(type(float(pssm.getEValue()))))
-        
-        a = (job_uuid, pssm.getName(), float(pssm.getEValue()),)
-        for x in a:
-            print("type = " + str(type(x)))
-            
-        print("""insert into motifs (job_uuid, name, score) values (%s, %s, %f);
-           select LAST_INSERT_ID();""" % a)
 
-        cursor.execute(
-            """
-            insert into motifs (job_uuid, name, score) values (%s, %s, %f);
-            select LAST_INSERT_ID();
-            """,
-            (str(job_uuid), pssm.getName(), float(pssm.getEValue()),) )
+        # did this way rather than using execute's string substitution because I
+        # kept getting a TypeError: float argument required, not str:
+        sql = """insert into motifs (job_uuid, name, score) values (%s, %s, %f);
+           select LAST_INSERT_ID();""" % (str(job_uuid), pssm.getName(), float(pssm.getEValue()),)
+
+        cursor.execute(sql)
         motif_id = cursor.fetchone()[0]
         print("storing motif:::" + str(motif_id))
 
