@@ -94,30 +94,30 @@ def store_motif(job_uuid, pssm):
         cursor.execute(
             """
             insert into motifs (job_uuid, name, score) values (%s, %s, %f);
-            select LAST_INSERT_ID();
             """,
             (job_uuid, pssm.getName(), float(pssm.getEValue())))
-        motif_id = cursor.fetchone()[0]
-        print("storing motif:::" + str(motif_id))
-
-        # write pssm matrix
-        for scores in pssm.getMatrix():
-            print("storing matrix")
-            cursor.execute("insert into pssms (motif_id, a, t, c, g) values (%s,%f,%f,%f,%f);",
-                (motif_id, float(scores[0]), float(scores[1]), float(scores[2]), float(scores[3]),))
-                
-        # motif_id int NOT NULL,
-        # entrez_gene_id int,
-        # sequence,
-        # start,
-        # quality
-                
-        # sites is a dictionary w/ keys: gene, start, match, site
-        sites = pssm.nsites
-        for site in sites:
-            print("storing site")
-            cursor.execute("insert into sites (motif_id, entrez_gene_id, sequence, start, quality) values (%d, %d, %s, %d, %s)",
-                (motif_id, site['gene'], site['site'], site['start'], site['match'],))
+        motif_id = 1
+        # motif_id = cursor.fetchone()[0]
+        # print("storing motif:::" + str(motif_id))
+        # 
+        # # write pssm matrix
+        # for scores in pssm.getMatrix():
+        #     print("storing matrix")
+        #     cursor.execute("insert into pssms (motif_id, a, t, c, g) values (%s,%f,%f,%f,%f);",
+        #         (motif_id, float(scores[0]), float(scores[1]), float(scores[2]), float(scores[3]),))
+        #         
+        # # motif_id int NOT NULL,
+        # # entrez_gene_id int,
+        # # sequence,
+        # # start,
+        # # quality
+        #         
+        # # sites is a dictionary w/ keys: gene, start, match, site
+        # sites = pssm.nsites
+        # for site in sites:
+        #     print("storing site")
+        #     cursor.execute("insert into sites (motif_id, entrez_gene_id, sequence, start, quality) values (%d, %d, %s, %d, %s)",
+        #         (motif_id, site['gene'], site['site'], site['start'], site['match'],))
         
         print("done storing motif")
         return motif_id
