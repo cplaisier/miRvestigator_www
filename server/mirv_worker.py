@@ -223,7 +223,7 @@ def run(job_uuid, genes, seedModels, wobble, cut, bgModel, motifSizes, jobName, 
 
         update_job_status(job_uuid, "done")
 
-    catch Exception as e:
+    except Exception as e:
         update_job_status(job_uuid, "error")
         print(e)
 
