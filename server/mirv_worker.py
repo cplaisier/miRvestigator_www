@@ -136,90 +136,95 @@ def weeder(seqFile=None, percTargets=50, revComp=False, bgModel='HS'):
 
 
 def run(job_uuid, genes, seedModels, wobble, cut, bgModel, motifSizes, jobName, topRet=10, eMailAddr=''):
-    cut = float(cut)
-    curRunNum = randint(0,1000000)
+    
+    try:
+        cut = float(cut)
+        curRunNum = randint(0,1000000)
 
-    # 1. Read in sequences
-    seqFile = open('p3utrSeqs_Homo_sapiens.csv','r')
-    seqLines = seqFile.readlines()
-    ids = [i.strip().split(',')[0].upper() for i in seqLines]
-    sequences = [i.strip().split(',')[1] for i in seqLines]
-    seqs = dict(zip(ids,sequences))
-    seqFile.close()
+        # 1. Read in sequences
+        seqFile = open('p3utrSeqs_Homo_sapiens.csv','r')
+        seqLines = seqFile.readlines()
+        ids = [i.strip().split(',')[0].upper() for i in seqLines]
+        sequences = [i.strip().split(',')[1] for i in seqLines]
+        seqs = dict(zip(ids,sequences))
+        seqFile.close()
 
-    #update_job_status(job, "finished reading sequence file")
+        #update_job_status(job, "finished reading sequence file")
 
-    # 2. Get sequences for each target
-    miRSeqs = {}
-    for gene in genes:
-        if gene in seqs:
-            miRSeqs[gene] = seqs[gene]
+        # 2. Get sequences for each target
+        miRSeqs = {}
+        for gene in genes:
+            if gene in seqs:
+                miRSeqs[gene] = seqs[gene]
 
-    # TODO insert number of annotated gene sequences
+        # TODO insert number of annotated gene sequences
 
-    # 3. Make a FASTA file
-    if not os.path.exists('tmp/fasta'):
-        os.makedirs('tmp/fasta')
-    fastaFile = open('tmp/fasta/tmp'+str(curRunNum)+'.fasta','w')
-    for seq in miRSeqs:
-        fastaFile.write('>'+str(seq)+'\n'+str(miRSeqs[seq])+'\n')
-    fastaFile.close()
+        # 3. Make a FASTA file
+        if not os.path.exists('tmp/fasta'):
+            os.makedirs('tmp/fasta')
+        fastaFile = open('tmp/fasta/tmp'+str(curRunNum)+'.fasta','w')
+        for seq in miRSeqs:
+            fastaFile.write('>'+str(seq)+'\n'+str(miRSeqs[seq])+'\n')
+        fastaFile.close()
 
-    # 4. Run weeder
-    print 'Running weeder!'
-    update_job_status(job_uuid, "running weeder")
-    weederPSSMs1 = weeder(seqFile='tmp/fasta/tmp'+str(curRunNum)+'.fasta', percTargets=50, revComp=False, bgModel=bgModel)
+        # 4. Run weeder
+        print 'Running weeder!'
+        update_job_status(job_uuid, "running weeder")
+        weederPSSMs1 = weeder(seqFile='tmp/fasta/tmp'+str(curRunNum)+'.fasta', percTargets=50, revComp=False, bgModel=bgModel)
 
-    # 4a. Take only selected size motifs
-    weederPSSMsTmp = []
-    for pssm1 in weederPSSMs1:
-        if 6 in motifSizes and len(pssm1.getName())==6:
-            weederPSSMsTmp.append(deepcopy(pssm1))
-        if 8 in motifSizes and len(pssm1.getName())==8:
-            weederPSSMsTmp.append(deepcopy(pssm1))
-    weederPSSMs1 = deepcopy(weederPSSMsTmp)
-    del weederPSSMsTmp
+        # 4a. Take only selected size motifs
+        weederPSSMsTmp = []
+        for pssm1 in weederPSSMs1:
+            if 6 in motifSizes and len(pssm1.getName())==6:
+                weederPSSMsTmp.append(deepcopy(pssm1))
+            if 8 in motifSizes and len(pssm1.getName())==8:
+                weederPSSMsTmp.append(deepcopy(pssm1))
+        weederPSSMs1 = deepcopy(weederPSSMsTmp)
+        del weederPSSMsTmp
 
-    # 5. Run miRvestigator HMM
-    update_job_status(job_uuid, "computing miRvestigator HMM")
-    mV = miRvestigator(weederPSSMs1, seqs.values(),
-                       seedModel=seedModels,
-                       minor=True,
-                       p5=True, p3=True,
-                       wobble=wobble, wobbleCut=cut,
-                       textOut=False)
+        # 5. Run miRvestigator HMM
+        update_job_status(job_uuid, "computing miRvestigator HMM")
+        mV = miRvestigator(weederPSSMs1, seqs.values(),
+                           seedModel=seedModels,
+                           minor=True,
+                           p5=True, p3=True,
+                           wobble=wobble, wobbleCut=cut,
+                           textOut=False)
 
-    # 6. Read in miRNAs to get mature miRNA ids
-    import gzip
-    miRNAFile = gzip.open('mature.fa.gz','r')
-    miRNADict = {}
-    while 1:
-        miRNALine = miRNAFile.readline()
-        seqLine = miRNAFile.readline()
-        if not miRNALine:
-            break
-        # Get the miRNA name
-        miRNAData = miRNALine.lstrip('>').split(' ')
-        curMiRNA = miRNAData[0]
-        if (curMiRNA.split('-'))[0]=='hsa':
-            miRNADict[curMiRNA] = miRNAData[1]
-    miRNAFile.close()
+        # 6. Read in miRNAs to get mature miRNA ids
+        import gzip
+        miRNAFile = gzip.open('mature.fa.gz','r')
+        miRNADict = {}
+        while 1:
+            miRNALine = miRNAFile.readline()
+            seqLine = miRNAFile.readline()
+            if not miRNALine:
+                break
+            # Get the miRNA name
+            miRNAData = miRNALine.lstrip('>').split(' ')
+            curMiRNA = miRNAData[0]
+            if (curMiRNA.split('-'))[0]=='hsa':
+                miRNADict[curMiRNA] = miRNAData[1]
+        miRNAFile.close()
 
-    # 6. Clean-up after yerself
-    os.remove('tmp/fasta/tmp'+str(curRunNum)+'.fasta')
-    os.remove('tmp/fasta/tmp'+str(curRunNum)+'.fasta.wee')
-    os.remove('tmp/fasta/tmp'+str(curRunNum)+'.fasta.mix')
-    os.remove('tmp/fasta/tmp'+str(curRunNum)+'.fasta.html')
+        # 6. Clean-up after yerself
+        os.remove('tmp/fasta/tmp'+str(curRunNum)+'.fasta')
+        os.remove('tmp/fasta/tmp'+str(curRunNum)+'.fasta.wee')
+        os.remove('tmp/fasta/tmp'+str(curRunNum)+'.fasta.mix')
+        os.remove('tmp/fasta/tmp'+str(curRunNum)+'.fasta.html')
 
-    # 7. write output to database
-    update_job_status(job_uuid, "compiling results")
+        # 7. write output to database
+        update_job_status(job_uuid, "compiling results")
 
-    for pssm in weederPSSMs1:
-        motif_id = store_motif(job_uuid, pssm)
-        scores = mV.getScoreList(pssm.getName())
-        store_mirvestigator_scores(motif_id, scores)
+        for pssm in weederPSSMs1:
+            motif_id = store_motif(job_uuid, pssm)
+            scores = mV.getScoreList(pssm.getName())
+            store_mirvestigator_scores(motif_id, scores)
 
-    update_job_status(job_uuid, "done")
+        update_job_status(job_uuid, "done")
 
+    catch Exception as e:
+        update_job_status(job_uuid, "error")
+        print(e)
 
 

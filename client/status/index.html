@@ -46,6 +46,10 @@
                 clearInterval(polling_timer);
                 window.location = "/results/" + job_id + "/";
               }
+              else if (status.status=="error") {
+                clearInterval(polling_timer);
+                //$("#status_output").append("<p>" + status.error_message + "</p>");
+              }
             },
             error: function(xmlHttpRequest, textStatus, errorThrown) {
               $("#status_output").append("<p>Error getting status: " + textStatus + "</p>");
