@@ -54,6 +54,10 @@
         }
       }
 
+      function stop_polling() {
+        if (polling_timer) clearInterval(polling_timer);
+      }
+
       window.onload=function() {
         var url = window.location.pathname;
         var m = url.match(/\/status\/([0-9a-fA-F\-]+)\//);
@@ -80,9 +84,8 @@
   <body>
     <h1>Status</h1>
     <p><b>Job id:</b> <span id="job_id"></span>.</p>
+    <p><a href="javascript:stop_polling()">stop polling</a>, <a href="javascript:poll()">poll</a>, <a id="refresh_link" href="#">refresh</a></p>
     <div id="status_output"></div>
-    <p><a href="javascript:poll()">poll</a></p>
-    <p><a id="refresh_link" href="#">refresh</a></p>
     <p><a href="/">home</a></p>
   </body>
 </html>

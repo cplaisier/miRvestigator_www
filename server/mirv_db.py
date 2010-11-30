@@ -92,7 +92,7 @@ def store_motif(job_uuid, pssm):
             insert into motifs (job_uuid, name, score) values (%s, %s, %f);
             select LAST_INSERT_ID();
             """,
-            (job_uuid, pssm.getName(), pssm.getEValue()))
+            (job_uuid, pssm.getName(), float(pssm.getEValue())))
         motif_id = cursor.fetchone()[0]
 
         # write pssm matrix
