@@ -95,7 +95,10 @@ def store_motif(job_uuid, pssm):
         print("sql = " + sql)
 
         cursor.execute(sql)
-        motif_id = cursor.fetchone()[0]
+        row = cursor.fetchone()
+        print(row)
+
+        motif_id = row[0]
         print("storing motif:::" + str(motif_id))
 
         # write pssm matrix
