@@ -88,8 +88,8 @@ def store_motif(job_uuid, pssm):
     try:
         cursor = conn.cursor()
         
-        print("type(pssm.getEValue()) = " + type(pssm.getEValue()))
-        print("type(float(pssm.getEValue())) = " + type(float(pssm.getEValue())))
+        print("type(pssm.getEValue()) = " + str(type(pssm.getEValue())))
+        print("type(float(pssm.getEValue())) = " + str(type(float(pssm.getEValue()))))
 
         cursor.execute(
             """
@@ -98,7 +98,7 @@ def store_motif(job_uuid, pssm):
             """,
             (job_uuid, pssm.getName(), float(pssm.getEValue())))
         motif_id = cursor.fetchone()[0]
-        print("storing motif:::" + motif_id)
+        print("storing motif:::" + str(motif_id))
 
         # write pssm matrix
         for scores in pssm.getMatrix():
