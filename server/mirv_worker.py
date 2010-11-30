@@ -7,7 +7,7 @@ import cPickle
 # Custom libraries
 from miRvestigator import miRvestigator
 from pssm import pssm
-from mirv_db import update_job_status
+from mirv_db import update_job_status, store_motif, store_mirvestigator_scores
 
 
 
