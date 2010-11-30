@@ -2,7 +2,13 @@
 # create user 'mirv'@'localhost' identified by <some password>;
 # grant all privileges on mirvestigator.* to 'mirv'@'localhost';
 
-drop table jobs;
+drop table if exists jobs;
+drop table if exists parameters;
+drop table if exists genes;
+drop table if exists motifs;
+drop table if exists pssms;
+drop table if exists sites;
+drop table if exists mirvestigator_scores;
 
 create table jobs (
     uuid char(36) NOT NULL PRIMARY KEY,
@@ -55,7 +61,7 @@ create table sites (
 create table mirvestigator_scores (
     id int NOT NULL AUTO_INCREMENT PRIMARY KEY,
     motif_id int NOT NULL,
-    mirna_name varchar(100),              -- miRNA.name
+    mirna_name varchar(2000),              -- miRNA.name
     mirna_seed varchar(8),                -- miRNA.seed
     seedModel varchar(20),                -- model
     alignment varchar(100),               -- statePath
