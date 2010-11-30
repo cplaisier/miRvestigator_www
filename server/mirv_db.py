@@ -105,7 +105,6 @@ def store_genes(job_uuid, genes, sequence_dict):
         cursor = conn.cursor()
 
         #store genes
-        genes = job['genes']
         if (genes):
             for gene in genes:
                 gene = _sanitize(gene)[0:20]
