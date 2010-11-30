@@ -100,8 +100,8 @@ def store_motif(job_uuid, pssm):
         # write pssm matrix
         for scores in pssm.getMatrix():
             print("storing matrix")
-            cursor.execute("insert into pssms (motif_id, a, t, c, g) values (%s,%f,%f,%f,%f);",
-                (motif_id, float(scores[0]), float(scores[1]), float(scores[2]), float(scores[3]),))
+            sql = "insert into pssms (motif_id, a, t, c, g) values ('%s',%f,%f,%f,%f);" % (motif_id, float(scores[0]), float(scores[1]), float(scores[2]), float(scores[3]),)
+            cursor.execute(sql)
                 
         # motif_id int NOT NULL,
         # entrez_gene_id int,
