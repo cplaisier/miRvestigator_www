@@ -122,7 +122,7 @@ def store_motif(job_uuid, pssm):
             cursor.execute("""
                 insert into sites
                 (motif_id, entrez_gene_id, sequence, start, quality)
-                values (%d, '%s', '%s', %d, '%s')""",
+                values (%d, %s, %s, %d, %s)""",
                 (motif_id, str(site['gene']), site['site'], int(site['start']), site['match'],))
         
         print("done storing motif")

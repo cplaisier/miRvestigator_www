@@ -2,6 +2,8 @@
 # create user 'mirv'@'localhost' identified by <some password>;
 # grant all privileges on mirvestigator.* to 'mirv'@'localhost';
 
+drop table jobs;
+
 create table jobs (
     uuid char(36) NOT NULL PRIMARY KEY,
     created_at datetime DEFAULT NULL,
