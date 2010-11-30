@@ -87,6 +87,9 @@ def store_motif(job_uuid, pssm):
     conn = _get_db_connection()
     try:
         cursor = conn.cursor()
+        
+        print("type(pssm.getEValue()) = " + type(pssm.getEValue()))
+        print("type(float(pssm.getEValue())) = " + type(float(pssm.getEValue())))
 
         cursor.execute(
             """
