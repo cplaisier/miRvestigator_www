@@ -153,8 +153,6 @@ def store_mirvestigator_scores(motif_id, scores):
         # alignment varchar(100),               -- statePath
         # viterbi_p float,                      -- vitPValue
         
-        print("score['miRNA.name'] = " + score['miRNA.name'])
-
         for score in scores:
             cursor.execute(
                 """
