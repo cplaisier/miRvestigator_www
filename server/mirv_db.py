@@ -122,7 +122,7 @@ def store_motif(job_uuid, pssm):
             cursor.execute("""
                 insert into sites
                 (motif_id, entrez_gene_id, sequence, start, quality)
-                values (%d, %s, %s, %d, %s)""" %
+                values (%d, '%s', '%s', %d, '%s')""" %
                 (motif_id, str(site['gene']), site['site'], int(site['start']), site['match'],))
         
         print("done storing motif")
@@ -157,8 +157,8 @@ def store_mirvestigator_scores(motif_id, scores):
             cursor.execute(
                 """
                 insert into mirvestigator_scores (motif_id, mirna_name, mirna_seed, seedModel, alignment, viterbi_p)
-                                          values (%d, %s, %s, %s, %s, %f);
-                """,
+                                          values (%d, '%s', '%s', '%s', '%s', %f);
+                """ %
                 (motif_id, score['miRNA.name'], score['miRNA.seed'], score['model'], ";".join(score['statePath']), score['vitPValue'],))
 
     finally:
