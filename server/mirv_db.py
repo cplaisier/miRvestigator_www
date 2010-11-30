@@ -98,13 +98,11 @@ def update_job_status(job_uuid, status):
             print(exception)
 
 
-def store_genes(genes, sequence_dict):
+def store_genes(job_uuid, genes, sequence_dict):
     conn = _get_db_connection()
     try:
         created_at = datetime.datetime.now()
         cursor = conn.cursor()
-
-        job_uuid = job['id']
 
         #store genes
         genes = job['genes']

@@ -157,7 +157,7 @@ def run(job_uuid, genes, seedModels, wobble, cut, bgModel, motifSizes, jobName, 
             miRSeqs[gene] = seqs[gene]
 
     # record genes and whether a sequence was found for each
-    store_genes(genes, miRSeqs)
+    store_genes(job_uuid, genes, miRSeqs)
 
     # 3. Make a FASTA file
     if not os.path.exists('tmp/fasta'):
