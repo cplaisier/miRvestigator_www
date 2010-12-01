@@ -66,7 +66,11 @@ class MiRvestigatorServer(Pyro.core.ObjBase):
         create_job_in_db(job)
         # put params in DB
         q.put(job)
-        update_job_status(job['id'], 'queued')
+        try:
+            q_length = q.qsize()
+            update_job_status(job['id'], "queued (%d)" % q.qsize())
+        except Exception:
+            update_job_status(job['id'], "queued")
         return id
 
 

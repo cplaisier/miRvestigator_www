@@ -15,8 +15,8 @@ email on error
 
 
 add to AMI:
-ssh keys for github access
-delete git_mirv? just use git clone?
+x ssh keys for github access
+x delete git_mirv? just use git clone?
 
 
 
