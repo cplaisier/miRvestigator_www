@@ -1,5 +1,9 @@
 TODO
 
+
+x remove debugging code
+x remove old dead code
+
 in mirv_worker.py ditch deepcopys?
 in mirv_worker.py try/catch for reporting errors?
 if /var/www/uri doesn't exist, redirect to mirvestigator is down page

@@ -77,7 +77,7 @@ if __name__ == '__main__':
 
     try:
         cores = cpu_count()
-        num_workers = cores
+        num_workers = cores * 2
     except Exception as e:
         print("can't detect number of cpus")
         print(e)
