@@ -69,12 +69,10 @@ def read_parameters(job_uuid):
             where job_uuid=%s""", (job_uuid,))
         result_set = cursor.fetchall()
 
-        parameters = []
+        # build a dictionary of parameters
+        parameters = {}
         for row in result_set:
-            parameter = {}
-            parameter['name'] = row[0]
-            parameter['value'] = row[1]
-            parameters.append(parameter)
+            parameters[row[0]] = row[1]
 
         return parameters
 
