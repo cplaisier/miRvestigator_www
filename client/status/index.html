@@ -1,5 +1,6 @@
 <html>
   <head>
+  <style> body { font-family: arial, sans-serif; } </style>
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.4.4/jquery.min.js"></script>
   <script language="JavaScript">
 
@@ -44,7 +45,16 @@
             success: function(status) {
               if (current_status != status.status) {
                 current_status = status.status
-                $("#status_output").append("<p>" + status.updated_at + " " + status.status + "</p>");
+                if (current_status=="running weeder") {
+                  $("#status").append("Running Weeder");
+                  $("#status_img").append("<img src='runningWeeder.gif'>");
+                } else if (current_status=="computing miRvestigator HMM") {
+                  $("#status").append("Running miRvestigator HMM");
+                  $("#status_img").append("<img src='runningMirvestigator.gif'>");
+                } else if (current_status=="compiling results") {
+                  $("#status").append("Compiling Results");
+                  $("#status_img").append("<img src='compilingResults.gif'>");
+                }
               }
               if (status.status=="done") {
                 clearInterval(polling_timer);
@@ -61,6 +71,29 @@
           });
         }
       }
+      
+      function getParameters() {
+        if (job_id) {
+          jQuery.ajax({
+            url: "/miRvestigator/parameters?id=" + job_id,
+            context: document.body,
+            dataType: "json",
+            success: function(parameters) {
+              $("#job_name").text("<font color='#ff0000'>" + parameters.job_name + "</font>");
+              $("#job_id").text("<font color='#ff0000'>" + parameters.job_id + "</font>");
+              $("#genes_submitted").text("<font color='#ff0000'>" + parameters.genes_submitted + "</font>");
+              $("#annotated_sequences").text("<font color='#ff0000'>" + parameters.annotated_sequences + "</font>");
+              $("#motif_sizes").text("<font color='#ff0000'>" + parameters.motif_sizes + "</font>");
+              $("#background_model").text("<font color='#ff0000'>" + parameters.background_model + "</font>");
+              $("#seed_model").text("<font color='#ff0000'>" + parameters.seed_model + "</font>");
+              $("#model_wobble").text("<font color='#ff0000'>" + parameters.model_wobble + "</font>");
+            },
+            error: function(xmlHttpRequest, textStatus, errorThrown) {
+              $("#job_name").text("<p>Error getting status: " + textStatus + "</p>");
+            }
+          });
+        }
+      }
 
       function stop_polling() {
         if (polling_timer) clearInterval(polling_timer);
@@ -69,12 +102,15 @@
       window.onload=function() {
         var url = window.location.pathname;
         var m = url.match(/\/status\/([0-9a-fA-F\-]+)\//);
+        getParameters();
         if (m && m.length > 1) {
           job_id = m[1];
           if (job_id) {
             $("#job_id").append(job_id);
             $("#refresh_link").attr("href", "/status/" + job_id + "/");
-            polling_timer = window.setInterval(poll, 1000);
+            polling_timer = window.setInterval(function() {
+              poll();
+            }, 1000);
           }
         }
       }
@@ -87,11 +123,34 @@
   <title>miRvestigator Framework: Detect the miRNAs Driving Co-Expression Signatures</title>
   </head>
 
-  <body>
-    <h1>Status</h1>
-    <p><b>Job id:</b> <span id="job_id"></span>.</p>
-    <p><a href="javascript:stop_polling()">stop polling</a>, <a href="javascript:poll()">poll</a>, <a id="refresh_link" href="#">refresh</a></p>
-    <div id="status_output"></div>
-    <p><a href="/">home</a></p>
-  </body>
+<body bgcolor='#333333'>
+    <font face='arial'><center><table width=800 bgcolor='#999966' cellpadding='10%'><tr><td>
+        <center><table width='100%' cellpadding='15%'><tr><td align='center' valign='center' bgcolor='#000000'><font size=6><b><font color='#ff0000'>miR</font><font color='#cccc00'>vestigator Framework</font></b></font></td></tr></table>
+            </br>
+            <center><table width='100%' cellpadding='5%' cellspacing=3><tr><td bgcolor='#000000'><center><p><font color='#cccc00' size=4><b>Your submission is being processed...</b></font></center></tr></td>
+                    <tr><td bgcolor='#cccccc'><table width='100%' cellpadding='10%'><tr><td bgcolor='#333333' align='center' valign='center'><b><font color='#cccc00' size=4>Current Status: </font><font size=4 color='#ff0000'><span id="status"></span></font></b></td></tr><tr><td bgcolor='#ffffff'><span id="status_img"></span></p></td></tr></table></td></tr>
+            <tr><td></td></tr>
+            <tr><td bgcolor='#000000'><center><font color='#cccc00' size=4><b>Submission Parameters</b></font></center></td></tr>    
+            <tr><td bgcolor='#cccccc'>
+                <table width='100%' cellpadding='5%'>
+                    <tr><td colspan=2 bgcolor='#333333' align='center' valign='center'><b><font color='#cccc00' size=4>Basic Parameters</font></b></td></tr>
+                    <tr><td bgcolor='#333333' align='center' valign='center'><font color='#ffffff'><b>Job Name:</b></font></td><td bgcolor='#666666' align='center' valign='center'><table width='100%' cellpadding='5%'><tr><td bgcolor='#ffffff'><center><span id="job_name"></span></center></td></tr></table></td></tr>
+                    <tr><td bgcolor='#333333' align='center' valign='center'><font color='#ffffff'><b>Job ID:</b></font></td><td bgcolor='#666666' align='center' valign='center'><table width='100%' cellpadding='5%'><tr><td bgcolor='#ffffff'><center><span id="job_id"></span></center></td></tr></table></td></tr>
+                    <tr><td bgcolor='#333333' align='center' valign='center'><font color='#ffffff'><b>Genes Submitted:</b></font></td><td bgcolor='#666666' align='center' valign='center'><table width='100%' cellpadding='5%'><tr><td bgcolor='#ffffff'><center><span id="genes_submitted"></span></center></td></tr></table></td></tr>
+                    <tr><td bgcolor='#333333' align='center' valign='center'><font color='#ffffff'><b>Genes Annotated with Sequences:</b></font></td><td bgcolor='#66666' align='center' valign='center'><table width='100%' cellpadding='5%'><tr><td bgcolor='#ffffff'><center><span id="annotated_sequences"></span></center></td></tr></table></td></tr>
+                    <tr><td colspan=2></td></tr>
+                    <tr><td colspan=2 bgcolor='#333333' align='center' valign='center'><b><font color='#cccc00' size=4>Weeder Parameters</font></b></td></tr>
+                    <tr><td bgcolor='#333333' align='center' valign='center'><font color='#ffffff'><b>Motif Sizes:</b></font></td><td bgcolor='#666666' align='center' valign='center'><table width='100%' cellpadding='5%'><tr><td bgcolor='#ffffff'><center><span id="motif_sizes"></span></center></td></tr></table></td></tr>
+                    <tr><td bgcolor='#333333' align='center' valign='center'><font color='#ffffff'><b>Background Model:</b></font></td><td bgcolor='#666666' align='center' valign='center'><table width='100%' cellpadding='5%'><tr><td bgcolor='#ffffff'><center><span id="background_model"></span></center></td></tr></table></td></tr>
+                    <tr><td colspan=2></td></tr>
+                    <tr><td colspan=2 bgcolor='#333333' align='center' valign='center'><b><font color='#cccc00' size=4>miRvestigator HMM Parameters</font></b></td></tr>
+                    <tr><td bgcolor='#333333' align='center' valign='center'><font color='#ffffff'><b>Seed Models:</b></font></td><td bgcolor='#666666' align='center' valign='center'><table width='100%' cellpadding='5%'><tr><td bgcolor='#ffffff'><center><span id="seed_model"></span></center></td></tr></table></td></tr>
+                    <tr><td bgcolor='#333333' align='center' valign='center'><font color='#ffffff'><b>Model Wobble Base-Pairing:</b></font></td><td bgcolor='#666666' align='center' valign='center'><table width='100%' cellpadding='5%'><tr><td bgcolor='#ffffff'><center><span id="model_wobble"></span></center></td></tr></table></td></tr>
+                </table>
+            </td></tr></table>
+            <p><table width='100%' cellpadding='5%'><tr><td bgcolor='#c0c0c0'><center>Need help? Please contact <font color='#0000ff'>cplaisier(at)systemsbiology.org</font> if you have any questions, comments or concerns.<br>Developed at the <a href='http://www.systemsbiology.org' target='_blank' style=\'color: rgb(0,0,255)\'>Institute for Systems Biology</a> in the <a href='http://baliga.systemsbiology.net/' target='_blank' style=\'color: rgb(0,0,255)\'>Baliga Lab</a>.</center></td></tr></table></p>
+            <p><a href="javascript:stop_polling()">stop polling</a>, <a href="javascript:poll()">poll</a>, <a id="refresh_link" href="#">refresh</a></p>
+
+    </center></tr></td></table>
+</body>
 </html>
