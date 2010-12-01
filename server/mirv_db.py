@@ -6,12 +6,17 @@ import MySQLdb
 import datetime
 import time
 import re
+import sys
 
 ## Note that several of these methods use python's string formatting
 ## to build SQL strings, which is bad. This was done due to a problem
 ## with getting cursor.execute("insert into foo values (%s, %f, %d)", (a,b,c))
 ## to work with either decimal or floating point values.
 
+
+def log(str):
+    sys.stderr.write(str)
+    sys.stderr.write("\n")
 
 # a simplistic form of sanitizing input
 # drop characters that are special to sql
@@ -45,13 +50,13 @@ def create_job_in_db(job):
         try:
             cursor.close()
         except Exception as exception:
-            print("Exception closing cursor: ")
-            print(exception)
+            log("Exception closing cursor: \n")
+            log(exception)
         try:
             conn.close()
         except Exception as exception:
-            print("Exception closing conection: ")
-            print(exception)
+            log("Exception closing conection: ")
+            log(exception)
 
 def read_parameters(job_uuid):
     conn = _get_db_connection()
@@ -77,13 +82,13 @@ def read_parameters(job_uuid):
         try:
             cursor.close()
         except Exception as exception:
-            print("Exception closing cursor: ")
-            print(exception)
+            log("Exception closing cursor: ")
+            log(exception)
         try:
             conn.close()
         except Exception as exception:
-            print("Exception closing conection: ")
-            print(exception)
+            log("Exception closing conection: ")
+            log(exception)
     
 
 def get_job_status(job_uuid):
@@ -101,13 +106,13 @@ def get_job_status(job_uuid):
         try:
             cursor.close()
         except Exception as exception:
-            print("Exception closing cursor: ")
-            print(exception)
+            log("Exception closing cursor: ")
+            log(exception)
         try:
             conn.close()
         except Exception as exception:
-            print("Exception closing conection: ")
-            print(exception)
+            log("Exception closing conection: ")
+            log(exception)
 
 
 def update_job_status(job_uuid, status):
@@ -121,13 +126,13 @@ def update_job_status(job_uuid, status):
         try:
             cursor.close()
         except Exception as exception:
-            print("Exception closing cursor: ")
-            print(exception)
+            log("Exception closing cursor: ")
+            log(exception)
         try:
             conn.close()
         except Exception as exception:
-            print("Exception closing conection: ")
-            print(exception)
+            log("Exception closing conection: ")
+            log(exception)
 
 
 def store_genes(job_uuid, genes, sequence_dict):
@@ -146,17 +151,16 @@ def store_genes(job_uuid, genes, sequence_dict):
         try:
             cursor.close()
         except Exception as exception:
-            print("Exception closing cursor: ")
-            print(exception)
+            log("Exception closing cursor: ")
+            log(exception)
         try:
             conn.close()
         except Exception as exception:
-            print("Exception closing conection: ")
-            print(exception)
+            log("Exception closing conection: ")
+            log(exception)
 
 
 def store_motif(job_uuid, pssm):
-    print("storing motif...")
     conn = _get_db_connection()
     try:
         cursor = conn.cursor()
@@ -200,13 +204,13 @@ def store_motif(job_uuid, pssm):
         try:
             cursor.close()
         except Exception as exception:
-            print("Exception closing cursor: ")
-            print(exception)
+            log("Exception closing cursor: ")
+            log(exception)
         try:
             conn.close()
         except Exception as exception:
-            print("Exception closing conection: ")
-            print(exception)
+            log("Exception closing conection: ")
+            log(exception)
 
 
 def read_motifs(job_uuid):
@@ -224,7 +228,7 @@ def read_motifs(job_uuid):
         motifs = []
         for row in result_set:
             motif = {}
-            print(str(type(row[0])))
+            log(str(type(row[0])))
             motif['motif_id'] = int(row[0])
             motif['job_uuid'] = row[1]
             motif['name'] = row[2]
@@ -242,7 +246,7 @@ def read_motifs(job_uuid):
             matrix = []
             for row in result_set:
                 matrix.append([row[0], row[1], row[2], row[3]])
-                print(str(type(row[0])))
+                log(str(type(row[0])))
             motif['matrix'] = matrix
 
         # read sites
@@ -280,13 +284,13 @@ def read_motifs(job_uuid):
         try:
             cursor.close()
         except Exception as exception:
-            print("Exception closing cursor: ")
-            print(exception)
+            log("Exception closing cursor: ")
+            log(exception)
         try:
             conn.close()
         except Exception as exception:
-            print("Exception closing conection: ")
-            print(exception)
+            log("Exception closing conection: ")
+            log(exception)
 
 
 def store_mirvestigator_scores(motif_id, scores):
@@ -312,13 +316,13 @@ def store_mirvestigator_scores(motif_id, scores):
         try:
             cursor.close()
         except Exception as exception:
-            print("Exception closing cursor: ")
-            print(exception)
+            log("Exception closing cursor: ")
+            log(exception)
         try:
             conn.close()
         except Exception as exception:
-            print("Exception closing conection: ")
-            print(exception)
+            log("Exception closing conection: ")
+            log(exception)
 
 
 def read_mirvestigator_scores(motif_id):
@@ -348,11 +352,11 @@ def read_mirvestigator_scores(motif_id):
         try:
             cursor.close()
         except Exception as exception:
-            print("Exception closing cursor: ")
-            print(exception)
+            log("Exception closing cursor: ")
+            log(exception)
         try:
             conn.close()
         except Exception as exception:
-            print("Exception closing conection: ")
-            print(exception)
+            log("Exception closing conection: ")
+            log(exception)
     
