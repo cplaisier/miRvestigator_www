@@ -216,7 +216,7 @@ def read_motifs(job_uuid):
 
         # read motifs for this job
         cursor.execute("""
-            select motif_id, job_uuid, name, score
+            select id, job_uuid, name, score
             from motifs
             where job_uuid = %s;""",
             (str(job_uuid),))
