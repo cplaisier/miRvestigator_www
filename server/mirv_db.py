@@ -86,18 +86,18 @@ def read_parameters(job_uuid):
 
         motif_sizes = []
         if (parameters['m6']):
-            motif_sizes.append(6)
+            motif_sizes.append("6 bp")
         if (parameters['m8']):
-            motif_sizes.append(8)
+            motif_sizes.append("8 bp")
         parameters['motif_sizes'] = motif_sizes
 
         seed_model = []
         if (parameters['s6']):
-            seed_model.append(6)
+            seed_model.append("6mer")
         if (parameters['s7']):
-            seed_model.append(7)
+            seed_model.append("7mer")
         if (parameters['s8']):
-            seed_model.append(8)
+            seed_model.append("8mer")
         parameters['seed_model'] = seed_model
 
         if (parameters['wobble']=='yes'):
