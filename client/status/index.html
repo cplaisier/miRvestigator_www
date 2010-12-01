@@ -79,13 +79,18 @@
             context: document.body,
             dataType: "json",
             success: function(parameters) {
-              $("#job_name").text("<font color='#ff0000'>" + parameters.job_name + "</font>");
+              $("#job_name").text("<font color='#ff0000'>" + parameters.jobName + "</font>");
               $("#job_id").text("<font color='#ff0000'>" + parameters.job_id + "</font>");
               $("#genes_submitted").text("<font color='#ff0000'>" + parameters.genes_submitted + "</font>");
               $("#annotated_sequences").text("<font color='#ff0000'>" + parameters.annotated_sequences + "</font>");
               $("#motif_sizes").text("<font color='#ff0000'>" + parameters.motif_sizes + "</font>");
-              $("#background_model").text("<font color='#ff0000'>" + parameters.background_model + "</font>");
-              $("#seed_model").text("<font color='#ff0000'>" + parameters.seed_model + "</font>");
+              if (parameters.bgModel=="HS") {
+                $("#background_model").text("<font color='#ff0000'>Default Weeder model</font>");
+              }
+              else {
+                $("#background_model").text("<font color='#ff0000'>3' UTR specific model</font>");
+              }
+              $("#seed_model").text("<font color='#ff0000'>" + parameters.seed_model.join(", ") + "</font>");
               $("#model_wobble").text("<font color='#ff0000'>" + parameters.model_wobble + "</font>");
             },
             error: function(xmlHttpRequest, textStatus, errorThrown) {

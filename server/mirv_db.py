@@ -64,6 +64,14 @@ def read_parameters(job_uuid):
     conn = _get_db_connection()
     try:
         cursor = conn.cursor()
+        
+        # job_name = user defined name
+        # job_id = job_id
+        # genes_submitted = number of genes submitted
+        # annotated_sequences = number of genes with an annotated sequence
+        # motif_sizes = an array of the set [6, 7, 8]
+        # background_model = Default or 3' UTR
+        # model_wobble = yes or no, if yes then tack on the G or U min freq
 
         cursor.execute("""
             select name, value
@@ -76,16 +84,42 @@ def read_parameters(job_uuid):
         for row in result_set:
             parameters[row[0]] = row[1]
 
+        motif_sizes = []
+        if (parameters['m6']):
+            motif_sizes.append(6)
+        if (parameters['m8']):
+            motif_sizes.append(8)
+        parameters['motif_sizes'] = motif_sizes
+
+        seed_model = []
+        if (parameters['s6']):
+            seed_model.append(6)
+        if (parameters['s7']):
+            seed_model.append(7)
+        if (parameters['s8']):
+            seed_model.append(8)
+        parameters['seed_model'] = seed_model
+
+        if (parameters['wobble']=='yes'):
+            parameters['model_wobble'] = 'Yes (' + parameters['cut'] + ')'
+        else:
+            parameters['model_wobble'] = 'No'
+
         cursor.execute("""
-            select name
+            select name, sequence
             from genes
             where job_uuid=%s""", (job_uuid,))
         result_set = cursor.fetchall()
-        genes = []
+        genes = 0
+        annotated_sequences = 0
         for row in result_set:
-            genes.append(row[0])
-        
-        parameters['genes'] = genes
+            genes += 1
+            log("row[1] = " + row[1])
+            if (row[1]==1):
+                annotated_sequences += 1
+
+        parameters['genes_submitted'] = genes
+        parameters['annotated_sequences'] = annotated_sequences
 
         return parameters
 
