@@ -45,6 +45,9 @@
             success: function(status) {
               if (current_status != status.status) {
                 current_status = status.status
+                if (current_status=="queued") {
+                  
+                }
                 if (current_status=="running weeder") {
                   getParameters(job_id);
                   $("#status").text("Running Weeder");

@@ -66,6 +66,7 @@ class MiRvestigatorServer(Pyro.core.ObjBase):
         create_job_in_db(job)
         # put params in DB
         q.put(job)
+        update_job_status(job['id'], 'queued')
         return id
 
 

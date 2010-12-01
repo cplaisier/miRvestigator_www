@@ -8,6 +8,11 @@ in mirv_worker.py ditch deepcopys?
 in mirv_worker.py try/catch for reporting errors?
 if /var/www/uri doesn't exist, redirect to mirvestigator is down page
 
+limit size of q
+limit number of genes
+
+email on error
+
 
 add to AMI:
 ssh keys for github access
