@@ -114,7 +114,7 @@ def read_parameters(job_uuid):
         annotated_sequences = 0
         for row in result_set:
             genes += 1
-            log("row[1] = " + row[1])
+            log("row[1] = " + str(row[1]))
             if (row[1]==1):
                 annotated_sequences += 1
 
