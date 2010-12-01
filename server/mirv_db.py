@@ -224,6 +224,7 @@ def read_motifs(job_uuid):
         motifs = []
         for row in result_set:
             motif = {}
+            print(str(type(row[0])))
             motif['motif_id'] = int(row[0])
             motif['job_uuid'] = row[1]
             motif['name'] = row[2]
