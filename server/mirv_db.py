@@ -224,10 +224,10 @@ def read_motifs(job_uuid):
         motifs = []
         for row in result_set:
             motif = {}
-            motif['motif_id'] = row[0]
+            motif['motif_id'] = int(row[0])
             motif['job_uuid'] = row[1]
             motif['name'] = row[2]
-            motif['score'] = row[3]
+            motif['score'] = float(row[3])
             motifs.append(motif)
 
         # read pssm matrix
@@ -241,6 +241,7 @@ def read_motifs(job_uuid):
             matrix = []
             for row in result_set:
                 matrix.append([row[0], row[1], row[2], row[3]])
+                print(str(type(row[0])))
             motif['matrix'] = matrix
 
         # read sites
