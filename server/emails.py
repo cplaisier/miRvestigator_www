@@ -18,7 +18,7 @@ Subject: %s
 """ % (sender, ", ".join(receivers), subject, body)
 
 try:
-   s = smtplib.SMTP()
+   s = smtplib.SMTP('localhost')
    s.sendmail(sender, receivers, message)         
    s.quit()
    print "Successfully sent email"
