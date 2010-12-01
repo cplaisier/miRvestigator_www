@@ -46,14 +46,14 @@
               if (current_status != status.status) {
                 current_status = status.status
                 if (current_status=="running weeder") {
-                  $("#status").append("Running Weeder");
-                  $("#status_img").append("<img src='runningWeeder.gif'>");
+                  $("#status").text("Running Weeder");
+                  $("#status_img").text("<img src='/images/runningWeeder.gif'>");
                 } else if (current_status=="computing miRvestigator HMM") {
-                  $("#status").append("Running miRvestigator HMM");
-                  $("#status_img").append("<img src='runningMirvestigator.gif'>");
+                  $("#status").text("Running miRvestigator HMM");
+                  $("#status_img").text("<img src='/images/runningMirvestigator.gif'>");
                 } else if (current_status=="compiling results") {
-                  $("#status").append("Compiling Results");
-                  $("#status_img").append("<img src='compilingResults.gif'>");
+                  $("#status").text("Compiling Results");
+                  $("#status_img").text("<img src='/images/compilingResults.gif'>");
                 }
               }
               if (status.status=="done") {
