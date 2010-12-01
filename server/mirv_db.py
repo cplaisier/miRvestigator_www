@@ -331,7 +331,7 @@ def read_mirvestigator_scores(motif_id):
             select motif_id, mirna_name, mirna_seed, seedModel, alignment, viterbi_p
             from mirvestigator_scores
             where motif_id=%d);
-            """, (int(motif_id),))
+            """ % (int(motif_id),))
         result_set = cursor.fetchall()
         
         scores = []
