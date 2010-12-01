@@ -220,7 +220,7 @@ def read_motifs(job_uuid):
             select motif_id, job_uuid, name, score
             from motifs
             where job_uuid = %s;""",
-            (str(job_uuid),)
+            (str(job_uuid),))
         result_set = cursor.fetchall()
         motifs = []
         for row in result_set:
