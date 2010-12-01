@@ -344,7 +344,7 @@ def read_mirvestigator_scores(motif_id):
             score['miRNA.name'] = row[1]
             score['miRNA.seed'] = row[2]
             score['model'] = row[3]
-            score['statePath'] = ";".split(row[4])
+            score['statePath'] = row[4].split(";")
             score['vitPValue'] = row[5]
             log("score = " + str(score))
             scores.append(score)
