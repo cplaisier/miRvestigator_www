@@ -17,6 +17,8 @@ import sys
 def log(str):
     sys.stderr.write(str)
     sys.stderr.write("\n")
+    sys.stderr.flush()
+
 
 # a simplistic form of sanitizing input
 # drop characters that are special to sql
@@ -226,7 +228,7 @@ def read_motifs(job_uuid):
         motifs = []
         for row in result_set:
             motif = {}
-            log("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~   " + str(type(row[0])))
+            log("notif_id type ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~>>>>>>   " + str(type(row[0])))
             motif['motif_id'] = int(row[0])
             motif['job_uuid'] = row[1]
             motif['name'] = row[2]
@@ -244,7 +246,7 @@ def read_motifs(job_uuid):
             matrix = []
             for row in result_set:
                 matrix.append([row[0], row[1], row[2], row[3]])
-                log(str(type(row[0])))
+                log("pssm type ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~>>>>>>>>>>>> str(type(row[0])))
             motif['matrix'] = matrix
 
         # read sites
@@ -333,7 +335,9 @@ def read_mirvestigator_scores(motif_id):
             where motif_id=%d;
             """ % (int(motif_id),))
         result_set = cursor.fetchall()
-        
+
+        log("reading scores fore }}}}}}}}}}}}}}}}}----  " + str(motif_id))
+
         scores = []
         for row in result_set:
             score = {}
@@ -342,9 +346,10 @@ def read_mirvestigator_scores(motif_id):
             score['model'] = row[3]
             score['statePath'] = ";".split(row[4])
             score['vitPValue'] = row[5]
+            log("score = " + str(score))
             scores.append(score)
 
-        return score
+        return scores
 
     finally:
         try:
