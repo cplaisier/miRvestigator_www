@@ -210,7 +210,6 @@ def store_motif(job_uuid, pssm):
 
 
 def read_motifs(job_uuid):
-    print("storing motif...")
     conn = _get_db_connection()
     try:
         cursor = conn.cursor()
