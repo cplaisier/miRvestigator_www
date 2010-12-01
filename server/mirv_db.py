@@ -76,6 +76,17 @@ def read_parameters(job_uuid):
         for row in result_set:
             parameters[row[0]] = row[1]
 
+        cursor.execute("""
+            select name
+            from genes
+            where job_uuid=%s""", (job_uuid,))
+        result_set = cursor.fetchall()
+        genes = []
+        for row in result_set:
+            genes.append(row[0])
+        
+        parameters['genes'] = genes
+
         return parameters
 
     finally:
@@ -98,10 +109,11 @@ def get_job_status(job_uuid):
         cursor = conn.cursor()
         cursor.execute("select * from jobs where uuid=%s;", (job_uuid,))
         row = cursor.fetchone()
-        created_at = row[1];
-        updated_at = row[2];
-        status = row[3];
-        return (created_at, updated_at, status,)
+        result = {}
+        result['created_at'] = row[1];
+        result['updated_at'] = row[2];
+        result['status'] = row[3];
+        return result
     finally:
         try:
             cursor.close()

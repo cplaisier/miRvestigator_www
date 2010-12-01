@@ -3,6 +3,7 @@ from mod_python import util
 import re
 import Pyro.core
 import datetime
+import json
 from mirv_db import get_job_status, read_parameters, read_motifs, read_mirvestigator_scores
 
 
@@ -127,7 +128,13 @@ def submitJob(req):
 def status(req):
     id = str(req.form.getfirst('id',''))
     req.content_type='application/json'
-    return "{ \"created_at\": \"%s\", \"updated_at\": \"%s\", \"status\": \"%s\" }" % get_job_status(id)
+    return json.dumps(get_job_status(id))
+
+def parameters(req):
+    id = str(req.form.getfirst('id',''))
+    req.content_type='application/json'
+    return json.dumps(read_parameters(id))
+    
 
 # display results
 def results(req):
