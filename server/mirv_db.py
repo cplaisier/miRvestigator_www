@@ -67,8 +67,8 @@ def read_parameters(job_uuid):
         parameters = []
         for row in result_set:
             parameter = {}
-            parameter['name'] = row[1]
-            parameter['value'] = row[2]
+            parameter['name'] = row[0]
+            parameter['value'] = row[1]
             parameters.append(parameter)
 
         return parameters
@@ -224,10 +224,10 @@ def read_motifs(job_uuid):
         motifs = []
         for row in result_set:
             motif = {}
-            motif['motif_id'] = row[1]
-            motif['job_uuid'] = row[2]
-            motif['name'] = row[3]
-            motif['score'] = row[4]
+            motif['motif_id'] = row[0]
+            motif['job_uuid'] = row[1]
+            motif['name'] = row[2]
+            motif['score'] = row[3]
             motifs.append(motif)
 
         # read pssm matrix
@@ -240,7 +240,7 @@ def read_motifs(job_uuid):
             result_set = cursor.fetchall()
             matrix = []
             for row in result_set:
-                matrix.append([row[1], row[2], row[3], row[4]])
+                matrix.append([row[0], row[1], row[2], row[3]])
             motif['matrix'] = matrix
 
         # read sites
@@ -255,10 +255,10 @@ def read_motifs(job_uuid):
             sites = []
             for row in result_set:
                 site = {}
-                site['gene']  = row[1]
-                site['site']  = row[2]
-                site['start'] = row[3]
-                site['match'] = row[4]
+                site['gene']  = row[0]
+                site['site']  = row[1]
+                site['start'] = row[2]
+                site['match'] = row[3]
                 sites.append(site)
             motif['sites'] = sites
 
@@ -333,11 +333,11 @@ def read_mirvestigator_scores(motif_id):
         scores = []
         for row in result_set:
             score = {}
-            score['miRNA.name'] = row[2]
-            score['miRNA.seed'] = row[3]
-            score['model'] = row[4]
-            score['statePath'] = ";".split(row[5])
-            score['vitPValue'] = row[6]
+            score['miRNA.name'] = row[1]
+            score['miRNA.seed'] = row[2]
+            score['model'] = row[3]
+            score['statePath'] = ";".split(row[4])
+            score['vitPValue'] = row[5]
             scores.append(score)
 
         return score
