@@ -140,6 +140,22 @@ def results(req):
     motifs = read_motifs(id)
     parameters = read_parameters(id)
     topRet = parameters['topRet']
+
+    import gzip
+    miRNAFile = gzip.open('/home/ubuntu/miRwww_server/mature.fa.gz','r')
+    miRNADict = {}
+    while 1:
+        miRNALine = miRNAFile.readline()
+        seqLine = miRNAFile.readline()
+        if not miRNALine:
+            break
+        # Get the miRNA name
+        miRNAData = miRNALine.lstrip('>').split(' ')
+        curMiRNA = miRNAData[0]
+        if (curMiRNA.split('-'))[0]=='hsa':
+            miRNADict[curMiRNA] = miRNAData[1]
+    miRNAFile.close()
+    
     
 
     s = '<html>\n'
@@ -168,8 +184,7 @@ def results(req):
         for k in range(topRet):
             i = scoreList[k]
             align1 = alignSeed(i['statePath'], i['miRNA.seed'], motif['name'])
-            s += '<tr><td bgcolor=\'#ffffff\'><center>'+'asdfasdf'+'</center></td><td bgcolor=\'#ffffff\'><center>'+conv2rna(reverseComplement(str(i['miRNA.seed'])))+'</center></td><td bgcolor=\'#ffffff\'><center>'+str(i['model'])+'</center></td><td bgcolor=\'#ffffff\'><center>'+str(align1[3])+'</center></td><td bgcolor=\'#ffffff\'>'
-            # s += '<tr><td bgcolor=\'#ffffff\'><center>'+str('</br>'.join(['<a href=\'http://mirbase.org/cgi-bin/mature.pl?mature_acc='+str(miRNADict[j.strip()])+'\' target=\'_blank\'>'+str(j.strip())+'</a>' for j in i['miRNA.name'].split('_')]))+'</center></td><td bgcolor=\'#ffffff\'><center>'+conv2rna(reverseComplement(str(i['miRNA.seed'])))+'</center></td><td bgcolor=\'#ffffff\'><center>'+str(i['model'])+'</center></td><td bgcolor=\'#ffffff\'><center>'+str(align1[3])+'</center></td><td bgcolor=\'#ffffff\'>'
+            s += '<tr><td bgcolor=\'#ffffff\'><center>'+str('</br>'.join(['<a href=\'http://mirbase.org/cgi-bin/mature.pl?mature_acc='+str(miRNADict[j.strip()])+'\' target=\'_blank\'>'+str(j.strip())+'</a>' for j in i['miRNA.name'].split('_')]))+'</center></td><td bgcolor=\'#ffffff\'><center>'+conv2rna(reverseComplement(str(i['miRNA.seed'])))+'</center></td><td bgcolor=\'#ffffff\'><center>'+str(i['model'])+'</center></td><td bgcolor=\'#ffffff\'><center>'+str(align1[3])+'</center></td><td bgcolor=\'#ffffff\'>'
             s += '<center><pre>'+str(align1[0])+'\n'+str(align1[1])+'\n'+str(align1[2])+'</pre></center>'
             s += '</td><td bgcolor=\'#ffffff\'><center>'+str('%.2g' % float(i['vitPValue']))+'</center></td></tr>'
         s += '</table></p>'

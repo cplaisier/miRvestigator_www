@@ -193,20 +193,20 @@ def run(job_uuid, genes, seedModels, wobble, cut, bgModel, motifSizes, jobName, 
                        textOut=False)
 
     # 6. Read in miRNAs to get mature miRNA ids
-    import gzip
-    miRNAFile = gzip.open('mature.fa.gz','r')
-    miRNADict = {}
-    while 1:
-        miRNALine = miRNAFile.readline()
-        seqLine = miRNAFile.readline()
-        if not miRNALine:
-            break
-        # Get the miRNA name
-        miRNAData = miRNALine.lstrip('>').split(' ')
-        curMiRNA = miRNAData[0]
-        if (curMiRNA.split('-'))[0]=='hsa':
-            miRNADict[curMiRNA] = miRNAData[1]
-    miRNAFile.close()
+    # import gzip
+    # miRNAFile = gzip.open('mature.fa.gz','r')
+    # miRNADict = {}
+    # while 1:
+    #     miRNALine = miRNAFile.readline()
+    #     seqLine = miRNAFile.readline()
+    #     if not miRNALine:
+    #         break
+    #     # Get the miRNA name
+    #     miRNAData = miRNALine.lstrip('>').split(' ')
+    #     curMiRNA = miRNAData[0]
+    #     if (curMiRNA.split('-'))[0]=='hsa':
+    #         miRNADict[curMiRNA] = miRNAData[1]
+    # miRNAFile.close()
 
     # 6. Clean-up after yerself
     os.remove('tmp/fasta/tmp'+str(curRunNum)+'.fasta')
