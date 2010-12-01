@@ -72,7 +72,7 @@
         }
       }
       
-      function getParameters() {
+      function getParameters(job_id) {
         if (job_id) {
           jQuery.ajax({
             url: "/miRvestigator/parameters?id=" + job_id,
@@ -107,11 +107,11 @@
       window.onload=function() {
         var url = window.location.pathname;
         var m = url.match(/\/status\/([0-9a-fA-F\-]+)\//);
-        getParameters();
         if (m && m.length > 1) {
           job_id = m[1];
           if (job_id) {
-            $("#job_id").append(job_id);
+            getParameters(job_id);
+//            $("#job_id").append(job_id);
             $("#refresh_link").attr("href", "/status/" + job_id + "/");
             polling_timer = window.setInterval(function() {
               poll();
