@@ -110,8 +110,8 @@ def get_job_status(job_uuid):
         cursor.execute("select * from jobs where uuid=%s;", (job_uuid,))
         row = cursor.fetchone()
         result = {}
-        result['created_at'] = row[1];
-        result['updated_at'] = row[2];
+        result['created_at'] = row[1].strftime('%Y.%m.%d %H:%M:%S');
+        result['updated_at'] = row[2].strftime('%Y.%m.%d %H:%M:%S');
         result['status'] = row[3];
         return result
     finally:
