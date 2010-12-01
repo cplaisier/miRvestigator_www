@@ -246,7 +246,7 @@ def read_motifs(job_uuid):
             matrix = []
             for row in result_set:
                 matrix.append([row[0], row[1], row[2], row[3]])
-                log("pssm type ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~>>>>>>>>>>>> str(type(row[0])))
+                log("pssm type ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~>>>>>>>>>>>> " + str(type(row[0])))
             motif['matrix'] = matrix
 
         # read sites
