@@ -33,7 +33,7 @@ def create_job_in_db(job):
         
         # store entry in jobs table
         cursor.execute("insert into jobs (uuid, created_at, updated_at, status) values ('%s', '%s', '%s', '%s');"
-                       % (job_uuid, created_at.isoformat(), created_at.isoformat(), 'queued'))
+                       % (job_uuid, created_at.isoformat(), created_at.isoformat(), 'queued',))
         
         # store parameters
         for k, v in job.iteritems():
@@ -53,6 +53,38 @@ def create_job_in_db(job):
             print("Exception closing conection: ")
             print(exception)
 
+def read_parameters(job_uuid):
+    conn = _get_db_connection()
+    try:
+        cursor = conn.cursor()
+
+        cursor.execute("""
+            select name, value
+            from parameters
+            where job_uuid=%s""", (job_uuid,))
+        result_set = cursor.fetchall()
+
+        parameters = []
+        for row in result_set:
+            parameter = {}
+            parameter['name'] = row[1]
+            parameter['value'] = row[2]
+            parameters.append(parameter)
+
+        return parameters
+
+    finally:
+        try:
+            cursor.close()
+        except Exception as exception:
+            print("Exception closing cursor: ")
+            print(exception)
+        try:
+            conn.close()
+        except Exception as exception:
+            print("Exception closing conection: ")
+            print(exception)
+    
 
 def get_job_status(job_uuid):
     conn = _get_db_connection()
@@ -135,15 +167,12 @@ def store_motif(job_uuid, pssm):
             insert into motifs
             (job_uuid, name, score)
             values ('%s', '%s', %f);""" % (str(job_uuid), pssm.getName(), float(pssm.getEValue()),)
-        print("sql = " + sql)
 
         cursor.execute(sql)
         motif_id = cursor.lastrowid
-        print("storing motif:::" + str(motif_id))
 
         # write pssm matrix
         for scores in pssm.getMatrix():
-            print("storing matrix")
             sql = """
                 insert into pssms
                 (motif_id, a, t, c, g)
@@ -159,15 +188,92 @@ def store_motif(job_uuid, pssm):
         # sites is a dictionary w/ keys: gene, start, match, site
         sites = pssm.nsites
         for site in sites:
-            print("storing site")
             cursor.execute("""
                 insert into sites
                 (motif_id, entrez_gene_id, sequence, start, quality)
                 values (%d, '%s', '%s', %d, '%s')""" %
                 (motif_id, str(site['gene']), site['site'], int(site['start']), site['match'],))
         
-        print("done storing motif")
         return motif_id
+
+    finally:
+        try:
+            cursor.close()
+        except Exception as exception:
+            print("Exception closing cursor: ")
+            print(exception)
+        try:
+            conn.close()
+        except Exception as exception:
+            print("Exception closing conection: ")
+            print(exception)
+
+
+def read_motifs(job_uuid):
+    print("storing motif...")
+    conn = _get_db_connection()
+    try:
+        cursor = conn.cursor()
+
+        # read motifs for this job
+        cursor.execute("""
+            select motif_id, job_uuid, name, score
+            from motifs
+            where job_uuid = %s;""",
+            (str(job_uuid),)
+        result_set = cursor.fetchall()
+        motifs = []
+        for row in result_set:
+            motif = {}
+            motif['motif_id'] = row[1]
+            motif['job_uuid'] = row[2]
+            motif['name'] = row[3]
+            motif['score'] = row[4]
+            motifs.append(motif)
+
+        # read pssm matrix
+        for motif in motifs:
+            cursor.execute("""
+                select a, t, c, g
+                from pssms
+                where motif_id=%d;""",
+                (motif['motif_id'],))
+            result_set = cursor.fetchall()
+            matrix = []
+            for row in result_set:
+                matrix.append([row[1], row[2], row[3], row[4]])
+            motif['matrix'] = matrix
+
+        # read sites
+        # each site is a dictionary w/ keys: gene, start, match, site
+        for motif in motifs:
+            cursor.execute("""
+                select entrez_gene_id, sequence, start, quality
+                from sites
+                where motif_id=%d;""",
+                (motif['motif_id'],))
+            result_set = cursor.fetchall()
+            sites = []
+            for row in result_set:
+                site = {}
+                site['gene']  = row[1]
+                site['site']  = row[2]
+                site['start'] = row[3]
+                site['match'] = row[4]
+                sites.append(site)
+            motif['sites'] = sites
+
+        return motifs
+
+        # construct a list of pssm objects
+        # pssms = []
+        # for motif in motifs:
+        #     #pssm(self, pssmFileName=None, biclusterName=None, nsites=None, eValue=None, pssm=None, genes=None)
+        #     pssms.append(pssm(  biclusterName=motif['name'],
+        #                         nsites=motif['sites'],
+        #                         eValue=motif['score'],
+        #                         pssm=motif['matrix']))
+        # return pssms
 
     finally:
         try:
@@ -201,6 +307,41 @@ def store_mirvestigator_scores(motif_id, scores):
                                           values (%d, '%s', '%s', '%s', '%s', %f);
                 """ %
                 (motif_id, score['miRNA.name'], score['miRNA.seed'], score['model'], ";".join(score['statePath']), score['vitPValue'],))
+    finally:
+        try:
+            cursor.close()
+        except Exception as exception:
+            print("Exception closing cursor: ")
+            print(exception)
+        try:
+            conn.close()
+        except Exception as exception:
+            print("Exception closing conection: ")
+            print(exception)
+
+
+def read_mirvestigator_scores(motif_id):
+    conn = _get_db_connection()
+    try:
+        cursor = conn.cursor()
+        cursor.execute("""
+            select motif_id, mirna_name, mirna_seed, seedModel, alignment, viterbi_p
+            from mirvestigator_scores
+            where motif_id=%d);
+            """, (int(motif_id),))
+        result_set = cursor.fetchall()
+        
+        scores = []
+        for row in result_set:
+            score = {}
+            score['miRNA.name'] = row[2]
+            score['miRNA.seed'] = row[3]
+            score['model'] = row[4]
+            score['statePath'] = ";".split(row[5])
+            score['vitPValue'] = row[6]
+            scores.append(score)
+
+        return score
 
     finally:
         try:

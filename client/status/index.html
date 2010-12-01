@@ -74,9 +74,7 @@
           if (job_id) {
             $("#job_id").append(job_id);
             $("#refresh_link").attr("href", "/status/" + job_id + "/");
-            polling_timer = window.setInterval(function() {
-              poll();
-            }, 1000);
+            polling_timer = window.setInterval(poll, 1000);
           }
         }
       }
