@@ -228,7 +228,7 @@ def read_motifs(job_uuid):
         motifs = []
         for row in result_set:
             motif = {}
-            log(str(type(row[0])))
+            log("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~   " + str(type(row[0])))
             motif['motif_id'] = int(row[0])
             motif['job_uuid'] = row[1]
             motif['name'] = row[2]
@@ -240,7 +240,7 @@ def read_motifs(job_uuid):
             cursor.execute("""
                 select a, t, c, g
                 from pssms
-                where motif_id=%d;""",
+                where motif_id=%d;""" %
                 (motif['motif_id'],))
             result_set = cursor.fetchall()
             matrix = []
@@ -255,7 +255,7 @@ def read_motifs(job_uuid):
             cursor.execute("""
                 select entrez_gene_id, sequence, start, quality
                 from sites
-                where motif_id=%d;""",
+                where motif_id=%d;""" %
                 (motif['motif_id'],))
             result_set = cursor.fetchall()
             sites = []
