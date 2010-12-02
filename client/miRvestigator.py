@@ -112,16 +112,20 @@ def submitJob(req):
     job['topRet'] = str(req.form.getfirst('topRet',''))
     job['jobName'] = str(req.form.getfirst('jobName',''))
 
-    # connect to miR server via Pyro
-    uriFile = open('/var/www/uri','r')
-    uri = uriFile.readline().strip()
-    uriFile.close()
-    miR_server = Pyro.core.getProxyForURI(uri)
-    Pyro.core.initClient()
+    try:
+        # connect to miR server via Pyro
+        uriFile = open('/var/www/uri','r')
+        uri = uriFile.readline().strip()
+        uriFile.close()
+        miR_server = Pyro.core.getProxyForURI(uri)
+        Pyro.core.initClient()
 
-    # submit job to server process and redirect to status page
-    job_id = miR_server.submit_job(job)
-    util.redirect(req, req.construct_url("/status/%s/" % (job_id)))
+        # submit job to server process and redirect to status page
+        job_id = miR_server.submit_job(job)
+        util.redirect(req, req.construct_url("/status/%s/" % (job_id)))
+    except Exception as e:
+        util.redirect(req, req.construct_url("/error/" % (job_id)))
+        
 
 
 # return a JSON string encoding job status

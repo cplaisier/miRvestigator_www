@@ -14,10 +14,14 @@ limit number of genes
 email on error, queue too long, job in the queue too long,
 
 
+
+
 add to AMI:
 x ssh keys for github access
 x delete git_mirv? just use git clone?
 
+postfix
+newer rewrite rules
 
 
 
@@ -29,6 +33,7 @@ configure mod_rewrite for apache2 in /etc/apache2/sites-enabled/000-default
 RewriteEngine ON
 RewriteRule ^status/([a-fA-F0-9\-]+)/(.?)$ /status/index.html
 RewriteRule ^results/([a-fA-F0-9\-]+)/(.?)$ /miRvestigator.py/results?id=$1
+RewriteRule ^error/$ /error.html
 </Directory>
 
 
