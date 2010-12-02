@@ -37,21 +37,27 @@ def send(sender, receivers, subject="", body=""):
        print >> sys.stderr, e
 
 class AdminEmailer:
-    mirv = 'mirvestigator@systemsbiology.org'
-    admins = ['cplaisier@systemsbiology.org', 'cbare@systemsbiology.org']
-    sent_at = None
-    two_hours = datetime.timedelta(hours=2)
+    def __init__(self):
+        self.mirv = 'mirvestigator@systemsbiology.org'
+        self.admins = ['cplaisier@systemsbiology.org', 'cbare@systemsbiology.org']
+        self.sent_at = None
+        self.two_hours = datetime.timedelta(hours=2)
 
     def warn(self, message):
         print >> sys.stderr, "trying to send an email"
         try:
             t = datetime.datetime.now()
-            if (sent_at is not None and t < sent_at + two_hours):
+            if (self.sent_at is not None and t < sent_at + two_hours):
                 # suppress sending emails too often
                 return
-            sent_at = t
+            self.sent_at = t
             print >> sys.stderr, "trying to send an email at %s" % (str(t))
-            send(mirv, admins, "miRvestigator warning", message)
+            send(self.mirv, self.admins, "miRvestigator warning", message)
             print >> sys.stderr, "sent an email at %s" % (str(t))
         except Exception as e:
             print >> sys.stderr, e
+
+
+if __name__ == '__main__':
+    adminEmailer = AdminEmailer()
+    adminEmailer.warn("Disaster!!!")
