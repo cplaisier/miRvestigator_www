@@ -1,7 +1,6 @@
 import smtplib
 from email.mime.text import MIMEText
 import datetime
-import time
 
 
 MAIL_HOST = 'localhost'
@@ -40,7 +39,7 @@ class AdminEmailer:
     mirv = 'mirvestigator@systemsbiology.org'
     admins = ['cplaisier@systemsbiology.org', 'cbare@systemsbiology.org']
     sent_at = None
-    two_hours = timedelta(hours=2)
+    two_hours = datetime.timedelta(hours=2)
 
     def warn(message):
         try:
