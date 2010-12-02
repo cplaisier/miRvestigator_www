@@ -11,7 +11,7 @@ if /var/www/uri doesn't exist, redirect to mirvestigator is down page
 limit size of q
 limit number of genes
 
-email on error
+email on error, queue too long, job in the queue too long,
 
 
 add to AMI:
@@ -27,8 +27,8 @@ configure mod_rewrite for apache2 in /etc/apache2/sites-enabled/000-default
 ...
 
 RewriteEngine ON
-RewriteRule ^status/([a-fA-F0-9\-]+)/$ /status/index.html
-RewriteRule ^results/([a-fA-F0-9\-]+)/$ /miRvestigator.py/results?id=$1
+RewriteRule ^status/([a-fA-F0-9\-]+)/(.?)$ /status/index.html
+RewriteRule ^results/([a-fA-F0-9\-]+)/(.?)$ /miRvestigator.py/results?id=$1
 </Directory>
 
 
