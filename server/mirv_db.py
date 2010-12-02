@@ -49,11 +49,10 @@ def create_job_in_db(job):
                                (job_uuid, k, str(v),) )
 
        #store genes
-       if (genes):
-           for gene in job['genes']:
-               gene = _sanitize(gene)[0:20]
-               cursor.execute("insert into genes (job_uuid, name) values ('%s', '%s');" %
-                              (job_uuid, gene,) )
+        if (genes):
+            for gene in job['genes']:
+                gene = _sanitize(gene)[0:20]
+                cursor.execute("insert into genes (job_uuid, name) values ('%s', '%s');" % (job_uuid, gene,) )
 
     finally:
         try:
