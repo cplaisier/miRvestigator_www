@@ -7,6 +7,7 @@
       var job_id = null;
       var polling_timer = null;
       var current_status = null;
+      var autoredirect = true;
 
 
       function toggleVisible(id) {
@@ -47,8 +48,8 @@
                 current_status = status.status
                 if (current_status=="queued") {
                   $("#status").text("Queued");
-                }
-                if (current_status=="running weeder") {
+                  $("#status_img").attr("src", "/images/inTheQueue.gif");
+                } else if (current_status=="running weeder") {
                   getParameters(job_id);
                   $("#status").text("Running Weeder");
                   $("#status_img").attr("src", "/images/runningWeeder.gif");
@@ -62,7 +63,9 @@
               }
               if (status.status=="done") {
                 clearInterval(polling_timer);
-                window.location = "/results/" + job_id + "/";
+                if (autoredirect) {
+                  window.location = "/results/" + job_id + "/";
+                }
               }
               else if (status.status=="error") {
                 clearInterval(polling_timer);
@@ -116,9 +119,14 @@
 
       window.onload=function() {
         var url = window.location.pathname;
-        var m = url.match(/\/status\/([0-9a-fA-F\-]+)\//);
+        var m = url.match(/\/status\/([0-9a-fA-F\-]+)\/(\.?)/);
         if (m && m.length > 1) {
           job_id = m[1];
+          if (m.length > 2) {
+            if (m[2]==".") {
+              autoredirect = false
+            }
+          }
           if (job_id) {
             poll();
             getParameters();
@@ -143,7 +151,7 @@
         <center><table width='100%' cellpadding='15%'><tr><td align='center' valign='center' bgcolor='#000000'><font size=6><b><font color='#ff0000'>miR</font><font color='#cccc00'>vestigator Framework</font></b></font></td></tr></table>
             </br>
             <center><table width='100%' cellpadding='5%' cellspacing=3><tr><td bgcolor='#000000'><center><p><font color='#cccc00' size=4><b>Your submission is being processed...</b></font></center></tr></td>
-                    <tr><td bgcolor='#cccccc'><table width='100%' cellpadding='10%'><tr><td bgcolor='#333333' align='center' valign='center'><b><font color='#cccc00' size=4>Current Status: </font><font size=4 color='#ff0000'><span id="status"></span></font></b></td></tr><tr><td bgcolor='#ffffff'><img id="status_img" width="861" height="261" src="/images/inTheQueue.gif"/></p></td></tr></table></td></tr>
+                    <tr><td bgcolor='#cccccc'><table width='100%' cellpadding='10%'><tr><td bgcolor='#333333' align='center' valign='center'><b><font color='#cccc00' size=4>Current Status: </font><font size=4 color='#ff0000'><span id="status"></span></font></b></td></tr><tr><td bgcolor='#ffffff'><img id="status_img" width="861" height="261" src="/images/default.gif"/></p></td></tr></table></td></tr>
             <tr><td></td></tr>
             <tr><td bgcolor='#000000'><center><font color='#cccc00' size=4><b>Submission Parameters</b></font></center></td></tr>    
             <tr><td bgcolor='#cccccc'>
