@@ -6,9 +6,16 @@ import uuid
 from mirv_db import create_job_in_db, update_job_status
 from multiprocessing import Process, Queue, cpu_count
 import mirv_worker
+import admin_emailer
 
 
+
+QUEUE_WARN_SIZE = 3
 SHUTDOWN_FLAG = -1
+
+
+
+adminEmailer = admin_emailer.AdminEmailer()
 
 
 
@@ -68,7 +75,10 @@ class MiRvestigatorServer(Pyro.core.ObjBase):
         # put params in DB
         q.put(job)
         try:
-            update_job_status(job['id'], "queued", "queue length %d" % q.qsize())
+            q_len = q.qsize()
+            if ( >= QUEUE_WARN_SIZE):
+                adminEmailer.warn("Queue is getting too long. There are currently %d items in the queue." % q_len)
+            update_job_status(job['id'], "queued", "queue length %d" % q_len)
         except Exception:
             update_job_status(job['id'], "queued")
         return id

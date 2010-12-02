@@ -43,10 +43,12 @@ class AdminEmailer:
     two_hours = timedelta(hours=2)
 
     def warn(message):
-        t = datetime.datetime.now()
-        if (sent_at and t < sent_at + two_hours):
-            # suppress sending emails too often
-            return
-        sent_at = t
-        send(mirv, admins, "miRvestigator warning", message)
-
+        try:
+            t = datetime.datetime.now()
+            if (sent_at and t < sent_at + two_hours):
+                # suppress sending emails too often
+                return
+            sent_at = t
+            send(mirv, admins, "miRvestigator warning", message)
+        except Exception as e:
+            print(e)

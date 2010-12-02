@@ -13,6 +13,7 @@ limit number of genes
 
 email on error, queue too long, job in the queue too long,
 
+error on no genes?
 
 
 
