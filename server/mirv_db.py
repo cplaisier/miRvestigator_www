@@ -166,7 +166,7 @@ def get_job_status(job_uuid):
             log(exception)
 
 
-def update_job_status(job_uuid, status, message):
+def update_job_status(job_uuid, status, message=None):
     conn = _get_db_connection()
     try:
         now = datetime.datetime.now()
