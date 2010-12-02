@@ -118,7 +118,7 @@
 
       window.onload=function() {
         var url = window.location.pathname;
-        var m = url.match(/\/status\/([0-9a-fA-F\-]+)\/(\.?)/);
+        var m = url.match(/\/status\/([0-9a-fA-F\-]+)\/(.?)/);
         if (m && m.length > 1) {
           job_id = m[1];
           if (m.length > 2) {
