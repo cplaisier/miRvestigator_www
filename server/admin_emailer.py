@@ -47,7 +47,7 @@ class AdminEmailer:
         print >> sys.stderr, "trying to send an email"
         try:
             t = datetime.datetime.now()
-            if (self.sent_at is not None and t < self.sent_at + two_hours):
+            if (self.sent_at is not None and t < self.sent_at + self.two_hours):
                 # suppress sending emails too often
                 return
             self.sent_at = t
