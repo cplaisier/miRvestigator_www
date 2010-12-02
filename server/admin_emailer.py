@@ -39,7 +39,7 @@ def send(sender, receivers, subject="", body=""):
 class AdminEmailer:
     def __init__(self):
         self.mirv = 'mirvestigator@systemsbiology.org'
-        self.admins = ['cplaisier@systemsbiology.org', 'cbare@systemsbiology.org']
+        self.admins = ['cbare@systemsbiology.org']
         self.sent_at = None
         self.two_hours = datetime.timedelta(hours=2)
 
@@ -52,7 +52,7 @@ class AdminEmailer:
                 return
             self.sent_at = t
             print >> sys.stderr, "trying to send an email at %s" % (str(t))
-            send(self.mirv, self.admins, "miRvestigator warning", message)
+            send(self.mirv, self.admins, subject="miRvestigator warning", body=message)
             print >> sys.stderr, "sent an email at %s" % (str(t))
         except Exception as e:
             print >> sys.stderr, e
