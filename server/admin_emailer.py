@@ -1,6 +1,7 @@
 import smtplib
 from email.mime.text import MIMEText
 import datetime
+import sys
 
 
 MAIL_HOST = 'localhost'
@@ -32,8 +33,8 @@ def send(sender, receivers, subject="", body=""):
        s.sendmail(sender, receivers, message)         
        s.quit()
     except Exception as e:
-       print "Error: unable to send email"
-       print e
+       print >> sys.stderr, "Error: unable to send email"
+       print >> sys.stderr, e
 
 class AdminEmailer:
     mirv = 'mirvestigator@systemsbiology.org'
@@ -50,4 +51,4 @@ class AdminEmailer:
             sent_at = t
             send(mirv, admins, "miRvestigator warning", message)
         except Exception as e:
-            print(e)
+            print >> sys.stderr, e

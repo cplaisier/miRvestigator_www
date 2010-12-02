@@ -128,7 +128,7 @@ def submitJob(req):
     except Exception as e:
         adminEmailer.warn("miRvestigator server is unreachable: \n\n" + str(e))
         util.redirect(req, req.construct_url("/error"))
-        
+
 
 
 # return a JSON string encoding job status
