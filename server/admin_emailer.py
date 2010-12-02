@@ -41,7 +41,7 @@ class AdminEmailer:
     sent_at = None
     two_hours = datetime.timedelta(hours=2)
 
-    def warn(message):
+    def warn(self, message):
         try:
             t = datetime.datetime.now()
             if (sent_at and t < sent_at + two_hours):
