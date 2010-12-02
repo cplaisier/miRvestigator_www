@@ -219,7 +219,7 @@ def set_genes_annotated(job_uuid, sequence_dict):
         if (sequence_dict):
             for gene in sequence_dict.keys():
                 gene = _sanitize(gene)[0:20]
-                cursor.execute("update genes set sequence=true where job_uuid='%s' and name='%s;" %
+                cursor.execute("update genes set sequence=true where job_uuid='%s' and name='%s';" %
                                (job_uuid, gene,) )
     finally:
         try:
