@@ -88,12 +88,11 @@
             success: function(parameters) {
               $("#job_name").html("<font color='#ff0000'>" + parameters.jobName + "</font>");
               $("#job_id").html("<font color='#ff0000'>" + job_id + "</font>");
-              if (parameters.genes_submitted==0) {
-                $("#genes_submitted").html("<font color='#ff0000'>Pending</font>");
-                $("#annotated_sequences").html("<font color='#ff0000'>Pending</font>");
+              $("#genes_submitted").html("<font color='#ff0000'>" + parameters.genes_submitted + "</font>");
+              if (parameters.annotated_sequences==0) {
+                $("#annotated_sequences").html("<font color='#ff0000'>Pending...</font>");
               }
               else {
-                $("#genes_submitted").html("<font color='#ff0000'>" + parameters.genes_submitted + "</font>");
                 $("#annotated_sequences").html("<font color='#ff0000'>" + parameters.annotated_sequences + "</font>");
               }
               $("#motif_sizes").html("<font color='#ff0000'>" + parameters.motif_sizes.join(", ") + "</font>");

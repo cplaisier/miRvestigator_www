@@ -167,6 +167,8 @@ def results(req):
     
 
     s = '<html>\n'
+    s+= '<head>'
+    s+= '<title>miRvestigator Framework</title>\n'
     s+= '<script language=JavaScript>\n\tvar _gaq = _gaq || [];\n\t_gaq.push([\'_setAccount\', \'UA-19292534-1\']);\n\t_gaq.push([\'_trackPageview\']);\n\t(function() {\n\t\tvar ga = document.createElement(\'script\');\n\t\tga.type = \'text/javascript\';\n\t\tga.async = true;\n\t\tga.src = (\'https:\' == document.location.protocol ? \'https://ssl\' : \'http://www\') + \'.google-analytics.com/ga.js\';\n\t\tvar s = document.getElementsByTagName(\'script\')[0];\n\t\ts.parentNode.insertBefore(ga, s);\n\t})();\n'
     s += 'function toggleVisible(id) {\n\tif (document.getElementById) {\n\t\tobj = document.getElementById(id);\n\t\tif (obj) {\n\t\t\tif (obj.style.display == \'none\') {\n\t\t\t\tobj.style.display = \'\'\n\t\t\t} else {\n\t\t\t\tobj.style.display = \'none\'\n\t\t\t}\n\t\t}\n\t}\n}\n'
     s += '</script>\n<style>\n\tbody { font-family: arial, sans-serif; }\n</style>\n</head>'

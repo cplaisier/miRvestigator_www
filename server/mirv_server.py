@@ -37,6 +37,7 @@ def start_worker(id, q):
 
         mirv_worker.run(job['id'], genes, seedModels, wobble, cut, bgModel, motifSizes, jobName, topRet)
         # try:
+        #     mirv_worker.run(job['id'], genes, seedModels, wobble, cut, bgModel, motifSizes, jobName, topRet)
         # except Exception as e:
         #     try:
         #         print("Exception in mirv_worker.run on job " + str(job_uuid))
@@ -67,8 +68,7 @@ class MiRvestigatorServer(Pyro.core.ObjBase):
         # put params in DB
         q.put(job)
         try:
-            q_length = q.qsize()
-            update_job_status(job['id'], "queued (%d)" % q.qsize())
+            update_job_status(job['id'], "queued", "queue length %d" % q.qsize())
         except Exception:
             update_job_status(job['id'], "queued")
         return id
@@ -82,7 +82,7 @@ if __name__ == '__main__':
 
     try:
         cores = cpu_count()
-        num_workers = cores * 2
+        num_workers = cores
     except Exception as e:
         print("can't detect number of cpus")
         print(e)

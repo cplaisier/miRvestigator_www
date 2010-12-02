@@ -33,3 +33,5 @@ RewriteRule ^results/([a-fA-F0-9\-]+)/$ /miRvestigator.py/results?id=$1
 
 
 
+to do all 6 examples concurrently takes about 22 minutes 36 seconds
+

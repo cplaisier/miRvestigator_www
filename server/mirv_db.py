@@ -48,6 +48,13 @@ def create_job_in_db(job):
                 cursor.execute("insert into parameters (job_uuid, name, value) values (%s, %s, %s);",
                                (job_uuid, k, str(v),) )
 
+       #store genes
+       if (genes):
+           for gene in job['genes']:
+               gene = _sanitize(gene)[0:20]
+               cursor.execute("insert into genes (job_uuid, name) values ('%s', '%s');" %
+                              (job_uuid, gene,) )
+
     finally:
         try:
             cursor.close()
@@ -160,7 +167,7 @@ def get_job_status(job_uuid):
             log(exception)
 
 
-def update_job_status(job_uuid, status):
+def update_job_status(job_uuid, status, message):
     conn = _get_db_connection()
     try:
         now = datetime.datetime.now()
@@ -180,18 +187,41 @@ def update_job_status(job_uuid, status):
             log(exception)
 
 
-def store_genes(job_uuid, genes, sequence_dict):
+def store_genes(job_uuid, genes):
     conn = _get_db_connection()
     try:
-        created_at = datetime.datetime.now()
         cursor = conn.cursor()
 
         #store genes
         if (genes):
             for gene in genes:
                 gene = _sanitize(gene)[0:20]
-                cursor.execute("insert into genes (job_uuid, name, sequence) values ('%s', '%s', %s);" %
-                               (job_uuid, gene, str(gene in sequence_dict),) )
+                cursor.execute("insert into genes (job_uuid, name) values ('%s', '%s');" %
+                               (job_uuid, gene,) )
+    finally:
+        try:
+            cursor.close()
+        except Exception as exception:
+            log("Exception closing cursor: ")
+            log(exception)
+        try:
+            conn.close()
+        except Exception as exception:
+            log("Exception closing conection: ")
+            log(exception)
+
+
+def set_genes_annotated(job_uuid, sequence_dict):
+    conn = _get_db_connection()
+    try:
+        cursor = conn.cursor()
+
+        #update genes to indicate whether sequence was found
+        if (sequence_dict):
+            for gene in sequence_dict.keys():
+                gene = _sanitize(gene)[0:20]
+                cursor.execute("update genes set sequence=true where job_uuid='%s' and name='%s;" %
+                               (job_uuid, gene,) )
     finally:
         try:
             cursor.close()
