@@ -124,7 +124,7 @@ def submitJob(req):
         job_id = miR_server.submit_job(job)
         util.redirect(req, req.construct_url("/status/%s/" % (job_id)))
     except Exception as e:
-        util.redirect(req, req.construct_url("/error/" % (job_id)))
+        util.redirect(req, req.construct_url("/error/"))
         
 
 
