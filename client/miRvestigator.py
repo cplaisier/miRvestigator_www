@@ -134,13 +134,13 @@ def submitJob(req):
         print >> sys.stderr, "except 1"
         traceback.print_stack()
         traceback.print_exc()
-        adminEmailer.warn("miRvestigator server is unreachable: \n\n" + str(pe))
+        # adminEmailer.warn("miRvestigator server is unreachable: \n\n" + str(pe))
         util.redirect(req, req.construct_url("/error"))
     except Exception as e:
         print >> sys.stderr, "except 2"
         traceback.print_stack()
         traceback.print_exc()
-        adminEmailer.warn("miRvestigator server error: \n\n" + str(sys.exc_info()[0]))
+        # adminEmailer.warn("miRvestigator server error: \n\n" + str(sys.exc_info()[0]))
         util.redirect(req, req.construct_url("/error"))
 
 
