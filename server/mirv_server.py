@@ -52,7 +52,10 @@ def start_worker(id, q):
         motifSizes = [int(job[m]) for m in ['m6', 'm8'] if m in job and job[m]]
 
         try:
+            # run the job
             mirv_worker.run(job['id'], genes, seedModels, wobble, cut, bgModel, motifSizes, jobName, topRet)
+
+            # notify on success
             print("worker %d done job %s." % (id, job['id']))
             update_job_status(job['id'], 'done')
             if (notify_mail):
@@ -66,18 +69,18 @@ def start_worker(id, q):
             except Exception as e2:
                 traceback.print_stack()
                 traceback.print_exc()
-        try:
-            adminEmailer.warn(error_msg_template %  (id, str(job['id']), traceback.format_stack(), traceback.format_exc(),))
-        except Exception as e2:
-            traceback.print_stack()
-            traceback.print_exc()
-        try:
-            if (notify_mail):
-                #recipients, job_uuid, job_name
-                adminEmailer.notify_error(notify_mail.split(","), str(job['id']), jobName)
-        except Exception as e2:
-            traceback.print_stack()
-            traceback.print_exc()
+            try:
+                adminEmailer.warn(error_msg_template %  (id, str(job['id']), traceback.format_stack(), traceback.format_exc(),))
+            except Exception as e2:
+                traceback.print_stack()
+                traceback.print_exc()
+            try:
+                if (notify_mail):
+                    #recipients, job_uuid, job_name
+                    adminEmailer.notify_error(notify_mail.split(","), str(job['id']), jobName)
+            except Exception as e2:
+                traceback.print_stack()
+                traceback.print_exc()
 
     print("worker %d exiting." % (id))
 
