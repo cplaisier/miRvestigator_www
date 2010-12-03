@@ -27,8 +27,6 @@ Stacktrace:
 """
 
 
-
-
 # wait to take a job from the queue and do it
 def start_worker(id, q):
     print("worker %d started" % (id))
@@ -46,6 +44,7 @@ def start_worker(id, q):
         cut = float(job['cut'])
         jobName = job['jobName']
         topRet = job['topRet']
+        notify_mail = job['notify_mail']
 
         # condense seed models and motif sizes into arrays of ints
         seedModels = [int(job[s]) for s in ['s6','s7','s8'] if s in job and job[s]]
@@ -55,6 +54,8 @@ def start_worker(id, q):
             mirv_worker.run(job['id'], genes, seedModels, wobble, cut, bgModel, motifSizes, jobName, topRet)
             print("worker %d done job %s." % (id, job['id']))
             update_job_status(job['id'], 'done')
+            if (notify_mail):
+                adminEmailer.notify_complete( notify_mail.split(","), str(job['id']), jobName )
         except Exception as e:
             print("Exception in mirv_worker %d on job %s." %  (id, str(job['id'])))
             traceback.print_stack()
@@ -62,14 +63,15 @@ def start_worker(id, q):
             try:
                 update_job_status(job['id'], 'error')
             except Exception as e2:
-                print(e2)
                 print(e)
-            try:
-                
-                adminEmailer.warn(error_msg_template %  (id, str(job['id']), traceback.format_stack(), traceback.format_exc(),))
-            except Exception as e2:
-                print(e2)
-                print(e)
+        try:
+            adminEmailer.warn(error_msg_template %  (id, str(job['id']), traceback.format_stack(), traceback.format_exc(),))
+        except Exception as e2:
+            print(e)
+        try:
+            adminEmailer.notify_error(error_msg_template %  (id, str(job['id']), traceback.format_stack(), traceback.format_exc(),))
+        except Exception as e2:
+            print(e)
 
     print("worker %d exiting." % (id))
 

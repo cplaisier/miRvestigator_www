@@ -114,6 +114,7 @@ def submitJob(req):
     job['m8'] = str(req.form.getfirst('motif_8',''))
     job['topRet'] = str(req.form.getfirst('topRet',''))
     job['jobName'] = str(req.form.getfirst('jobName',''))
+    job['notify_mail'] = str(req.form.getfirst('notify_mail',None))
 
     try:
         # connect to miR server via Pyro
@@ -126,10 +127,15 @@ def submitJob(req):
         # submit job to server process and redirect to status page
         job_id = miR_server.submit_job(job)
         util.redirect(req, req.construct_url("/status/%s/" % (job_id)))
-    except Exception as e:
+    except ProtocolError as pe:
         traceback.print_stack()
         traceback.print_exc()
-        adminEmailer.warn("miRvestigator server is unreachable: \n\n" + str(e))
+        adminEmailer.warn("miRvestigator server is unreachable: \n\n" + str(pe))
+        util.redirect(req, req.construct_url("/error"))
+    except:
+        traceback.print_stack()
+        traceback.print_exc()
+        adminEmailer.warn("miRvestigator server error: \n\n" + str(sys.exc_info()[0]))
         util.redirect(req, req.construct_url("/error"))
 
 
