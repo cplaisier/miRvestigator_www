@@ -2,6 +2,7 @@ import Pyro.core
 import datetime
 import time
 import uuid
+import traceback
 
 from mirv_db import create_job_in_db, update_job_status
 from multiprocessing import Process, Queue, cpu_count
@@ -10,12 +11,20 @@ import admin_emailer
 
 
 
-QUEUE_WARN_SIZE = 60
+QUEUE_WARN_SIZE = 100
 SHUTDOWN_FLAG = -1
 
 
 
 adminEmailer = admin_emailer.AdminEmailer()
+
+error_msg_template = """
+Exception in mirv_worker %d on job %s.
+
+Stacktrace:
+%s
+%s
+"""
 
 
 
@@ -47,10 +56,17 @@ def start_worker(id, q):
             print("worker %d done job %s." % (id, job['id']))
             update_job_status(job['id'], 'done')
         except Exception as e:
+            print("Exception in mirv_worker %d on job %s." %  (id, str(job['id'])))
+            traceback.print_stack()
+            traceback.print_exc()
             try:
-                print("Exception in mirv_worker %d on job %s." %  (id, str(job['id'])))
-                print(e)
                 update_job_status(job['id'], 'error')
+            except Exception as e2:
+                print(e2)
+                print(e)
+            try:
+                
+                adminEmailer.warn(error_msg_template %  (id, str(job['id']), traceback.format_stack(), traceback.format_exc(),))
             except Exception as e2:
                 print(e2)
                 print(e)
@@ -72,14 +88,23 @@ class MiRvestigatorServer(Pyro.core.ObjBase):
         job['id'] = id
         print("Job %s created %s" % (job['id'], job['created'].strftime('%Y.%m.%d %H:%M:%S')))
         create_job_in_db(job)
-        # put params in DB
-        q.put(job)
+
+        # put job in queue
+        try:
+            q.put(job, block=false)
+        except Queue.Full as e:
+            traceback.print_stack()
+            traceback.print_exc()
+            update_job_status(job['id'], "error")
+            return
+
+        # update status to queued
         try:
             q_len = q.qsize()
             if (q_len >= QUEUE_WARN_SIZE):
                 adminEmailer.warn("Queue is getting too long. There are currently %d items in the queue." % q_len)
             update_job_status(job['id'], "queued", "queue length %d" % q_len)
-        except Exception:
+        except NotImplementedError:
             print("q.qsize not supported")
             update_job_status(job['id'], "queued")
         return id
@@ -87,7 +112,7 @@ class MiRvestigatorServer(Pyro.core.ObjBase):
 
 
 if __name__ == '__main__':
-    q = Queue()
+    q = Queue(200)
 
     num_workers = 4
 
