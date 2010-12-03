@@ -42,7 +42,6 @@ def start_worker(id, q):
         seedModels = [int(job[s]) for s in ['s6','s7','s8'] if s in job and job[s]]
         motifSizes = [int(job[m]) for m in ['m6', 'm8'] if m in job and job[m]]
 
-        # mirv_worker.run(job['id'], genes, seedModels, wobble, cut, bgModel, motifSizes, jobName, topRet)                                            
         try:
             mirv_worker.run(job['id'], genes, seedModels, wobble, cut, bgModel, motifSizes, jobName, topRet)
             print("worker %d done job %s." % (id, job['id']))

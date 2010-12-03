@@ -151,9 +151,8 @@ def get_job_status(job_uuid):
         row = cursor.fetchone()
         result = {}
         if (row==None):
-            created_at = datetime.datetime.now()
-            result['created_at'] = created_at.strftime('%Y.%m.%d %H:%M:%S');
-            result['updated_at'] = created_at.strftime('%Y.%m.%d %H:%M:%S');
+            result['created_at'] = '???';
+            result['updated_at'] = '???';
             result['status'] = "not found";
         else:
             result['created_at'] = row[1].strftime('%Y.%m.%d %H:%M:%S');

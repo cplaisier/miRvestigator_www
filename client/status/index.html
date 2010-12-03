@@ -69,7 +69,10 @@
               }
               else if (status.status=="error") {
                 clearInterval(polling_timer);
-                //$("#status_output").append("<p>" + status.error_message + "</p>");
+                $("#status").text("Error");
+                if (autoredirect) {
+                  window.location = "/error";
+                }
               }
             },
             error: function(xmlHttpRequest, textStatus, errorThrown) {
