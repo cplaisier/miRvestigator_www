@@ -76,7 +76,7 @@ class MiRvestigatorServer(Pyro.core.ObjBase):
         q.put(job)
         try:
             q_len = q.qsize()
-            if ( >= QUEUE_WARN_SIZE):
+            if (q_len >= QUEUE_WARN_SIZE):
                 adminEmailer.warn("Queue is getting too long. There are currently %d items in the queue." % q_len)
             update_job_status(job['id'], "queued", "queue length %d" % q_len)
         except Exception:
