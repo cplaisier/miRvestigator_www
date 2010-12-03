@@ -57,6 +57,13 @@ completed at: %(time)s</p>
 </html>
 """
 
+message_template = """
+From:%s
+To:%s
+Subject:%s
+
+%s
+"""
 
 
 # for this to work, we need to install postfix on the server like so:
@@ -73,13 +80,7 @@ def send(sender, receivers, subject="", body=""):
     # subject = "flippety doo"
     # body = "This is a totally bogus message."
 
-    message = """\
-    From: %s
-    To: %s
-    Subject: %s
-
-    %s
-    """ % (sender, ", ".join(receivers), subject, body)
+    message = message_template % (sender, ", ".join(receivers), subject, body)
 
     try:
        s = smtplib.SMTP(MAIL_HOST)
