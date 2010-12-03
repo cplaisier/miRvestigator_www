@@ -72,7 +72,7 @@ def start_worker(id, q):
             traceback.print_stack()
             traceback.print_exc()
         try:
-            if (notify_email):
+            if (notify_mail):
                 #recipients, job_uuid, job_name
                 adminEmailer.notify_error(notify_mail.split(","), str(job['id']), jobName)
         except Exception as e2:
