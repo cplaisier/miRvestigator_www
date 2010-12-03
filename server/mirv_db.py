@@ -146,14 +146,19 @@ def read_parameters(job_uuid):
 def get_job_status(job_uuid):
     conn = _get_db_connection()
     try:
-        created_at = datetime.datetime.now()
         cursor = conn.cursor()
         cursor.execute("select * from jobs where uuid=%s;", (job_uuid,))
         row = cursor.fetchone()
         result = {}
-        result['created_at'] = row[1].strftime('%Y.%m.%d %H:%M:%S');
-        result['updated_at'] = row[2].strftime('%Y.%m.%d %H:%M:%S');
-        result['status'] = row[3];
+        if (row==None):
+            created_at = datetime.datetime.now()
+            result['created_at'] = created_at.strftime('%Y.%m.%d %H:%M:%S');
+            result['updated_at'] = created_at.strftime('%Y.%m.%d %H:%M:%S');
+            result['status'] = "not found";
+        else:
+            result['created_at'] = row[1].strftime('%Y.%m.%d %H:%M:%S');
+            result['updated_at'] = row[2].strftime('%Y.%m.%d %H:%M:%S');
+            result['status'] = row[3];
         return result
     finally:
         try:

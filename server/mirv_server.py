@@ -42,20 +42,21 @@ def start_worker(id, q):
         seedModels = [int(job[s]) for s in ['s6','s7','s8'] if s in job and job[s]]
         motifSizes = [int(job[m]) for m in ['m6', 'm8'] if m in job and job[m]]
 
-        mirv_worker.run(job['id'], genes, seedModels, wobble, cut, bgModel, motifSizes, jobName, topRet)
-        # try:
-        #     mirv_worker.run(job['id'], genes, seedModels, wobble, cut, bgModel, motifSizes, jobName, topRet)
-        # except Exception as e:
-        #     try:
-        #         print("Exception in mirv_worker.run on job " + str(job_uuid))
-        #         print(e)
-        #         update_job_status(job_uuid, "error")
-        #     except Exception as e2:
-        #         pass
+        # mirv_worker.run(job['id'], genes, seedModels, wobble, cut, bgModel, motifSizes, jobName, topRet)                                            
+        try:
+            mirv_worker.run(job['id'], genes, seedModels, wobble, cut, bgModel, motifSizes, jobName, topRet)
+            print("worker %d done job %s." % (id, job['id']))
+            update_job_status(job['id'], 'done')
+        except Exception as e:
+            try:
+                print("Exception in mirv_worker %d on job %s." %  (id, str(job['id'])))
+                print(e)
+                update_job_status(job['id'], 'error')
+            except Exception as e2:
+                print(e2)
+                print(e)
 
-        print("worker %d done job %s." % (id, job['id']))
-        update_job_status(job['id'], 'done')
-    print("worker %d done." % (id))
+    print("worker %d exiting." % (id))
 
 
 # Pyro remote object
