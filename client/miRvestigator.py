@@ -4,6 +4,7 @@ import re
 import Pyro.core
 import datetime
 import json
+import traceback
 from mirv_db import get_job_status, read_parameters, read_motifs, read_mirvestigator_scores
 import admin_emailer
 
@@ -126,6 +127,8 @@ def submitJob(req):
         job_id = miR_server.submit_job(job)
         util.redirect(req, req.construct_url("/status/%s/" % (job_id)))
     except Exception as e:
+        traceback.print_stack()
+        traceback.print_exc()
         adminEmailer.warn("miRvestigator server is unreachable: \n\n" + str(e))
         util.redirect(req, req.construct_url("/error"))
 
