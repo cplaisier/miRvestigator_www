@@ -58,6 +58,16 @@ class AdminEmailer:
             print >> sys.stderr, e
             sys.stderr.flush()
 
+    def notify_complete(self, recipients, message):
+        try:
+            t = datetime.datetime.now()
+            send(self.mirv, self.admins, subject="miRvestigator job complete", body=message)
+            print >> sys.stderr, "sent a notification email to %s at %s" % (", ".recipients, str(t))
+            sys.stderr.flush()
+        except Exception as e:
+            print >> sys.stderr, e
+            sys.stderr.flush()
+
 if __name__ == '__main__':
     adminEmailer = AdminEmailer()
     adminEmailer.warn("Disaster!!!")

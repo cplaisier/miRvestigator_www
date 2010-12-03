@@ -10,7 +10,7 @@ import admin_emailer
 
 
 
-QUEUE_WARN_SIZE = 3
+QUEUE_WARN_SIZE = 60
 SHUTDOWN_FLAG = -1
 
 

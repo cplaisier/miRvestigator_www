@@ -23,8 +23,8 @@ def log(str):
 # a simplistic form of sanitizing input
 # drop characters that are special to sql
 _sanitize_re = re.compile(r"[\\\"\';]")
-def _sanitize(str):
-    return _sanitize_re.sub("", str)
+def _sanitize(s):
+    return _sanitize_re.sub("", s)
 
 def _get_db_connection():
     return MySQLdb.connect("localhost","mirv","mirvestigator","mirvestigator")
@@ -45,6 +45,8 @@ def create_job_in_db(job):
         # store parameters
         for k, v in job.iteritems():
             if k!='id' and k!='genes':
+                if k=='jobName':
+                    v = _sanitize(v)
                 cursor.execute("insert into parameters (job_uuid, name, value) values (%s, %s, %s);",
                                (job_uuid, k, str(v),) )
 

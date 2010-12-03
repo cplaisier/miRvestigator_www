@@ -137,6 +137,8 @@ def weeder(seqFile=None, percTargets=50, revComp=False, bgModel='HS'):
 
 def run(job_uuid, genes, seedModels, wobble, cut, bgModel, motifSizes, jobName, topRet=10, eMailAddr=''):
     
+    raise Exception("We're totally fubared")
+    
     cut = float(cut)
     curRunNum = randint(0,1000000)
 
@@ -222,6 +224,8 @@ def run(job_uuid, genes, seedModels, wobble, cut, bgModel, motifSizes, jobName, 
         motif_id = store_motif(job_uuid, pssm)
         scores = mV.getScoreList(pssm.getName())
         store_mirvestigator_scores(motif_id, scores)
+
+    
 
     update_job_status(job_uuid, "done")
 
