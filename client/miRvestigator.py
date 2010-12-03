@@ -2,6 +2,7 @@ from mod_python import apache
 from mod_python import util
 import re
 import Pyro.core
+from Pyro.errors import ProtocolError
 import datetime
 import json
 import traceback
