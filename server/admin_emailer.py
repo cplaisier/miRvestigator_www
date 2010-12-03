@@ -71,20 +71,20 @@ Subject:%s
 
 
 # sender: an email address like "mirvestigator@systemsbiology.org"
-# receivers: an array of email addresses
+# recipients: an array of email addresses
 # subject: a string
 # body: a string
-def send(sender, receivers, subject="", body=""):
+def send(sender, recipients, subject="", body=""):
     # sender = "mirvestigator@systemsbiology.org"
-    # receivers = ["cbare@systemsbiology.org", "christopherbare@gmail.com"]
+    # recipients = ["cbare@systemsbiology.org", "christopherbare@gmail.com"]
     # subject = "flippety doo"
     # body = "This is a totally bogus message."
 
-    message = message_template % (sender, ", ".join(receivers), subject, body)
+    message = message_template % (sender, ", ".join(recipients), subject, body)
 
     try:
        s = smtplib.SMTP(MAIL_HOST)
-       s.sendmail(sender, receivers, message)         
+       s.sendmail(sender, recipients, message)         
        s.quit()
     except Exception as e:
        print >> sys.stderr, "Error: unable to send email"
@@ -113,7 +113,7 @@ def sendHtml(sender, recipients, subject, text, html):
     # Send the message via local SMTP server.
     try:
        s = smtplib.SMTP(MAIL_HOST)
-       s.sendmail(sender, receivers, msg.as_string())         
+       s.sendmail(sender, recipients, msg.as_string())         
        s.quit()
     except Exception as e:
        print >> sys.stderr, "Error: unable to send email"
