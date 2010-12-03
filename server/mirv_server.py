@@ -3,6 +3,7 @@ import datetime
 import time
 import uuid
 import traceback
+from Queue import Full
 
 from mirv_db import create_job_in_db, update_job_status
 from multiprocessing import Process, Queue, cpu_count
@@ -94,7 +95,7 @@ class MiRvestigatorServer(Pyro.core.ObjBase):
         # put job in queue
         try:
             q.put(job, block=false)
-        except Queue.Full as e:
+        except Full as e:
             traceback.print_stack()
             traceback.print_exc()
             update_job_status(job['id'], "error")
