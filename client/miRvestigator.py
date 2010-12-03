@@ -100,6 +100,11 @@ def alignSeed(alignment, seed, motif):
 
 # stuff parameters into a dictionary and pop those onto a queue
 def submitJob(req):
+    print >> sys.stderr, "\n\n\nsubmitJob 1\n\n\n"
+    print >> sys.stderr, "\n\n\nsubmitJob 1\n\n\n"
+    print >> sys.stderr, "\n\n\nsubmitJob 1\n\n\n"
+    print >> sys.stderr, "\n\n\nsubmitJob 1\n\n\n"
+    sys.stderr.flush()
     # create a job object which will be queued
     job = {}
     job['created'] = datetime.datetime.now()
@@ -120,6 +125,7 @@ def submitJob(req):
 
     try:
         print >> sys.stderr, "\n\n\nok 1\n\n\n"
+        sys.stderr.flush()
         # connect to miR server via Pyro
         uriFile = open('/var/www/uri','r')
         uri = uriFile.readline().strip()
@@ -128,20 +134,26 @@ def submitJob(req):
         Pyro.core.initClient()
 
         print >> sys.stderr, "\n\n\nok 2\n\n\n"
+        sys.stderr.flush()
         # submit job to server process and redirect to status page
         job_id = miR_server.submit_job(job)
         util.redirect(req, req.construct_url("/status/%s/" % (job_id)))
         print >> sys.stderr, "\n\n\nok 3\n\n\n"
+        sys.stderr.flush()
     except ProtocolError as pe:
         print >> sys.stderr, "except 1"
+        sys.stderr.flush()
         traceback.print_stack()
         traceback.print_exc()
+        sys.stderr.flush()
         # adminEmailer.warn("miRvestigator server is unreachable: \n\n" + str(pe))
         util.redirect(req, req.construct_url("/error"))
     except Exception as e:
         print >> sys.stderr, "except 2"
+        sys.stderr.flush()
         traceback.print_stack()
         traceback.print_exc()
+        sys.stderr.flush()
         # adminEmailer.warn("miRvestigator server error: \n\n" + str(sys.exc_info()[0]))
         util.redirect(req, req.construct_url("/error"))
 
