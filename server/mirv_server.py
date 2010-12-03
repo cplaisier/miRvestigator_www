@@ -94,7 +94,7 @@ class MiRvestigatorServer(Pyro.core.ObjBase):
 
         # put job in queue
         try:
-            q.put(job, block=false)
+            q.put(job, block=False)
         except Full as e:
             traceback.print_stack()
             traceback.print_exc()
