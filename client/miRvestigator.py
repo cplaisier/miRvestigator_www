@@ -119,6 +119,7 @@ def submitJob(req):
     job['notify_mail'] = str(req.form.getfirst('notify_mail',None))
 
     try:
+        print >> sys.stderr, "\n\n\nok 1\n\n\n"
         # connect to miR server via Pyro
         uriFile = open('/var/www/uri','r')
         uri = uriFile.readline().strip()
@@ -126,10 +127,11 @@ def submitJob(req):
         miR_server = Pyro.core.getProxyForURI(uri)
         Pyro.core.initClient()
 
+        print >> sys.stderr, "\n\n\nok 2\n\n\n"
         # submit job to server process and redirect to status page
         job_id = miR_server.submit_job(job)
         util.redirect(req, req.construct_url("/status/%s/" % (job_id)))
-        print >> sys.stderr, "ok 1"
+        print >> sys.stderr, "\n\n\nok 3\n\n\n"
     except ProtocolError as pe:
         print >> sys.stderr, "except 1"
         traceback.print_stack()
