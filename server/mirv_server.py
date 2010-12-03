@@ -64,15 +64,18 @@ def start_worker(id, q):
             try:
                 update_job_status(job['id'], 'error')
             except Exception as e2:
-                print(e)
+                traceback.print_stack()
+                traceback.print_exc()
         try:
             adminEmailer.warn(error_msg_template %  (id, str(job['id']), traceback.format_stack(), traceback.format_exc(),))
         except Exception as e2:
-            print(e)
+            traceback.print_stack()
+            traceback.print_exc()
         try:
             adminEmailer.notify_error(error_msg_template %  (id, str(job['id']), traceback.format_stack(), traceback.format_exc(),))
         except Exception as e2:
-            print(e)
+            traceback.print_stack()
+            traceback.print_exc()
 
     print("worker %d exiting." % (id))
 
