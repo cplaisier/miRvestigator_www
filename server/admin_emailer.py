@@ -147,7 +147,7 @@ class AdminEmailer:
             t = datetime.datetime.now()
             text_msg = notify_msg_text_template % {"job_uuid":job_uuid, "job_name":job_name, "time":t.strftime('%Y.%m.%d %H:%M:%S')}
             html_msg = notify_msg_html_template % {"job_uuid":job_uuid, "job_name":job_name, "time":t.strftime('%Y.%m.%d %H:%M:%S')}
-            sendHtml(self.mirv, recipients, subject="miRvestigator job complete", text=text_msg, html=html_msg)
+            sendHtml(self.mirv, recipients=recipients, subject="miRvestigator job complete", text=text_msg, html=html_msg)
             print >> sys.stderr, "sent a notification email to %s at %s" % (", ".recipients, t.strftime('%Y.%m.%d %H:%M:%S'))
             sys.stderr.flush()
         except Exception as e:
@@ -159,7 +159,7 @@ class AdminEmailer:
             t = datetime.datetime.now()
             text_msg = notify_error_msg_text_template % {"job_uuid":job_uuid, "job_name":job_name, "time":t.strftime('%Y.%m.%d %H:%M:%S')}
             html_msg = notify_error_msg_html_template % {"job_uuid":job_uuid, "job_name":job_name, "time":t.strftime('%Y.%m.%d %H:%M:%S')}
-            sendHtml(self.mirv, recipients, subject="miRvestigator job complete", text=text_msg, html=html_msg)
+            sendHtml(self.mirv, recipients=recipients, subject="miRvestigator job complete", text=text_msg, html=html_msg)
             print >> sys.stderr, "sent a notification error email to %s at %s" % (", ".recipients, t.strftime('%Y.%m.%d %H:%M:%S'))
             sys.stderr.flush()
         except Exception as e:

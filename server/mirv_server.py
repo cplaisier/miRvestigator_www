@@ -72,7 +72,9 @@ def start_worker(id, q):
             traceback.print_stack()
             traceback.print_exc()
         try:
-            adminEmailer.notify_error(error_msg_template %  (id, str(job['id']), traceback.format_stack(), traceback.format_exc(),))
+            if (notify_email):
+                #recipients, job_uuid, job_name
+                adminEmailer.notify_error(notify_mail.split(","), str(job['id']), jobName)
         except Exception as e2:
             traceback.print_stack()
             traceback.print_exc()
