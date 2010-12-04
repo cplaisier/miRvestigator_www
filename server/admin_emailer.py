@@ -58,8 +58,8 @@ completed at: %(time)s</p>
 </html>
 """
 
-message_template = """
-From:%s
+message_template = 
+"""From:%s
 To:%s
 Subject:%s
 
@@ -100,7 +100,7 @@ def sendHtml(sender, recipients, subject, text, html):
     msg = MIMEMultipart('alternative')
     msg['Subject'] = subject
     msg['From'] = sender
-    msg['To'] = recipients.join(",")
+    msg['To'] = ",".join(recipients)
 
     # Record the MIME types of both parts - text/plain and text/html.
     part1 = MIMEText(text, 'plain')
