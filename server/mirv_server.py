@@ -12,7 +12,8 @@ import admin_emailer
 
 
 
-QUEUE_WARN_SIZE = 100
+QUEUE_WARN_SIZE = 2
+QUEUE_MAX_SIZE = 3
 SHUTDOWN_FLAG = -1
 
 
@@ -125,7 +126,7 @@ class MiRvestigatorServer(Pyro.core.ObjBase):
 
 
 if __name__ == '__main__':
-    q = Queue(200)
+    q = Queue(QUEUE_MAX_SIZE)
 
     num_workers = 4
 
