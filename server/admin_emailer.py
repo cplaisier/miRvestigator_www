@@ -3,6 +3,7 @@ from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
 import datetime
 import sys
+import traceback
 
 
 MAIL_HOST = 'localhost'
@@ -87,8 +88,9 @@ def send(sender, recipients, subject="", body=""):
        s.sendmail(sender, recipients, message)         
        s.quit()
     except Exception as e:
-       print >> sys.stderr, "Error: unable to send email"
-       print >> sys.stderr, e
+       print >> sys.stderr, "Error: unable to send email."
+       traceback.print_stack()
+       traceback.print_exc()
        sys.stderr.flush()
 
 
@@ -98,7 +100,7 @@ def sendHtml(sender, recipients, subject, text, html):
     msg = MIMEMultipart('alternative')
     msg['Subject'] = subject
     msg['From'] = sender
-    msg['To'] = recipients
+    msg['To'] = recipients.join(",")
 
     # Record the MIME types of both parts - text/plain and text/html.
     part1 = MIMEText(text, 'plain')
@@ -116,8 +118,9 @@ def sendHtml(sender, recipients, subject, text, html):
        s.sendmail(sender, recipients, msg.as_string())         
        s.quit()
     except Exception as e:
-       print >> sys.stderr, "Error: unable to send email"
-       print >> sys.stderr, e
+       print >> sys.stderr, "Error: unable to send email.."
+       traceback.print_stack()
+       traceback.print_exc()
        sys.stderr.flush()
 
 
@@ -139,7 +142,8 @@ class AdminEmailer:
             print >> sys.stderr, "sent a warning email at %s" % (str(t))
             sys.stderr.flush()
         except Exception as e:
-            print >> sys.stderr, str(e)
+            traceback.print_stack()
+            traceback.print_exc()
             sys.stderr.flush()
 
     def notify_complete(self, recipients, job_uuid, job_name):
@@ -151,7 +155,8 @@ class AdminEmailer:
             print >> sys.stderr, "sent a notification email to %s at %s" % (", ".recipients, t.strftime('%Y.%m.%d %H:%M:%S'))
             sys.stderr.flush()
         except Exception as e:
-            print >> sys.stderr, str(e)
+            traceback.print_stack()
+            traceback.print_exc()
             sys.stderr.flush()
 
     def notify_error(self, recipients, job_uuid, job_name):
@@ -163,7 +168,8 @@ class AdminEmailer:
             print >> sys.stderr, "sent a notification error email to %s at %s" % (", ".recipients, t.strftime('%Y.%m.%d %H:%M:%S'))
             sys.stderr.flush()
         except Exception as e:
-            print >> sys.stderr, str(e)
+            traceback.print_stack()
+            traceback.print_exc()
             sys.stderr.flush()
 
 if __name__ == '__main__':
