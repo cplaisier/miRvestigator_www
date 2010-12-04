@@ -124,8 +124,6 @@ def submitJob(req):
     job['notify_mail'] = str(req.form.getfirst('notify_mail',None))
 
     try:
-        print >> sys.stderr, "\n\n\nok 1\n\n\n"
-        sys.stderr.flush()
         # connect to miR server via Pyro
         uriFile = open('/var/www/uri','r')
         uri = uriFile.readline().strip()
@@ -133,29 +131,24 @@ def submitJob(req):
         miR_server = Pyro.core.getProxyForURI(uri)
         Pyro.core.initClient()
 
-        print >> sys.stderr, "\n\n\nok 2\n\n\n"
-        sys.stderr.flush()
         # submit job to server process and redirect to status page
         job_id = miR_server.submit_job(job)
-        util.redirect(req, req.construct_url("/status/%s/" % (job_id)))
-        print >> sys.stderr, "\n\n\nok 3\n\n\n"
-        sys.stderr.flush()
     except ProtocolError as pe:
-        print >> sys.stderr, "except 1"
-        sys.stderr.flush()
         traceback.print_stack()
         traceback.print_exc()
         sys.stderr.flush()
-        # adminEmailer.warn("miRvestigator server is unreachable: \n\n" + str(pe))
+        adminEmailer.warn("miRvestigator server is unreachable: \n\n" + str(pe))
         util.redirect(req, req.construct_url("/error"))
+        return
     except Exception as e:
-        print >> sys.stderr, "except 2"
-        sys.stderr.flush()
         traceback.print_stack()
         traceback.print_exc()
         sys.stderr.flush()
-        # adminEmailer.warn("miRvestigator server error: \n\n" + str(sys.exc_info()[0]))
+        adminEmailer.warn("miRvestigator server error: \n\n" + str(sys.exc_info()[0]))
         util.redirect(req, req.construct_url("/error"))
+        return
+
+    util.redirect(req, req.construct_url("/status/%s/" % (job_id)))
 
 
 
