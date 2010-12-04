@@ -24,6 +24,8 @@ Exception in mirv_worker %d on job %s.
 
 Stacktrace:
 %s
+
+Exception:
 %s
 """
 
@@ -107,7 +109,7 @@ class MiRvestigatorServer(Pyro.core.ObjBase):
             traceback.print_stack()
             traceback.print_exc()
             update_job_status(job['id'], "error")
-            return
+            raise
 
         # update status to queued
         try:

@@ -137,7 +137,7 @@ def submitJob(req):
         traceback.print_stack()
         traceback.print_exc()
         sys.stderr.flush()
-        adminEmailer.warn("miRvestigator server is unreachable: \n\n" + str(pe))
+        adminEmailer.warn("miRvestigator server is unreachable (ProtocolError): \n\n" + str(pe))
         util.redirect(req, req.construct_url("/error"))
         return
     except Exception as e:
