@@ -9,8 +9,7 @@ import traceback
 MAIL_HOST = 'localhost'
 
 
-notify_msg_text_template = """
-Your miRvestigator job %(job_name)s is finished.
+notify_msg_text_template = """Your miRvestigator job %(job_name)s is finished.
 
 Your results can be retrieved at:
 http://mirvestigator.systemsbiology.net/results/%(job_uuid)s/
@@ -21,8 +20,7 @@ completed at: %(time)s
 Thanks for using mirVestigator.
 """
 
-notify_msg_html_template = """
-<html>
+notify_msg_html_template = """<html>
 <head></head>
 <body>
 <p>Your miRvestigator job %(job_name)s is finished.</p>
@@ -38,15 +36,13 @@ completed at: %(time)s</p>
 """
 
 
-notify_error_msg_text_template = """
-Sorry, your miRvestigator job %(job_name)s failed.
+notify_error_msg_text_template = """Sorry, your miRvestigator job %(job_name)s failed.
 
 job id: %(job_uuid)s
 completed at: %(time)s
 """
 
-notify_error_msg_html_template = """
-<html>
+notify_error_msg_html_template = """<html>
 <head></head>
 <body>
 <p>Sorry, your miRvestigator job %(job_name)s failed.</p>
@@ -58,8 +54,7 @@ completed at: %(time)s</p>
 </html>
 """
 
-message_template = 
-"""From:%s
+message_template = """From:%s
 To:%s
 Subject:%s
 
