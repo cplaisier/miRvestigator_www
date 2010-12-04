@@ -223,7 +223,6 @@ def run(job_uuid, genes, seedModels, wobble, cut, bgModel, motifSizes, jobName, 
         scores = mV.getScoreList(pssm.getName())
         store_mirvestigator_scores(motif_id, scores)
 
-    
 
     update_job_status(job_uuid, "done")
 

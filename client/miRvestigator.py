@@ -100,11 +100,6 @@ def alignSeed(alignment, seed, motif):
 
 # stuff parameters into a dictionary and pop those onto a queue
 def submitJob(req):
-    print >> sys.stderr, "\n\n\nsubmitJob 1\n\n\n"
-    print >> sys.stderr, "\n\n\nsubmitJob 1\n\n\n"
-    print >> sys.stderr, "\n\n\nsubmitJob 1\n\n\n"
-    print >> sys.stderr, "\n\n\nsubmitJob 1\n\n\n"
-    sys.stderr.flush()
     # create a job object which will be queued
     job = {}
     job['created'] = datetime.datetime.now()
@@ -191,8 +186,6 @@ def results(req):
         if (curMiRNA.split('-'))[0]=='hsa':
             miRNADict[curMiRNA] = miRNAData[1]
     miRNAFile.close()
-    
-    
 
     s = '<html>\n'
     s+= '<head>'
