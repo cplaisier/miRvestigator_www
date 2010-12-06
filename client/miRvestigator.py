@@ -108,10 +108,10 @@ def submitJob(req):
     # get the gene list
     genes = req.form.getfirst('genes','').strip()
     if genes == '':
-        error_page("<b>Error</b>: no genes found." % (MAX_GENES, 0,))
+        return error_page("<b>Error</b>: no genes found." % (MAX_GENES, 0,))
     job['genes'] = re.split('\s*[,;\s]\s*', genes)
     if (len(job['genes']) > MAX_GENES):
-        error_page("<b>Error</b>: miRvestigator can accept up to %d genes. Your request contained %d." % (MAX_GENES, len(job['genes']),))
+        return error_page("<b>Error</b>: miRvestigator can accept up to %d genes. Your request contained %d." % (MAX_GENES, len(job['genes']),))
 
     # Get the variables
     job['s6'] = str(req.form.getfirst('seedModel_6',''))
