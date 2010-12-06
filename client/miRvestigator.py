@@ -128,11 +128,11 @@ def submitJob(req):
 
         # submit job to server process and redirect to status page
         job_id = miR_server.submit_job(job)
-    except ProtocolError as pe:
+    except ProtocolError as e:
         traceback.print_stack()
         traceback.print_exc()
         sys.stderr.flush()
-        adminEmailer.warn("miRvestigator server is unreachable (ProtocolError): \n\n" + str(pe))
+        adminEmailer.warn("miRvestigator server is unreachable: \n\n" + str(e))
         util.redirect(req, req.construct_url("/error"))
         return
     except Exception as e:

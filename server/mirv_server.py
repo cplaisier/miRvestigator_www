@@ -31,6 +31,10 @@ Exception:
 """
 
 
+def delete_old_jobs(cutoff_datetime):
+    pass
+
+
 # wait to take a job from the queue and do it
 def start_worker(id, q):
     print("worker %d started" % (id))

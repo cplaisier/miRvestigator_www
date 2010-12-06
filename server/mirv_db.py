@@ -68,6 +68,71 @@ def create_job_in_db(job):
             log("Exception closing conection: ")
             log(exception)
 
+
+def delete_job(job_uuid):
+    conn = _get_db_connection()
+    try:
+        cursor = conn.cursor()
+
+        # delete parameters
+        cursor.execute("delete from parameters where job_uuid=%s;", (job_uuid,))
+
+        # delete genes
+        cursor.execute("delete from genes where job_uuid=%s;", (job_uuid,))
+
+        # for each motif, delete pssms, sites, and mirvestigator scores
+        cursor.execute("select id from motifs where job_uuid=%s;", (job_uuid,))
+        result_set = cursor.fetchall()
+        for row in result_set:
+            cursor.execute("delete from pssms where motif_id=%d", (row[0],))
+            cursor.execute("delete from sites where motif_id=%d", (row[0],))
+            cursor.execute("delete from mirvestigator_scores where motif_id=%d", (row[0],))
+
+        # delete motifs
+        cursor.execute("delete from motifs where job_uuid=%s;", (job_uuid,))
+
+        # delete entry in jobs table
+        cursor.execute("delete from jobs where uuid=%s;", (job_uuid,))
+
+    finally:
+        try:
+            cursor.close()
+        except Exception as exception:
+            log("Exception closing cursor: \n")
+            log(exception)
+        try:
+            conn.close()
+        except Exception as exception:
+            log("Exception closing conection: ")
+            log(exception)
+
+
+def find_old_jobs(cutoff_datetime):
+    conn = _get_db_connection()
+    try:
+        cursor = conn.cursor()
+
+        # for each motif, delete pssms, sites, and mirvestigator scores
+        cursor.execute("select uuid from jobs where created_at < %s;", (cutoff_datetime.isoformat(),))
+        result_set = cursor.fetchall()
+        uuids = []
+        for row in result_set:
+            uuids.append(row[0])
+
+        return uuids
+    finally:
+        try:
+            cursor.close()
+        except Exception as exception:
+            log("Exception closing cursor: \n")
+            log(exception)
+        try:
+            conn.close()
+        except Exception as exception:
+            log("Exception closing conection: ")
+            log(exception)
+
+
 def read_parameters(job_uuid):
     conn = _get_db_connection()
     try:

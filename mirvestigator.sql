@@ -14,7 +14,8 @@ create table jobs (
     uuid char(36) NOT NULL PRIMARY KEY,
     created_at datetime DEFAULT NULL,
     updated_at datetime DEFAULT NULL,
-    status varchar(255)
+    status varchar(255),
+    status_message varchar(1000)
 );
 
 create table parameters (
