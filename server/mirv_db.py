@@ -84,9 +84,9 @@ def delete_job(job_uuid):
         cursor.execute("select id from motifs where job_uuid=%s;", (job_uuid,))
         result_set = cursor.fetchall()
         for row in result_set:
-            cursor.execute("delete from pssms where motif_id=%d", (row[0],))
-            cursor.execute("delete from sites where motif_id=%d", (row[0],))
-            cursor.execute("delete from mirvestigator_scores where motif_id=%d", (row[0],))
+            cursor.execute("delete from pssms where motif_id=%d", (int(row[0]),))
+            cursor.execute("delete from sites where motif_id=%d", (int(row[0]),))
+            cursor.execute("delete from mirvestigator_scores where motif_id=%d", (int(row[0]),))
 
         # delete motifs
         cursor.execute("delete from motifs where job_uuid=%s;", (job_uuid,))
@@ -107,6 +107,8 @@ def delete_job(job_uuid):
             log(exception)
 
 
+# find jobs submitted prior to the cutoff date
+# returns a list of job uuids
 def find_old_jobs(cutoff_datetime):
     conn = _get_db_connection()
     try:

@@ -11,6 +11,7 @@ from mirv_db import get_job_status, read_parameters, read_motifs, read_mirvestig
 import admin_emailer
 
 
+MAX_GENES = 1000
 adminEmailer = admin_emailer.AdminEmailer()
 
 
@@ -104,8 +105,12 @@ def submitJob(req):
     job = {}
     job['created'] = datetime.datetime.now()
 
-    # Get the variables
+    # get the gene list
     job['genes'] = re.split('\s*[,;\s]\s*', req.form.getfirst('genes','').strip())
+    if (len(job['genes']) > MAX_GENES or len(job['genes']) < 2):
+        error_page("<b>Error</b>: miRvestigator can accept no fewer than 2 and up to %d genes. Your request contained %d." % (MAX_GENES, len(job['genes']),))
+
+    # Get the variables
     job['s6'] = str(req.form.getfirst('seedModel_6',''))
     job['s7'] = str(req.form.getfirst('seedModel_7',''))
     job['s8'] = str(req.form.getfirst('seedModel_8',''))
@@ -238,5 +243,27 @@ def results(req):
         s += '</table></p>'
     s += '<p><table width=\'100%\' cellpadding=\'5%\'><tr><td bgcolor=\'#c0c0c0\'><center>Need help? Please contact <font color=\'#0000ff\'>cplaisier(at)systemsbiology.org</font> if you have any questions, comments or concerns.<br>Developed at the <a href=\'http://www.systemsbiology.org\' target=\'_blank\' style=\'color: rgb(0,0,255)\'>Institute for Systems Biology</a> in the <a href=\'http://baliga.systemsbiology.net/\' target=\'_blank\' style=\'color: rgb(0,0,255)\'>Baliga Lab</a>.</center></td></tr></table></p>'
     s += '</center></td></tr></table></center></body></html>'
+    return s
+
+def error_page(msg):
+    s = """<html>
+    <head>
+      <title>miRvestigator Framework</title>
+    </head>
+
+    <body bgcolor='#333333' link='#ffcc00' vlink='#ffcc00'>
+    <font face='arial'><center>
+    <table width=620 bgcolor='#999966' cellpadding='10%'><tr><td><center>
+    <table width=600 bgcolor='#333333' cellpadding='15%'><tr><td align='center' valign='center'><font size=6><b><font color='#ff0000'>miR</font><font color='#cccc00'>vestigator Framework</font></b></font></td></tr></table>
+
+    <table cellpadding='5%' cellspacing=3 width='100%'>
+    <tr><td bgcolor='#FFFFFF' style="height:60ex; padding-left:4em; padding-right:4em;"><center>
+      <p>""" + msg + """</p>
+      <p><a href="/">Return to miRvestigator home page</a></p>
+    </center></td></tr>
+    </table>
+    </center></td></tr></table>
+    </body>
+</html>"""
     return s
 
