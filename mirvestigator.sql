@@ -67,6 +67,7 @@ create table sites (
 create table mirvestigator_scores (
     id int NOT NULL AUTO_INCREMENT PRIMARY KEY,
     motif_id int NOT NULL,
+    sort_order int,
     mirna_name varchar(2000),              -- miRNA.name
     mirna_seed varchar(8),                -- miRNA.seed
     seedModel varchar(20),                -- model
