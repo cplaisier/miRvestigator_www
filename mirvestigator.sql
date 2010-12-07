@@ -45,6 +45,7 @@ create table motifs (
 create table pssms (
     id int NOT NULL AUTO_INCREMENT PRIMARY KEY,
     motif_id int NOT NULL,
+    position int,
     a float,
     t float,
     c float,
@@ -55,6 +56,7 @@ create table pssms (
 create table sites (
     id int NOT NULL AUTO_INCREMENT PRIMARY KEY,
     motif_id int NOT NULL,
+    sort_order int,
     entrez_gene_id varchar(20),
     sequence varchar(20),
     start int,

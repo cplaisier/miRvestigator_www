@@ -323,12 +323,14 @@ def store_motif(job_uuid, pssm):
         motif_id = cursor.lastrowid
 
         # write pssm matrix
+        i = 1
         for scores in pssm.getMatrix():
             sql = """
                 insert into pssms
-                (motif_id, a, t, c, g)
-                values ('%s',%f,%f,%f,%f);""" % (motif_id, float(scores[0]), float(scores[1]), float(scores[2]), float(scores[3]),)
+                (motif_id, position, a, t, c, g)
+                values ('%s',%d,%f,%f,%f,%f);""" % (motif_id, i, float(scores[0]), float(scores[1]), float(scores[2]), float(scores[3]),)
             cursor.execute(sql)
+            i += 1
                 
         # motif_id int NOT NULL,
         # entrez_gene_id int,
@@ -337,13 +339,15 @@ def store_motif(job_uuid, pssm):
         # quality
                 
         # sites is a dictionary w/ keys: gene, start, match, site
+        i = 1
         sites = pssm.nsites
         for site in sites:
             cursor.execute("""
                 insert into sites
-                (motif_id, entrez_gene_id, sequence, start, quality)
-                values (%d, '%s', '%s', %d, '%s')""" %
-                (motif_id, str(site['gene']), site['site'], int(site['start']), site['match'],))
+                (motif_id, sort_order, entrez_gene_id, sequence, start, quality)
+                values (%d, %d, '%s', '%s', %d, '%s')""" %
+                (motif_id, i, str(site['gene']), site['site'], int(site['start']), site['match'],))
+            i += 1
         
         return motif_id
 
@@ -359,6 +363,7 @@ def store_motif(job_uuid, pssm):
             log("Exception closing conection: ")
             log(exception)
 
+# add order-by clauses
 
 def read_motifs(job_uuid):
     conn = _get_db_connection()
@@ -369,7 +374,8 @@ def read_motifs(job_uuid):
         cursor.execute("""
             select id, job_uuid, name, score
             from motifs
-            where job_uuid = %s;""",
+            where job_uuid = %s
+            order by score asc;""",
             (str(job_uuid),))
         result_set = cursor.fetchall()
         motifs = []
@@ -386,7 +392,8 @@ def read_motifs(job_uuid):
             cursor.execute("""
                 select a, t, c, g
                 from pssms
-                where motif_id=%d;""" %
+                where motif_id=%d
+                order by position;""" %
                 (motif['motif_id'],))
             result_set = cursor.fetchall()
             matrix = []
@@ -400,7 +407,8 @@ def read_motifs(job_uuid):
             cursor.execute("""
                 select entrez_gene_id, sequence, start, quality
                 from sites
-                where motif_id=%d;""" %
+                where motif_id=%d
+                order by sort_order;""" %
                 (motif['motif_id'],))
             result_set = cursor.fetchall()
             sites = []
@@ -449,14 +457,16 @@ def store_mirvestigator_scores(motif_id, scores):
         # seedModel varchar(12),                -- model
         # alignment varchar(100),               -- statePath
         # viterbi_p float,                      -- vitPValue
-        
+        i = 1
         for score in scores:
             cursor.execute(
                 """
-                insert into mirvestigator_scores (motif_id, mirna_name, mirna_seed, seedModel, alignment, viterbi_p)
-                                          values (%d, '%s', '%s', '%s', '%s', %f);
+                insert into mirvestigator_scores (motif_id, sort_order, mirna_name, mirna_seed, seedModel, alignment, viterbi_p)
+                                          values (%d, %d, '%s', '%s', '%s', '%s', %f);
                 """ %
-                (motif_id, score['miRNA.name'], score['miRNA.seed'], score['model'], ";".join(score['statePath']), score['vitPValue'],))
+                (motif_id, i, score['miRNA.name'], score['miRNA.seed'], score['model'], ";".join(score['statePath']), score['vitPValue'],))
+            i += 1
+
     finally:
         try:
             cursor.close()
@@ -477,7 +487,8 @@ def read_mirvestigator_scores(motif_id):
         cursor.execute("""
             select motif_id, mirna_name, mirna_seed, seedModel, alignment, viterbi_p
             from mirvestigator_scores
-            where motif_id=%d;
+            where motif_id=%d
+            order by sort_order;
             """ % (int(motif_id),))
         result_set = cursor.fetchall()
 
