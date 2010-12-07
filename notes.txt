@@ -19,7 +19,6 @@ x error on no genes?
 remove my credentials from s3mcd config and github
 
 
-
 add to AMI:
 x ssh keys for github access
 x delete git_mirv? just use git clone?
@@ -28,6 +27,16 @@ x newer rewrite rules
 
 
 
+Install (using sudo apt-get install)
+mysql-server
+python-mysql
+postfix
+
+
+Apache conf
+-----------
+apache conf is in /etc/apache2/
+restart apache: /etc/init.d/apache2 restart
 configure mod_rewrite for apache2 in /etc/apache2/sites-enabled/000-default
 
 <Directory /var/www/>
