@@ -122,7 +122,7 @@ def sendHtml(sender, recipients, subject, text, html):
 class AdminEmailer:
     def __init__(self):
         self.mirv = 'mirvestigator@systemsbiology.org'
-        self.admins = ['cbare@systemsbiology.org']
+        self.admins = ['cbare@systemsbiology.org', 'cplaisier@systemsbiology.org']
         self.sent_at = None
         self.two_hours = datetime.timedelta(hours=2)
 
