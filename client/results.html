@@ -1,0 +1,33 @@
+<html>
+    <head>
+      <title>miRvestigator Framework</title>
+      <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.4.4/jquery.min.js"></script>
+      <script type="text/javascript">
+        window.onload=function() {
+          $('#job_id_form input[type="submit"]').click(function(event) {
+            var job_id = $('#job_id_form input[name="id"]').val();
+            window.location = "/results/" + job_id + "/";
+            return false;
+          });
+        }
+      </script>
+    </head>
+    
+    <body bgcolor='#333333' link='#ffcc00' vlink='#ffcc00'>
+    <font face='arial'><center>
+    <table width=620 bgcolor='#999966' cellpadding='10%'><tr><td><center>
+    <table width=600 bgcolor='#333333' cellpadding='15%'><tr><td align='center' valign='center'><font size=6><b><font color='#ff0000'>miR</font><font color='#cccc00'>vestigator Framework</font></b></font></td></tr></table>
+
+    <table cellpadding='5%' cellspacing=3 width='100%'>
+    <tr><td bgcolor='#FFFFFF' style="height:60ex; padding-left:4em; padding-right:4em;"><center>
+      <form id="job_id_form" action="/miRvestigator.py/results" method="get">
+        <p>Enter your job ID to see the results:</p>
+        <input type="text" name="id"></input>
+        <input type="submit"></input>
+      </form>
+      <p><a href="/">Return to miRvestigator home page</a></p>
+    </center></td></tr>
+    </table>
+    </center></td></tr></table>
+    </body>
+</html>
