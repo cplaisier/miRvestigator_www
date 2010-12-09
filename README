@@ -22,6 +22,10 @@ Web server files located in the miRvestigator/client sub-tree need to be copied 
     RewriteRule ^results/([a-fA-F0-9\-]+)/(.?)$ /miRvestigator.py/results?id=$1
 </Directory>
 
+MySQL and python-mysql need to be installed. A database called mirvestigator needs to be created and populated with tables like this:
+mysql -p -u root --database mirvestigator < mirvestigator.sql
+The user 'mirvestigator'@'localhost' needs to exist and login credentials supplied in mirv_db.py. See comments in mirvestigator.sql
+
 The miRvestigator/server scripts can be installed anywhere but the server must be able to access the Weeder programs. We typically put these into a bin that is part of the PATH and modify the C code to point specifically at the other programs needed and the FreqFiles.
 
 The server files are:

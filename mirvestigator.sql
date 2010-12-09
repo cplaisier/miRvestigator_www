@@ -1,6 +1,7 @@
-#create database mirvestigator;
-# create user 'mirv'@'localhost' identified by <some password>;
-# grant all privileges on mirvestigator.* to 'mirv'@'localhost';
+-- create database mirvestigator;
+-- create user 'mirv'@'localhost' identified by <some password>;
+-- grant all privileges on mirvestigator.* to 'mirv'@'localhost';
+-- use mirvestigator;
 
 drop table if exists jobs;
 drop table if exists parameters;

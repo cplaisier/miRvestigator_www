@@ -165,7 +165,14 @@ def parameters(req):
     id = str(req.form.getfirst('id',''))
     req.content_type='application/json'
     return json.dumps(read_parameters(id))
-    
+
+def csv(req):
+    id = str(req.form.getfirst('id',''))
+    req.content_type='text/csv'
+    req.headers_out.add("Cache-Control", 'must-revalidate')
+    req.headers_out.add("Pragma", 'must-revalidate')
+    req.headers_out.add("Content-disposition", 'attachment; filename=mirvestigator.csv')
+    return "\"north\", 1234\n\"south\",2345\n\"east\",4434\n\"west\",5544\n"
 
 # display results
 def results(req):
