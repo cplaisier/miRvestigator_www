@@ -223,15 +223,13 @@ def results(req):
     s += '}\n'
 
     s += 'function toggleVisibleSubParams() {\n'
-    s += '  alert("hi");'
     s += '  subParams = $("#subParams");\n'
-    s += '  alert(subParams.css("display"));'
     s += '  if ( subParams.css("display") == "none" ) {\n'
     s += '    subParams.css("display", "");\n'
-    s += '    $("#subParams_toggle").text="[-]";\n'
+    s += '    $("#subParams_toggle").text("[-]");\n'
     s += '  } else {\n'
     s += '    subParams.css("display", "none");\n'
-    s += '    $("#subParams_toggle").text="[+]";\n'
+    s += '    $("#subParams_toggle").text("[+]");\n'
     s += '  }\n'
     s += '}\n'
 
