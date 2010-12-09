@@ -6,7 +6,7 @@
         window.onload=function() {
           $('#job_id_form input[type="submit"]').click(function(event) {
             var job_id = $('#job_id_form input[name="id"]').val();
-            window.location = "/results/" + job_id + "/";
+            window.location = "/status/" + job_id + "/";
             return false;
           });
         }
