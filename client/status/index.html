@@ -89,24 +89,24 @@
             context: document.body,
             dataType: "json",
             success: function(parameters) {
-              $("#job_name").html("<font color='#ff0000'>" + parameters.jobName + "</font>");
-              $("#job_id").html("<font color='#ff0000'>" + job_id + "</font>");
-              $("#genes_submitted").html("<font color='#ff0000'>" + parameters.genes_submitted + "</font>");
+              $("#job_name").html(parameters.jobName);
+              $("#job_id").html(job_id);
+              $("#genes_submitted").html(parameters.genes_submitted);
               if (parameters.annotated_sequences==0) {
-                $("#annotated_sequences").html("<font color='#ff0000'>Pending...</font>");
+                $("#annotated_sequences").html("Pending...");
               }
               else {
-                $("#annotated_sequences").html("<font color='#ff0000'>" + parameters.annotated_sequences + "</font>");
+                $("#annotated_sequences").html(parameters.annotated_sequences);
               }
-              $("#motif_sizes").html("<font color='#ff0000'>" + parameters.motif_sizes.join(", ") + "</font>");
+              $("#motif_sizes").html(parameters.motif_sizes.join(", "));
               if (parameters.bgModel=="HS") {
-                $("#background_model").html("<font color='#ff0000'>Default Weeder model</font>");
+                $("#background_model").html("Default Weeder model");
               }
               else {
-                $("#background_model").html("<font color='#ff0000'>3' UTR specific model</font>");
+                $("#background_model").html("3' UTR specific model");
               }
-              $("#seed_model").html("<font color='#ff0000'>" + parameters.seed_model.join(", ") + "</font>");
-              $("#model_wobble").html("<font color='#ff0000'>" + parameters.model_wobble + "</font>");
+              $("#seed_model").html(parameters.seed_model.join(", "));
+              $("#model_wobble").html(parameters.model_wobble);
             },
             error: function(xmlHttpRequest, textStatus, errorThrown) {
               $("#job_name").html("<p>Error getting status: " + textStatus + "</p>");
@@ -173,9 +173,7 @@
                     <tr><td bgcolor='#333333' align='center' valign='center'><font color='#ffffff'><b>Model Wobble Base-Pairing:</b></font></td><td bgcolor='#666666' align='center' valign='center'><table width='100%' cellpadding='5%'><tr><td bgcolor='#ffffff'><center><span id="model_wobble"></span></center></td></tr></table></td></tr>
                 </table>
             </td></tr></table>
-            <p><table width='100%' cellpadding='5%'><tr><td bgcolor='#c0c0c0'><center>Need help? Please contact <font color='#0000ff'>cplaisier(at)systemsbiology.org</font> if you have any questions, comments or concerns.<br>Developed at the <a href='http://www.systemsbiology.org' target='_blank' style=\'color: rgb(0,0,255)\'>Institute for Systems Biology</a> in the <a href='http://baliga.systemsbiology.net/' target='_blank' style=\'color: rgb(0,0,255)\'>Baliga Lab</a>.</center></td></tr></table></p>
-            <p><a href="javascript:stop_polling()">stop polling</a>, <a href="javascript:poll()">poll</a>, <a id="refresh_link" href="#">refresh</a></p>
-
+            <p><table width='100%' cellpadding='5%'><tr><td bgcolor='#c0c0c0'><center>Need help? Please contact <font color='#0000ff'>cplaisier(at)systemsbiology.org</font> if you have any questions, comments or concerns.<br>Developed at the <a href='http://www.systemsbiology.org' target='_blank' style='color: rgb(0,0,255)'>Institute for Systems Biology</a> in the <a href='http://baliga.systemsbiology.net/' target='_blank' style='color: rgb(0,0,255)'>Baliga Lab</a>.</center></td></tr></table></p>
     </center></tr></td></table>
 </body>
 </html>
