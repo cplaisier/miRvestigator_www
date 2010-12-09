@@ -259,11 +259,13 @@ def results(req):
     s += '<table><tr><td>\n'
     s += '<table cellpadding=\'15%\' cellspacing=\'5\' bgcolor=\'#999966\'>\n'
     s += '<tr>\n'
-    s += '<td align=\'center\' valign=\'center\' bgcolor=\'#333333\'><b><a style=\'color: rgb(255,0,0); text-decoration:none\' href=\'../../index.html\'>H</a><a style=\'color: rgb(204,204,0); text-decoration:none\' href=\'../../index.html\'>ome</a></b>\n'
+    s += '<td align=\'center\' valign=\'center\' bgcolor=\'#333333\' width=\'80\'><b><a style=\'color: rgb(255,0,0); text-decoration:none\' href=\'../../index.html\'>H</a><a style=\'color: rgb(204,204,0); text-decoration:none\' href=\'http://mirvestigator.systemsbiology.net\'>ome</a></b>\n'
     s += '</td>\n'
-    s += '<td align=\'center\' valign=\'center\' bgcolor=\'#999966\'><b>Results</b>\n'
+    s += '<td align=\'center\' valign=\'center\' bgcolor=\'#999966\' width=\'80\'><b>Results</b>\n'
     s += '</td>\n'
-    s += '<td align=\'center\' valign=\'center\' bgcolor=\'#333333\'><b><a style=\'color: rgb(255,0,0); text-decoration:none\' href=\'../tutorial.html\'>T</a><a style=\'color: rgb(204,204,0); text-decoration:none\' href=\'../../tutorial.html\'>utorial</a></b>\n'
+    s += '<td align=\'center\' valign=\'center\' bgcolor=\'#333333\' width=\'80\'><b><a style=\'color: rgb(255,0,0); text-decoration:none\' href=\'mirvestigator.systemsbiology.net/help.html\'>H</a><a style=\'color: rgb(204,204,0); text-decoration:none\' href=\'mirvestigator.systemsbiology.net/help.html\'>elp</a></b>\n'
+    s += '</td>\n'
+    s += '<td align=\'center\' valign=\'center\' bgcolor=\'#333333\' width=\'80\'><b><a style=\'color: rgb(255,0,0); text-decoration:none\' href=\'mirvestigator.systemsbiology.net/tutorial.html\'>T</a><a style=\'color: rgb(204,204,0); text-decoration:none\' href=\'mirvestigator.systemsbiology.net/tutorial.html\'>utorial</a></b>\n'
     s += '</td>\n'
     s += '</tr>\n'
     s += '</table>\n'
@@ -317,7 +319,11 @@ def results(req):
             if not site['gene'] in genesWithSite:
                 genesWithSite.append(site['gene'])
         percGenes = (float(len(genesWithSite))/float(annotatedSequences))*float(100)
-        s += '<td bgcolor=\'#ffffff\'><center><a href=\'#'+motif['name']+'_sites\'>'+str('%.2g' % percGenes)+'%</a></center></td>\n'
+        if percGenes==float(100):
+            percGenes = str(100)
+        else:
+            percGenes = str('%.2g' % percGenes)
+        s += '<td bgcolor=\'#ffffff\'><center><a href=\'#'+motif['name']+'_sites\'>'+percGenes+'%</a></center></td>\n'
         s += '</tr>\n'
         s += '</table></p>\n'
     #s += '</td></tr>\n'

@@ -93,27 +93,28 @@
       <body bgcolor='#333333' link='#ffcc00' vlink='#ffcc00'>
       <font face='arial'><center>
       <table><tr><td>
-                  <table cellpadding='15%' cellspacing='5' bgcolor='#999966'>
-        <tr>
-            <td align='center' valign='center' bgcolor='#999966'><b>Home</b>
-        </td>
-        <td align='center' valign='center' bgcolor='#333333'><b><a style='color: rgb(255,0,0); text-decoration:none' href='miRvestigator/results'>R</a><a style='color: rgb(204,204,0); text-decoration:none' href='miRvesgiator/results'>esults</a></b>
-        </td>
-        <td align='center' valign='center' bgcolor='#333333'><b><a style='color: rgb(255,0,0); text-decoration:none' href='tutorial.html'>T</a><a style='color: rgb(204,204,0); text-decoration:none' href='tutorial.html'>utorial</a></b>
-        </td>
-        </tr>
-        </table>
-    
+      <table cellpadding='15%' cellspacing='5' bgcolor='#999966'>
+      <tr>
+      <td align='center' valign='center' bgcolor='#999966' width='80'><b>Home</b>
+      </td>
+      <td align='center' valign='center' bgcolor='#333333' width='80'><b><a style='color: rgb(255,0,0); text-decoration:none' href='/results'>R</a><a style='color: rgb(204,204,0); text-decoration:none' href='/results'>esults</a></b>
+      </td>
+      <td align='center' valign='center' bgcolor='#333333' width='80'><b><a style='color: rgb(255,0,0); text-decoration:none' href='/help.html'>H</a><a style='color: rgb(204,204,0); text-decoration:none' href='/help.html'>elp</a></b>
+      </td>
+      <td align='center' valign='center' bgcolor='#333333' width='80'><b><a style='color: rgb(255,0,0); text-decoration:none' href='/tutorial.html'>T</a><a style='color: rgb(204,204,0); text-decoration:none' href='/tutorial.html'>utorial</a></b>
+      </td>
+      </tr>
+      </table>
       <table width=620 bgcolor='#999966' cellpadding='10%'><tr><td><center>
       <table width=600 bgcolor='#333333' cellpadding='15%'><tr><td align='center' valign='center'><font size=6><b><font color='#ff0000'>miR</font><font color='#cccc00'>vestigator Framework</font></b></font></td></tr></table>
       <p><form action='miRvestigator.py/submitJob' method='post'>
       <table cellpadding='5%' cellspacing=3 width='100%'>
       <tr><td bgcolor='#000000' colspan=2><center><font color='#cccc00' size=4><a href="#whatIsMV" onclick="toggleVisible('whatIsMV'); return false;" style='color: rgb(204,204,0); text-decoration: none'><b>What is the miRvestigator Framework? &nbsp; <font color="#ff0000">[?]</font></b></a></font></center></td></tr>
       <tr id="whatIsMV" style="display: none;"><td colspan=2 bgcolor='#333333'><font color='#ffffff'><p>The miRvestigator framework is designed to take as input a list of co-expressed genes and will return the most likely <a href='http://en.wikipedia.org/wiki/MicroRNA' style='color: rgb(204,204,0)' target='_blank'>miRNA</a> regulating these genes. It does this by searching for over-represented sequence motifs in the <a href="http://en.wikipedia.org/wiki/3\'_UTR" style='color: rgb(204,204,0)' target='_blank'>3' untranslated regions (UTRs)</a> of the genes using <a href='http://159.149.109.9/modtools/' style='color: rgb(204,204,0)' target='_blank'>Weeder</a> and then comparing this to the miRNA seed sequences in <a href='http://www.mirbase.org' style='color: rgb(204,204,0)' target='_blank'>miRBase</a> using our custom built <a href='http://github.com/cplaisier/miRvestigator/wiki/miRvestigator-hidden-Markov-Model-(HMM)' target='_blank' style='color: rgb(204,204,0)'>miRvestigator hidden Markov model (HMM)</a>.</p></font></td></tr>
-      <tr><td colspan=2></td><tr>
+      <tr><td colspan=2></td></tr>
       <tr><td bgcolor='#000000' colspan=2><center><font color='#cccc00' size=4><a href="#geneList" onclick="toggleVisible('geneList'); return false;" style='color: rgb(204,204,0); text-decoration: none'><b>Enter Co-Expressed Gene List &nbsp; <font color="#ff0000">[?]</font></b></a></font></center></td></tr>
       <tr id="geneList" style="display: none;"><td colspan=2 bgcolor='#333333'><font color='#ffffff'><b>What is gene Co-Expression?</b>
-<p><a href='http://en.wikipedia.org/wiki/Post-transcriptional_regulation' style='color: rgb(204,204,0)' target='_blank'>Post-transcriptional regulation</a> by a <a href='http://en.wikipedia.org/wiki/MicroRNA' style='color: rgb(204,204,0)' target='_blank'>miRNA</a> is mediated through binding to complementary sequences in the <a href="http://en.wikipedia.org/wiki/3\'_UTR" style='color: rgb(204,204,0)' target='_blank'>3\' untranslated regions (UTRs)</a> of transcripts and generates a biological context-specific signature of down-regulation for these transcripts, which is called a co-expression signature. Co-expression signatures observed in transcriptome studies are thus assumed to be of biological origins whereby the expression of genes are regulated by shared factors (transcription factors, miRNAs, genetics or enrivnmental factors). There are many methods available to identify co-expression signatures, and the miRvestigator framework does not bias toward any particular method.</p>
+<p><a href='http://en.wikipedia.org/wiki/Post-transcriptional_regulation' style='color: rgb(204,204,0)' target='_blank'>Post-transcriptional regulation</a> by a <a href='http://en.wikipedia.org/wiki/MicroRNA' style='color: rgb(204,204,0)' target='_blank'>miRNA</a> is mediated through binding to complementary sequences in the <a href="http://en.wikipedia.org/wiki/3\'_UTR" style='color: rgb(204,204,0)' target='_blank'>3' untranslated regions (UTRs)</a> of transcripts and generates a biological context-specific signature of down-regulation for these transcripts, which is called a co-expression signature. Co-expression signatures observed in transcriptome studies are thus assumed to be of biological origins whereby the expression of genes are regulated by shared factors (transcription factors, miRNAs, genetics or enrivnmental factors). There are many methods available to identify co-expression signatures, and the miRvestigator framework does not bias toward any particular method.</p>
 <b>What if I don't have Entrez gene identifiers (IDs)?</b>
 <p>Currently the miRvestigator framework is able to take <a href='http://www.ncbi.nlm.nih.gov/gene' style='color: rgb(204,204,0)' target='_blank'>Entrez gene IDs</a> as input. To convert any other type of identifier to Entrez gene IDs please use the <a href='http://david.abcc.ncifcrf.gov/home.jsp' style='color: rgb(204,204,0)' target='_blank'>DAVID</a> bioinformatics resource <a href='http://david.abcc.ncifcrf.gov/conversion.jsp' style='color: rgb(204,204,0)' target='_blank'>gene ID conversion tool</a>. The DAVID gene ID conversion tool has a great <a href='http://david.abcc.ncifcrf.gov/helps/conversion.html' style='color: rgb(204,204,0)' target='_blank'>help page</a> please visit it if you have any questions.</p>
 <b>What types of <a href='http://en.wikipedia.org/wiki/Delimiter' style='color: rgb(255,255,255)' target='_blank'>delimiters</a> can be entered into the form?</b>
