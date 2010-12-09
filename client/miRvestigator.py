@@ -298,7 +298,7 @@ def results(req):
     s += '</tr>\n'
     s += '</table>\n'
     s +='<p><table width=\'100%\' cellpadding=\'10%\'>\n'
-    s += '<tr><td bgcolor=\'#000000\'><center><font color=\'#cccc00\' size=4><b><a href="#subParams" onclick="toggleVisibleSubParams(); return false;" style=\'color: rgb(204,204,0); text-decoration: none\'>Submission Parameters <font id="subParams_toggle" color=\'#ff0000\'>[+]</font></a></b></font></center></td></tr>\n'
+    s += '<tr><td bgcolor=\'#000000\'><center><font color=\'#cccc00\' size=4><b><a href="#subParams" onclick="javascript: toggleVisibleSubParams(); return false;" style=\'color: rgb(204,204,0); text-decoration: none\'>Submission Parameters <font id="subParams_toggle" color=\'#ff0000\'>[+]</font></a></b></font></center></td></tr>\n'
     s += '<tr id="subParams" style="display: none;"><td bgcolor=\'#cccccc\'>\n'
     s += '<table width=\'100%\' cellpadding=\'5%\'>\n'
     s += '<tr><td colspan=2 bgcolor=\'#333333\' align=\'center\' valign=\'center\'><b><font color=\'#cccc00\' size=4>Basic Parameters</font></b></td></tr>\n'
