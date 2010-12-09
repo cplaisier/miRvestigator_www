@@ -172,7 +172,7 @@ def csv(req):
     req.headers_out.add("Cache-Control", 'must-revalidate')
     req.headers_out.add("Pragma", 'must-revalidate')
     req.headers_out.add("Content-disposition", 'attachment; filename=mirvestigator.csv')
-    return "\"north\", 1234\n\"south\",2345\n\"east\",4434\n\"west\",5544\n"
+    return "\"north\nasdf\", 1234\n\"south\",2345\n\"east\",4434\n\"west\",5544\n"
 
 # display results
 def results(req):
