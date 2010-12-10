@@ -16,8 +16,7 @@ def mirvestigator_scores_to_csv(scores):
     for score in scores:
         statePath = score['statePath']
         alignment = "xxxxxxx\r\n|||||||\r\nyyyyyyy"
-        s += "\"%s\", \"%s\", \"%s\", %d, \"%s\", %.2f\n" %
-             (score['miRNA.name'], score['miRNA.seed'], score['model'], len(score['statePath']), alignment, score['vitPValue'])
+        s += "\"%s\", \"%s\", \"%s\", %d, \"%s\", %.2f\n" % (score['miRNA.name'], score['miRNA.seed'], score['model'], len(score['statePath']), alignment, score['vitPValue'])
     return s
 
 def get_sites_as_csv(motif_id):
