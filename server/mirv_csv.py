@@ -2,6 +2,18 @@ import mirv_db
 
 # note: these use \r\n line endings for compatibility with Excel.
 
+# Complement
+def complement(seq):
+    complement = {'A':'T', 'T':'A', 'C':'G', 'G':'C', 'N':'N', 'U':'A'}
+    complseq = [complement[base] for base in seq]
+    return complseq
+
+# Convert to RNA
+def conv2rna(seq):
+    conversion = {'A':'A', 'T':'U', 'C':'C', 'G':'G', 'N':'N', 'U':'U'}
+    rnaSeq = [conversion[base] for base in list(seq)]
+    return ''.join(rnaSeq)
+
 def _build_alignment_string(alignment, seed, motif):
     alignment.pop() # Get rid of the extra state which is added by the forwardViterbi function
     start = 1    
