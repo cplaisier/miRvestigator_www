@@ -36,7 +36,7 @@ def _build_alignment_string(alignment, seed, motif):
     if start>1:
         for i in range(start-1):
             seedAlign += seed.pop(0)
-            aligned += '_'
+            aligned += ' '
             motifAlign += '-'
             alignMe.pop(0)
     if len(alignMe)>0 and not alignMe[0]=='PSSM0' and not alignMe[0]=='WOBBLE0':
@@ -46,7 +46,7 @@ def _build_alignment_string(alignment, seed, motif):
             upTo = int(alignMe[0][6])
         for i in range(upTo):
             seedAlign += '-'
-            aligned += '_'
+            aligned += ' '
             motifAlign += motif.pop(0)
     # Then add the parts that align
     while 1:
@@ -65,13 +65,13 @@ def _build_alignment_string(alignment, seed, motif):
         for i in alignMe:
             seedAlign += seed[0]
             seed = seed[1:]
-            aligned += '_'
+            aligned += ' '
             motifAlign += '-'
         alignMe = []
     if len(motif)>0 and len(alignMe)==0:
         for i in motif:
             seedAlign += '-'
-            aligned += '_'
+            aligned += ' '
             motifAlign += i
     return [motifAlign, aligned, seedAlign, lenMatch]
 
