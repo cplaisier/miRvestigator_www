@@ -91,7 +91,7 @@ def mirvestigator_scores_to_csv(scores, motif):
     for score in scores:
         statePath = score['statePath']
         motifAlign, aligned, seedAlign, lenMatch = _build_alignment_string(score['statePath'], score['miRNA.seed'], motif)
-        alignment = "%s\n%s\n%s" % (motifAlign, aligned, seedAlign)
+        alignment = "%s\r%s\r%s" % (motifAlign, aligned, seedAlign)
         s += "%s,%s,%s,%s,\"%s\",%s\r\n" % (score['miRNA.name'], score['miRNA.seed'], score['model'], lenMatch, alignment, score['vitPValue'])
     return s
 
