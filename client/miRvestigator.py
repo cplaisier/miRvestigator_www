@@ -376,7 +376,7 @@ def results(req):
             topRet = len(scoreList)
         else:
             topRet = int(topRet)
-        s += '<table style="width:100%; background:#333333;"><tr><td style="text-align:right; color: #eeeeee;"><a href="/scores/csv/%s">download as CSV</a></td></tr></table>\n' % (motif['motif_id'],)
+        s += '<table style="width:100%%; background:#333333;"><tr><td style="text-align:right; color: #eeeeee;"><a href="/scores/csv/%s">download as CSV</a></td></tr></table>\n' % (motif['motif_id'],)
         s += '<table width=\'100%\' cellpadding=\'15%\'><tr><td bgcolor=\'#333333\'><center><b><font color=\'#ffffff\'>miRNA Name</font></b></center></td><td bgcolor=\'#333333\'><center><b><font color=\'#ffffff\'>miRNA Seed</font></b></center></td><td bgcolor=\'#333333\'><center><b><font color=\'#ffffff\'>Seed Model</font></b></center></td><td bgcolor=\'#333333\'><center><b><font color=\'#ffffff\'>Length of</br>Alignment</font></b></center></td><td bgcolor=\'#333333\'><center><b><font color=\'#ffffff\'>Alignment</font></b></center></td><td bgcolor=\'#333333\'><center><b><font color=\'#ffffff\'>Viterbi P-Value</font></b></center></td></tr>'
         for k in range(topRet):
             i = scoreList[k]
