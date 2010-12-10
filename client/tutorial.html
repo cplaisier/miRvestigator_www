@@ -1,0 +1,186 @@
+<html>
+    <head>
+        <style> body { font-family: arial, sans-serif; } </style>
+        <title>miRvestigator Framework: Detect the miRNAs Driving Co-Expression Signatures</title>
+    </head>
+    <body bgcolor='#333333'>
+        <center>
+            <table width="600">
+                <tr>
+                    <td>
+                        <table cellpadding='15%' cellspacing='5' bgcolor='#999966'>
+                            <tr>
+                                <td align='center' valign='center' bgcolor='#333333' width='80'>
+                                    <b><a style='color: rgb(255,0,0); text-decoration:none' href='/'>H</a><a style='color: rgb(204,204,0); text-decoration:none' href='/'>ome</a></b>
+                                </td>
+                                <td align='center' valign='center' bgcolor='#333333' width='80'>
+                                    <b><a style='color: rgb(255,0,0); text-decoration:none' href='/check_status'>R</a><a style='color: rgb(204,204,0); text-decoration:none' href='/check_status'>esults</a></b>
+                                </td>
+                                <td align='center' valign='center' bgcolor='#333333' width='80'>
+                                    <b><a style='color: rgb(255,0,0); text-decoration:none' href='/help'>H</a><a style='color: rgb(204,204,0); text-decoration:none' href='/help'>elp</a></b>
+                                </td>
+                                <td align='center' valign='center' bgcolor='#999966' width='80'>
+                                    <b>Tutorial</b>
+                                </td>
+                            </tr>
+                        </table>
+                        <table bgcolor='#999966' cellpadding='10%'>
+                            <tr>
+                                <td>
+                                    <center>
+                                        <table width='100%' cellpadding='15%'>
+                                            <tr>
+                                                <td align='center' valign='center' bgcolor='#333333'>
+                                                    <font size=6><b><font color='#ff0000'>miR</font><font color='#cccc00'>vestigator Framework Tutorial</font></b></font>
+                                                </td>
+                                            </tr>
+                                            <tr><td></td></tr>
+                                            <tr>
+                                                <td bgcolor='#333333'>
+                                                    <font color='#ffffff'>
+                                                    <p><b>Important Note:</b>  At any point along the process help information are embedded in the web page as <b><font color='#ff0000'>[?]</font></b> icons which once clicked will drop down information about the task being performed.</p>
+                                                    &nbsp;</br>
+                                                    <ol type='1'>
+                                                        <b><li>Enter a list of Entrez gene IDs corresponding to co-expressed genes</li></b>
+                                                            &nbsp;</br>
+                                                            <p><img src='/images/load_genes.gif' width="500"></p>
+                                                            &nbsp;</br>
+                                                            <ol type='a'>
+                                                                <li>If you want to use your own data:</li>
+                                                                &nbsp;</br>
+                                                                <ol type='i'>
+                                                                        <li>Identify co-expressed genes</li>
+                                                                        &nbsp;</br>
+                                                                        <li>Convert them to Entrez gene IDs using the <a href='http://david.abcc.ncifcrf.gov/home.jsp' style='color: rgb(204,204,0)' target='_blank'>DAVID</a> bioinformatics resource <a href='http://david.abcc.ncifcrf.gov/conversion.jsp' style='color: rgb(204,204,0)' target='_blank'>gene ID conversion tool</a> (<b>Note:</b>  DAVID has great a <a href='http://david.abcc.ncifcrf.gov/helps/conversion.html' style='color: rgb(204,204,0)' target='_blank'>help page for ID conversion</a>.) 
+                                                                        &nbsp;</br>
+                                                                        <li>Name your gene list for easier identification of run</li>
+                                                                        &nbsp;</br>
+                                                                        <li>Input the genes into the miRvestigator interface</li>
+                                                                    </ol>
+                                                                    &nbsp;</br>
+                                                                    <li>Or click one of the sample data buttons to load sample data (<b>Note:</b>  hsa-miR-9 is small so it runs quite fast for a tutorial.)</li>
+                                                            </ol>
+                                                            &nbsp;</br>
+                                                            &nbsp;</br>
+                                                            <b><li>Set parameters for the run (<font color='#ff0000'>Note:</font>  For most cases the default parameters will suffice.)</li></b>
+                                                            &nbsp;</br>
+                                                            <p><img src='/images/choose_parameters.gif' width="500"></p>
+                                                            &nbsp;</br>
+                                                            <ol type='a'>
+                                                                <li>Set Weeder parameters</li>
+                                                                <ol type='i'>
+                                                                    &nbsp;</br>
+                                                                    <li>Choose whether you want to search for 6bp and/or 8bp motifs</li>
+                                                                    &nbsp;</br>
+                                                                    <li>Choose a background model, for most cases the Default Weeder Model will suffice</li>
+                                                                </ol>
+                                                                &nbsp;</br>
+                                                                <li>Set the miRvestigator parameters</li>
+                                                                <ol type='i'>
+                                                                    &nbsp;</br>
+                                                                    <li>Choose which seed models you wish to investigate</li>
+                                                                    &nbsp;</br>
+                                                                    <li>Choose whether you want to search for wobble base-pairing or not</li>
+                                                                    <ul>
+                                                                        &nbsp;</br>
+                                                                        <li>If you do want to search for wobble base-pairing then choose the minimum G or U frequency</li>
+                                                                    </ul>
+                                                                </ol>
+                                                            </ol>
+                                                            &nbsp;</br>
+                                                            &nbsp;</br>
+                                                            <b><li>Submit the job</li></b>
+                                                            &nbsp;</br>
+                                                            <p><img src='/images/submit_job.gif' width="500"></p>
+                                                            &nbsp;</br>
+                                                            <ol type='a'>
+                                                                <li>Choose the number of miRNAs to return</li>
+                                                                &nbsp;</br>
+                                                                <li>Choose whether you want to be notified by e-mail or not (<b>Note:</b>  Giving an e-mail address is completely optional, although it can be nice to have an e-mail with a link to the results.)</li>
+                                                                &nbsp;</br>
+                                                                <li>Click the submit button</li>
+                                                            </ol>
+                                                            &nbsp;</br>
+                                                            &nbsp;</br>
+                                                            <b><li>Watch as the job runs (<font color='#ff0000'>Note:</font>  You can bookmark this page to come back for your results.)</li></b>
+                                                            &nbsp;</br>
+                                                            <p><img src='/images/status_page.gif' width="500"></p>
+                                                            &nbsp;</br>
+                                                            <ol type='a'>
+                                                                <li>Status events as miRvestigator runs:</li>
+                                                                <ol type='i'>
+                                                                    &nbsp;</br>
+                                                                    <li>Extracting Regulatory Sequences</li>
+                                                                    &nbsp;</br>
+                                                                    <li>Running Weeder</li>
+                                                                    &nbsp;</br>
+                                                                    <li>Running miRvestigator HMM</li>
+                                                                    &nbsp;</br>
+                                                                    <li>Compiling Results</li>
+                                                                </ol>
+                                                                &nbsp;</br>
+                                                                <li>Submitted parameters are shown below the status information</li>
+                                                            </ol>
+                                                            &nbsp;</br>
+                                                            &nbsp;</br>
+                                                            <b><li>Results for the run are returned (<font color='#ff0000'>Note:</font>  You can bookmark this page to come back for your results.)</li></b>
+                                                            &nbsp;</br>
+                                                            <p><img src='/images/results_page.gif' width="500"></p>
+                                                            &nbsp;</br>
+                                                            <ol type='a'>
+                                                                <li>To see what parameters were used for the run click on the <b><font color='#ff0000'>[+]</font></b> to expand the <b>Submission Parameters</b> table</li>
+                                                                &nbsp;</br>
+                                                                <li>The <b>Summary of Results</b> table has an entry for each motif identified in the 3’ UTRs for the input sequences</li>
+                                                                <ol type='i'>
+                                                                    &nbsp;</br>
+                                                                    <li>Click on the <b>Motif Consensus</b> link to be brought to the <b>Motif miRNA Matches</b> table (<b>Note:</b>  The help <b><font color='#ff0000'>[?]</font></b> for this table describes the columns in detail.)</li>
+                                                                    &nbsp;</br>
+                                                                    <p><img src='/images/top_miRNAs.gif' width="500"></p>
+                                                                    &nbsp;</br>
+                                                                    <ul>
+                                                                        &nbsp;</br>
+                                                                        <li>Good quality motif to miRNA matches have <b>Viterbi P-Values</b> equal to 1.5e-05 or 6.1e-05 for perfect 8mer or 7mer matches, respectively</li>
+                                                                        &nbsp;</br>
+                                                                        <li>The <b>Alignment</b> column gives a good representation of the match</li>
+                                                                    </ul>
+                                                                    &nbsp;</br>
+                                                                    <li>Click on the <b>% of Input Sequences with Site</b> to be brought to the Motif Sites table (<b>Note:</b>  The help <b><font color='#ff0000'>[?]</font></b> for this table describes the columns in detail.)</li>
+                                                                    &nbsp;</br>
+                                                                    <p><img src='/images/sites_table.gif' width="500"></p>
+                                                                    &nbsp;</br>
+                                                                    <ul>
+                                                                        &nbsp;</br>
+                                                                        <li>Good quality motif sites have higher similarity and are colored red</li>
+                                                                        &nbsp;</br>
+                                                                        <li>High quality sites from this table would be excellent candidates for experimental studies</li>
+                                                                    </ul>
+                                                                </ol>
+                                                            </ol>
+                                                            &nbsp;</br>
+                                                            &nbsp;</br>
+                                                            <b><li>Returning to Access Results at a Later Date</li></b>
+                                                            <ol type='a'>
+                                                                &nbsp;</br>
+                                                                <li>Bookmark Status page</li>
+                                                                &nbsp;</br>
+                                                                <li>Bookmark Results page</li>
+                                                                &nbsp;</br>
+                                                                <li>Add e-mail address to run parameters receive e-mail with link to results (optional)</li>
+                                                            </ol>
+                                                    </ol>
+                                                    </font>
+                                                </td>
+                                            </tr>
+                                        </table>
+                                        </br>
+                                        <table width='100%' cellpadding='5%'><tr><td bgcolor='#c0c0c0'><center>Need help? Please contact <font color='#0000ff'>cplaisier(at)systemsbiology.org</font> or <font color='#0000ff'>cbare(at)systemsbiology.org</font> if you have any questions, comments or concerns.<br>Developed at the <a href='http://www.systemsbiology.org' target='_blank' style='color: rgb(0,0,255)'>Institute for Systems Biology</a> in the <a href='http://baliga.systemsbiology.net/' target='_blank' style='color: rgb(0,0,255)'>Baliga Lab</a>.</center></td></tr></table>
+                                    </center>
+                                </td>
+                            </tr>
+                        </table>
+                    </td>
+                </tr>
+            </table>
+        </center>
+    </body>
+</html>                                    
