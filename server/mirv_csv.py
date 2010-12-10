@@ -1,9 +1,8 @@
 import mirv_db
 
-# note: These functions output \r\n line endings for compatibility with Excel.
-#       Also, Excel helpfully strips off leading spaces, even if quoted, so use
-#       underscore in place of spaces. User will have to format the column in
-#       a monospaced font and turn line wrapping on to see correct alignments.
+# note: The alignment function outputs \r to break lines within a csv field which
+#       seems to work in Excel. User will have to format the alignment column in
+#       a monospaced font to see correct alignments.
 
 # Complement
 def complement(seq):
