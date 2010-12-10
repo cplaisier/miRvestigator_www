@@ -6,6 +6,7 @@ import traceback
 import datetime
 import json
 import Pyro.core
+import mirv_csv
 from Pyro.errors import ProtocolError
 from mirv_db import get_job_status, read_parameters, read_motifs, read_mirvestigator_scores
 import admin_emailer
@@ -166,13 +167,23 @@ def parameters(req):
     req.content_type='application/json'
     return json.dumps(read_parameters(id))
 
-def csv(req):
-    id = str(req.form.getfirst('id',''))
+def sites_as_csv(req):
+    motif_id = str(req.form.getfirst('motif_id',''))
+    csv = mirv_csv.get_sites_as_csv(motif_id)
     req.content_type='text/csv'
     req.headers_out.add("Cache-Control", 'must-revalidate')
     req.headers_out.add("Pragma", 'must-revalidate')
     req.headers_out.add("Content-disposition", 'attachment; filename=mirvestigator.csv')
-    return "\"north\nasdf\", 1234\n\"south\",2345\n\"east\",4434\n\"west\",5544\n"
+    return csv
+
+def scores_as_csv(req):
+    motif_id = str(req.form.getfirst('motif_id',''))
+    csv = mirv_csv.get_mirvestigator_scores_as_csv(motif_id)
+    req.content_type='text/csv'
+    req.headers_out.add("Cache-Control", 'must-revalidate')
+    req.headers_out.add("Pragma", 'must-revalidate')
+    req.headers_out.add("Content-disposition", 'attachment; filename=mirvestigator.csv')
+    return csv
 
 # display results
 def results(req):

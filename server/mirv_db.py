@@ -515,4 +515,37 @@ def read_mirvestigator_scores(motif_id):
         except Exception as exception:
             log("Exception closing conection: ")
             log(exception)
-    
+
+def read_sites(motif_id):
+    conn = _get_db_connection()
+    try:
+        cursor = conn.cursor()
+        cursor.execute("""
+            select entrez_gene_id, sequence, start, quality
+            from sites
+            where motif_id=%d
+            order by sort_order;""" %
+            (motif_id,))
+        result_set = cursor.fetchall()
+        # each site is a dictionary w/ keys: gene, start, match, site
+        sites = []
+        for row in result_set:
+            site = {}
+            site['gene']  = row[0]
+            site['site']  = row[1]
+            site['start'] = row[2]
+            site['match'] = row[3]
+            sites.append(site)
+        return sites
+    finally:
+        try:
+            cursor.close()
+        except Exception as exception:
+            log("Exception closing cursor: ")
+            log(exception)
+        try:
+            conn.close()
+        except Exception as exception:
+            log("Exception closing conection: ")
+            log(exception)
+
