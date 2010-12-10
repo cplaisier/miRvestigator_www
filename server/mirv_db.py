@@ -423,15 +423,40 @@ def read_motifs(job_uuid):
 
         return motifs
 
-        # construct a list of pssm objects
-        # pssms = []
-        # for motif in motifs:
-        #     #pssm(self, pssmFileName=None, biclusterName=None, nsites=None, eValue=None, pssm=None, genes=None)
-        #     pssms.append(pssm(  biclusterName=motif['name'],
-        #                         nsites=motif['sites'],
-        #                         eValue=motif['score'],
-        #                         pssm=motif['matrix']))
-        # return pssms
+    finally:
+        try:
+            cursor.close()
+        except Exception as exception:
+            log("Exception closing cursor: ")
+            log(exception)
+        try:
+            conn.close()
+        except Exception as exception:
+            log("Exception closing conection: ")
+            log(exception)
+
+
+# given an motif id, returns a dictionary with keys motif_id, job_uuid, name, score
+# name is the sequence of the motif
+def read_motif(motif_id):
+    conn = _get_db_connection()
+    try:
+        cursor = conn.cursor()
+
+        # read motifs for this job
+        cursor.execute("""
+            select id, job_uuid, name, score
+            from motifs
+            where id = %s
+            order by score asc;""",
+            (str(motif_id),))
+        row = cursor.fetchone()
+        motif = {}
+        motif['motif_id'] = int(row[0])
+        motif['job_uuid'] = row[1]
+        motif['name'] = row[2]
+        motif['score'] = float(row[3])
+        return motif
 
     finally:
         try:
