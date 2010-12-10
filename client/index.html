@@ -23,6 +23,30 @@
           ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
           var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
       })();
+      function validateInputs()
+      {
+          // Check job name
+          //if(document.forms[0].jobName.value=="") {
+          //    alert("Please enter a Job Name to identify this run.");
+          //    return false;
+          //}
+          // Check that genes has something entered
+          if(document.forms[0].genes.value=="") {
+              alert("Please enter some co-expressed Entrez gene IDs.");
+              return false;
+          }
+          // Check that at least one seed model has been chosen
+          if(document.forms[0].seedModel_6.checked==false && document.forms[0].seedModel_7.checked==false && document.forms[0].seedModel_8.checked==false) {
+              alert("Please choose at least one seed model for the run.");
+              return false;
+          }
+          // Check that a motif size has been chosen
+          if(document.forms[0].motif_6.checked==false && document.forms[0].motif_8.checked==false) {
+              alert("Please choose at least on motif size for the run.");
+              return false;
+          }
+          return true;
+      }
       function addMir1()
       {
           document.forms[0].genes.value="103, 302, 303, 304, 376, 767, 1652, 1875, 1939, 2079, 2697, 3021, 3400, 4201, 4580, 5201, 5226, 5440, 5756, 5867, 5928, 6391, 6422, 6457, 7114, 7295, 8407, 8624, 8655, 8683, 10244, 26123, 26578, 26580, 28985, 29058, 29078, 30850, 51175, 51465, 54780, 55276, 55315, 55744, 57446, 57696, 64425, 79022, 80306, 81671, 83787, 84278, 84747, 90522, 140809, 143458, 200916, 201562, 253512, 341306, 352909, 378464, 390498, 440151, 440388, 440921, 441454, 441456"
@@ -107,7 +131,7 @@
       </table>
       <table width=620 bgcolor='#999966' cellpadding='10%'><tr><td><center>
       <table width=600 bgcolor='#333333' cellpadding='15%'><tr><td align='center' valign='center'><font size=6><b><font color='#ff0000'>miR</font><font color='#cccc00'>vestigator Framework</font></b></font></td></tr></table>
-      <p><form action='miRvestigator.py/submitJob' method='post'>
+      <p><form action='miRvestigator.py/submitJob' method='post' onsubmit="return validateInputs();">
       <table cellpadding='5%' cellspacing=3 width='100%'>
       <tr><td bgcolor='#000000' colspan=2><center><font color='#cccc00' size=4><a href="#whatIsMV" onclick="toggleVisible('whatIsMV'); return false;" style='color: rgb(204,204,0); text-decoration: none'><b>What is the miRvestigator Framework? &nbsp; <font color="#ff0000">[?]</font></b></a></font></center></td></tr>
       <tr id="whatIsMV" style="display: none;"><td colspan=2 bgcolor='#333333'><font color='#ffffff'><p>The miRvestigator framework is designed to take as input a list of co-expressed genes and will return the most likely <a href='http://en.wikipedia.org/wiki/MicroRNA' style='color: rgb(204,204,0)' target='_blank'>miRNA</a> regulating these genes. It does this by searching for over-represented sequence motifs in the <a href="http://en.wikipedia.org/wiki/3\'_UTR" style='color: rgb(204,204,0)' target='_blank'>3' untranslated regions (UTRs)</a> of the genes using <a href='http://159.149.109.9/modtools/' style='color: rgb(204,204,0)' target='_blank'>Weeder</a> and then comparing this to the miRNA seed sequences in <a href='http://www.mirbase.org' style='color: rgb(204,204,0)' target='_blank'>miRBase</a> using our custom built <a href='http://github.com/cplaisier/miRvestigator/wiki/miRvestigator-hidden-Markov-Model-(HMM)' target='_blank' style='color: rgb(204,204,0)'>miRvestigator hidden Markov model (HMM)</a>.</p></font></td></tr>
