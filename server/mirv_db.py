@@ -525,7 +525,7 @@ def read_sites(motif_id):
             from sites
             where motif_id=%d
             order by sort_order;""" %
-            (motif_id,))
+            (int(motif_id),))
         result_set = cursor.fetchall()
         # each site is a dictionary w/ keys: gene, start, match, site
         sites = []
