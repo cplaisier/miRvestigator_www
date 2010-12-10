@@ -6,7 +6,7 @@ import mirv_db
 def sites_to_csv(sites):
     s = "\"Entrez Gene ID\", \"Sequence of Site\", \"Start Relative to Stop Codon (bp)\", \"% Similarity to Consensus Motif\""
     for site in sites:
-        s += "%s, \"%s\", %d, %.2f\n" % (site['gene'], site['site'], site['start'], site['match'])
+        s += "%s, \"%s\", %s, %s\n" % (site['gene'], site['site'], site['start'], site['match'])
     return s
 
 # takes mirvestigator scores as a list of dictionaries and returns a csv string
@@ -16,7 +16,7 @@ def mirvestigator_scores_to_csv(scores):
     for score in scores:
         statePath = score['statePath']
         alignment = "xxxxxxx\r\n|||||||\r\nyyyyyyy"
-        s += "\"%s\", \"%s\", \"%s\", %d, \"%s\", %.2f\n" % (score['miRNA.name'], score['miRNA.seed'], score['model'], len(score['statePath']), alignment, score['vitPValue'])
+        s += "\"%s\", \"%s\", \"%s\", %s, \"%s\", %s\n" % (score['miRNA.name'], score['miRNA.seed'], score['model'], len(score['statePath']), alignment, score['vitPValue'])
     return s
 
 def get_sites_as_csv(motif_id):
