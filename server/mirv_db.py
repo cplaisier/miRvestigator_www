@@ -208,7 +208,7 @@ def read_parameters(job_uuid):
         except Exception as exception:
             log("Exception closing conection: ")
             log(exception)
-    
+
 
 def get_job_status(job_uuid):
     conn = _get_db_connection()
@@ -225,6 +225,7 @@ def get_job_status(job_uuid):
             result['created_at'] = row[1].strftime('%Y.%m.%d %H:%M:%S');
             result['updated_at'] = row[2].strftime('%Y.%m.%d %H:%M:%S');
             result['status'] = row[3];
+            result['status_message'] = row[4]
         return result
     finally:
         try:

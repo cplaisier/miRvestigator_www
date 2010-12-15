@@ -12,12 +12,12 @@ function getParameters(job_id, callback) {
         $("#job_name").html(parameters.jobName);
         $("#job_id").html(job_id);
         $("#genes_submitted").html(parameters.genes_submitted);
-        if (parameters.annotated_sequences==0) {
-          $("#annotated_sequences").html("Pending...");
-        }
-        else {
-          $("#annotated_sequences").html(parameters.annotated_sequences);
-        }
+        // if (parameters.annotated_sequences==0) {
+        //   $("#annotated_sequences").html("Pending...");
+        // }
+        // else {
+        $("#annotated_sequences").html(parameters.annotated_sequences);
+        // }
         $("#motif_sizes").html(parameters.motif_sizes.join(", "));
         if (parameters.bgModel=="HS") {
           $("#background_model").html("Default Weeder model");
@@ -36,3 +36,4 @@ function getParameters(job_id, callback) {
     });
   }
 }
+
