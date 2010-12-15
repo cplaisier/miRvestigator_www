@@ -302,6 +302,8 @@ def results(req):
     s += '<tr><td bgcolor=\'#000000\'><center><font color=\'#cccc00\' size=4><b>Summary of Results</b></font></center></td></tr>\n'
     # Make a table that looks like this:
     # motif consensus | top miRNA | seed | length | vitPValue | # seqs with site (% of seqs with site)
+    if (len(motifs)==0):
+        s+= '<div>No motifs found.</div>'
     for motif in motifs:
         scoreList = read_mirvestigator_scores(motif['motif_id'])
         if topRet=='all':
