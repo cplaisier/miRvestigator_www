@@ -156,6 +156,11 @@ def run(job_uuid, genes, seedModels, wobble, cut, bgModel, motifSizes, jobName, 
         if gene in seqs:
             miRSeqs[gene] = seqs[gene]
 
+    # if there are no matching sequences, bail out w/ a reasonable error message.
+    if (len(miRSeqs)==0):
+        update_job_status(job_uuid, "error", "No sequences found for the genes entered.")
+        return
+
     # record whether a sequence was found for each gene
     # previously stored when job was created (create_job_in_db)
     set_genes_annotated(job_uuid, miRSeqs)

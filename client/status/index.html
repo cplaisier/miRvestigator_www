@@ -2,6 +2,7 @@
   <head>
   <style> body { font-family: arial, sans-serif; } </style>
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.4.4/jquery.min.js"></script>
+  <script src="mirvestigator.js"></script>
   <script language="JavaScript">
 
       var _gaq = _gaq || [];
@@ -91,39 +92,6 @@
           });
         }
       }
-      
-      function getParameters() {
-        if (job_id) {
-          jQuery.ajax({
-            url: "/miRvestigator/parameters?id=" + job_id,
-            context: document.body,
-            dataType: "json",
-            success: function(parameters) {
-              $("#job_name").html(parameters.jobName);
-              $("#job_id").html(job_id);
-              $("#genes_submitted").html(parameters.genes_submitted);
-              if (parameters.annotated_sequences==0) {
-                $("#annotated_sequences").html("Pending...");
-              }
-              else {
-                $("#annotated_sequences").html(parameters.annotated_sequences);
-              }
-              $("#motif_sizes").html(parameters.motif_sizes.join(", "));
-              if (parameters.bgModel=="HS") {
-                $("#background_model").html("Default Weeder model");
-              }
-              else {
-                $("#background_model").html("3' UTR specific model");
-              }
-              $("#seed_model").html(parameters.seed_model.join(", "));
-              $("#model_wobble").html(parameters.model_wobble);
-            },
-            error: function(xmlHttpRequest, textStatus, errorThrown) {
-              $("#job_name").html("<p>Error getting status: " + textStatus + "</p>");
-            }
-          });
-        }
-      }
 
       function stop_polling() {
         if (polling_timer) clearInterval(polling_timer);
@@ -141,7 +109,7 @@
           }
           if (job_id) {
             poll();
-            getParameters();
+            getParameters(job_id);
             $("#refresh_link").attr("href", "/status/" + job_id + "/");
             polling_timer = window.setInterval(function() {
               poll();
