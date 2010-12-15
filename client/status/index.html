@@ -82,7 +82,7 @@
                 stop_polling();
                 $("#status").text("Error");
                 if (autoredirect) {
-                  window.location = "/error";
+                  window.location = "/error/" + job_id + "/";
                 }
               }
             },
