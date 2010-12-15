@@ -31,7 +31,8 @@ function getParameters(job_id, callback) {
             callback();
       },
       error: function(xmlHttpRequest, textStatus, errorThrown) {
-        $("#job_name").html("<p>Error getting status: " + textStatus + "</p>");
+        $("#job_name").html("<p>Error getting parameters: " + textStatus + "</p>");
+        $("#output").append("<p>Error getting parameters: " + textStatus + "</p>");
       }
     });
   }
