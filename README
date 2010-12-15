@@ -22,6 +22,7 @@ Web server files located in the miRvestigator/client sub-tree need to be copied 
     RewriteRule ^results/([a-fA-F0-9\-]+)/(.?)$ /miRvestigator.py/results?id=$1
     RewriteRule ^sites/csv/([0-9]+)(.?)$ /miRvestigator.py/sites_as_csv?motif_id=$1
     RewriteRule ^scores/csv/([0-9]+)(.?)$ /miRvestigator.py/scores_as_csv?motif_id=$1
+    RewriteRule ^errormessage/([a-fA-F0-9\-]+)/(.?)$ /error.html
 </Directory>
 
 MySQL and python-mysql need to be installed. A database called mirvestigator needs to be created and populated with tables like this:

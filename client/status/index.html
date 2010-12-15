@@ -73,13 +73,13 @@
                 }
               }
               if (status.status=="done") {
-                clearInterval(polling_timer);
+                stop_polling();
                 if (autoredirect) {
                   window.location = "/results/" + job_id + "/";
                 }
               }
               else if (status.status=="error") {
-                clearInterval(polling_timer);
+                stop_polling();
                 $("#status").text("Error");
                 if (autoredirect) {
                   window.location = "/error";
@@ -87,6 +87,7 @@
               }
             },
             error: function(xmlHttpRequest, textStatus, errorThrown) {
+              stop_polling();
               $("#status_output").append("<p>Error getting status: " + textStatus + "</p>");
             }
           });
