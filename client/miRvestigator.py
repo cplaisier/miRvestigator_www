@@ -219,7 +219,7 @@ def results(req):
     s += '<head>'
     s += '<title>miRvestigator Framework</title>\n'
     s += '<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.4.4/jquery.min.js"></script>\n'
-    s += '<script src="mirvestigator.js"></script>\n'
+    s += '<script src="/mirvestigator.js"></script>\n'
     s += '<script type="text/javascript">\n  var _gaq = _gaq || [];\n  _gaq.push([\'_setAccount\', \'UA-19292534-1\']);\n  _gaq.push([\'_trackPageview\']);\n  (function() {\n    var ga = document.createElement(\'script\');\n    ga.type = \'text/javascript\';\n    ga.async = true;\n    ga.src = (\'https:\' == document.location.protocol ? \'https://ssl\' : \'http://www\') + \'.google-analytics.com/ga.js\';\n    var s = document.getElementsByTagName(\'script\')[0];\n    s.parentNode.insertBefore(ga, s);\n  })();\n'
     s += 'function toggleVisible(id) {\n'
     s += '  if (document.getElementById) {\n'

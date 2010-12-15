@@ -1,7 +1,7 @@
 <html>
     <head>
       <title>miRvestigator Framework</title>
-      <script src="mirvestigator.js"></script>
+      <script src="/mirvestigator.js"></script>
       <script type="text/javascript">
         var _gaq = _gaq || [];
         _gaq.push(['_setAccount', 'UA-19292534-1']);
@@ -19,7 +19,7 @@
           if (m && m.length > 1) {
             job_id = m[1];
             if (job_id) {
-              getParameters(function() { $("#parameters").show(); });
+              getParameters(job_id, function() { $("#parameters").show(); });
             }
           }
         }
