@@ -47,6 +47,11 @@
         #parameters {
           display: none;
         }
+        #output {
+          background:#333333;
+          color:#CC0000;
+          font-weight:bold;
+        }
       </style>
     </head>
 
@@ -57,16 +62,13 @@
 
     <table cellpadding='5%' cellspacing=3 width='100%'>
     <tr><td bgcolor='#333333' style="height:20ex; padding-left:4em; padding-right:4em;"><center>
-      <b><font color='#ffffff'><p>An error has occurred. Sorry, but miRvestigator is unable to complete your request. Please try again, later.</p></font></b>
-
-      <a href="/">Return to miRvestigator home page</a></td></tr>
+      <b><font color='#ffffff'><p>An error has occurred. Sorry, but miRvestigator is unable to complete your request.</p></font></b>
+      <div id="output"></div>
+      <p style="font-size:small;"><a href="/">Return to miRvestigator home page</a></p>
     </center></td></tr>
     </table>
     
-    <div id="output"></div>
-
     <div id="parameters">
-      <h3>Submission Parameters</h3>
       <table width='100%' cellpadding='5%'>
         <tr><td colspan="2" bgcolor='#333333' align='center' valign='center'><b><font color='#cccc00' size=4>Basic Parameters</font></b></td></tr>
         <tr><td bgcolor='#333333' align='center' valign='center'><font color='#ffffff'><b>Job Name:</b></font></td><td bgcolor='#666666' align='center' valign='center'><table width='100%' cellpadding='5%'><tr><td bgcolor='#ffffff'><center><span id="job_name"></span></center></td></tr></table></td></tr>
