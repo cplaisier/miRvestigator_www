@@ -37,6 +37,7 @@
           if (m && m.length > 1) {
             job_id = m[1];
             if (job_id) {
+              getStatus(job_id);
               getParameters(job_id, function() { $("#parameters").show(); });
             }
           }
