@@ -160,22 +160,22 @@ def read_parameters(job_uuid):
             parameters[row[0]] = row[1]
 
         motif_sizes = []
-        if (parameters['m6']):
+        if ('m6' in parameters):
             motif_sizes.append("6 bp")
-        if (parameters['m8']):
+        if ('m8' in parameters):
             motif_sizes.append("8 bp")
         parameters['motif_sizes'] = motif_sizes
 
         seed_model = []
-        if (parameters['s6']):
+        if ('s6' in parameters):
             seed_model.append("6mer")
-        if (parameters['s7']):
+        if ('s7' in parameters):
             seed_model.append("7mer")
-        if (parameters['s8']):
+        if ('s8' in parameters):
             seed_model.append("8mer")
         parameters['seed_model'] = seed_model
 
-        if (parameters['wobble']=='yes'):
+        if ('wobble' in parameters and parameters['wobble']=='yes'):
             parameters['model_wobble'] = 'Yes (' + parameters['cut'] + ')'
         else:
             parameters['model_wobble'] = 'No'
