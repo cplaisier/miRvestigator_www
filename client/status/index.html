@@ -85,6 +85,13 @@
                   window.location = "/error/" + job_id + "/";
                 }
               }
+              else if (status.status=="not found") {
+                stop_polling();
+                $("#status").text("not found");
+                if (autoredirect) {
+                  window.location = "/error/" + job_id + "/";
+                }
+              }
             },
             error: function(xmlHttpRequest, textStatus, errorThrown) {
               stop_polling();

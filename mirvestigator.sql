@@ -10,6 +10,7 @@ drop table if exists motifs;
 drop table if exists pssms;
 drop table if exists sites;
 drop table if exists mirvestigator_scores;
+drop table if exists species;
 
 create table jobs (
     uuid char(36) NOT NULL PRIMARY KEY,
@@ -76,4 +77,24 @@ create table mirvestigator_scores (
     viterbi_p float,                      -- vitPValue
     index(motif_id)
 );
+
+create table species (
+    id int NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    name varchar(100),
+    ncbi_id int,
+    ucsc_name varchar(100),
+    mirbase varchar(10),
+    weeder varchar(10).
+);
+
+-- populate species lookup table
+insert into species values('D. melanogaster', 'Drosophila_melanogaster', 7227, 'dme', 'DM3P');
+insert into species values('G. gallus',       'Gallus_gallus',           9031, 'gga', 'GG3P');
+insert into species values('R. novergicus',   'Rattus_norvegicus',      10116, 'rno', 'RN3P');
+insert into species values('H. sapiens',      'Homo_sapiens',            9606, 'hsa', 'HS3P');
+insert into species values('C. elegans',      'Caenorhabditis_elegans',  6239, 'cel', 'CE3P');
+insert into species values('C. familiaris',   'Canis_familiaris',        9615, 'cfa', 'CF3P');
+insert into species values('M. musculus',     'Mus_musculus',           10090, 'mmu', 'MM3P');
+
+
 
