@@ -158,7 +158,7 @@ def run(job_uuid, genes, seedModels, wobble, cut, bgModel, motifSizes, jobName, 
 
     # if there are no matching sequences, bail out w/ a reasonable error message.
     if (len(miRSeqs)==0):
-        print("no matching sequences found for genes in job " + job_id)
+        print("no matching sequences found for genes in job " + job_uuid)
         update_job_status(job_uuid, "error", "No sequences found for the genes entered.")
         return False
 
