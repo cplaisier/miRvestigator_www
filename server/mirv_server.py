@@ -67,8 +67,6 @@ def start_worker(id, q):
             species = get_species_by_mirbase_id(mirbase_species)
             bgModel = species['weeder']
             
-        print("using bg model: " + bgModel)
-
         try:
             # run the job
             r = mirv_worker.run(job['id'], genes, seedModels, wobble, cut, bgModel, motifSizes, jobName, topRet)
