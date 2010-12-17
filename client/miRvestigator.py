@@ -200,6 +200,7 @@ def results(req):
     topRet = parameters['topRet']
     genesSubmitted = parameters['genes_submitted']
     annotatedSequences = parameters['annotated_sequences']
+    mirbase_species = parameters['species']
 
     # read mirbase miRNAs so we can link back to mirbase
     import gzip
@@ -213,7 +214,7 @@ def results(req):
         # Get the miRNA name
         miRNAData = miRNALine.lstrip('>').split(' ')
         curMiRNA = miRNAData[0]
-        if (curMiRNA.split('-'))[0]=='hsa':
+        if (curMiRNA.split('-'))[0]==mirbase_species:
             miRNADict[curMiRNA] = miRNAData[1]
     miRNAFile.close()
 
