@@ -89,13 +89,13 @@ create table species (
 );
 
 -- populate species lookup table
-insert into species values('D. melanogaster', 'Drosophila_melanogaster', 7227, 'dme', 'DM3P');
-insert into species values('G. gallus',       'Gallus_gallus',           9031, 'gga', 'GG3P');
-insert into species values('R. novergicus',   'Rattus_norvegicus',      10116, 'rno', 'RN3P');
-insert into species values('H. sapiens',      'Homo_sapiens',            9606, 'hsa', 'HS3P');
-insert into species values('C. elegans',      'Caenorhabditis_elegans',  6239, 'cel', 'CE3P');
-insert into species values('C. familiaris',   'Canis_familiaris',        9615, 'cfa', 'CF3P');
-insert into species values('M. musculus',     'Mus_musculus',           10090, 'mmu', 'MM3P');
+insert into species (name, ucsc_name, ncbi_id, mirbase, weeder) values('D. melanogaster', 'Drosophila_melanogaster', 7227, 'dme', 'DM3P');
+insert into species (name, ucsc_name, ncbi_id, mirbase, weeder) values('G. gallus',       'Gallus_gallus',           9031, 'gga', 'GG3P');
+insert into species (name, ucsc_name, ncbi_id, mirbase, weeder) values('R. novergicus',   'Rattus_norvegicus',      10116, 'rno', 'RN3P');
+insert into species (name, ucsc_name, ncbi_id, mirbase, weeder) values('H. sapiens',      'Homo_sapiens',            9606, 'hsa', 'HS3P');
+insert into species (name, ucsc_name, ncbi_id, mirbase, weeder) values('C. elegans',      'Caenorhabditis_elegans',  6239, 'cel', 'CE3P');
+insert into species (name, ucsc_name, ncbi_id, mirbase, weeder) values('C. familiaris',   'Canis_familiaris',        9615, 'cfa', 'CF3P');
+insert into species (name, ucsc_name, ncbi_id, mirbase, weeder) values('M. musculus',     'Mus_musculus',           10090, 'mmu', 'MM3P');
 
 
 
