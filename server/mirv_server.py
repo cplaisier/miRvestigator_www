@@ -66,6 +66,8 @@ def start_worker(id, q):
         if (not bgModel):
             species = get_species_by_mirbase_id(mirbase_species)
             bgModel = species['weeder']
+            
+        print("using bg model: " + bgModel)
 
         try:
             # run the job

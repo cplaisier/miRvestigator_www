@@ -121,13 +121,6 @@ def submitJob(req):
     job['s8'] = str(req.form.getfirst('seedModel_8',''))
     #job['bgModel'] = str(req.form.getfirst('bgModel',''))
     job['species'] = str(req.form.getfirst('species',''))
-
-    sys.stderr.write("}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}\n")
-    sys.stderr.write("}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}\n")
-    sys.stderr.write("}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}\n")
-    sys.stderr.write("species = " + job['species'] + "\n")
-    sys.stderr.flush()
-
     job['wobble'] = str(req.form.getfirst('wobble',''))
     job['cut'] = str(req.form.getfirst('cut',''))
     job['m6'] = str(req.form.getfirst('motif_6',''))
