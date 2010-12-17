@@ -580,16 +580,6 @@ def read_sites(motif_id):
             log("Exception closing conection: ")
             log(exception)
 
-            create table species (
-                id int NOT NULL AUTO_INCREMENT PRIMARY KEY,
-                name varchar(100),
-                ncbi_id int,
-                ucsc_name varchar(100),
-                mirbase varchar(10),
-                weeder varchar(10),
-                index(mirbase)
-            );
-
 def get_species_by_mirbase_id(mirbase_id):
     conn = _get_db_connection()
     try:
