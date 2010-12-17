@@ -164,18 +164,18 @@ def read_parameters(job_uuid):
             parameters[row[0]] = row[1]
 
         motif_sizes = []
-        if ('m6' in parameters):
+        if ('m6' in parameters and parameters['m6'] == '6'):
             motif_sizes.append("6 bp")
-        if ('m8' in parameters):
+        if ('m8' in parameters and parameters['m8'] == '8'):
             motif_sizes.append("8 bp")
         parameters['motif_sizes'] = motif_sizes
 
         seed_model = []
-        if ('s6' in parameters):
+        if ('s6' in parameters and parameters['s6']):
             seed_model.append("6mer")
-        if ('s7' in parameters):
+        if ('s7' in parameters and parameters['s7']):
             seed_model.append("7mer")
-        if ('s8' in parameters):
+        if ('s8' in parameters and parameters['s8']):
             seed_model.append("8mer")
         parameters['seed_model'] = seed_model
 
@@ -325,6 +325,7 @@ def store_motif(job_uuid, pssm):
 
         # did this way rather than using execute's string substitution because I
         # kept getting a TypeError: float argument required, not str:
+        log("storing motif: " + (str(job_uuid), pssm.getName(), float(pssm.getEValue()),))
         sql = """
             insert into motifs
             (job_uuid, name, score)
