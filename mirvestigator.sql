@@ -84,7 +84,8 @@ create table species (
     ncbi_id int,
     ucsc_name varchar(100),
     mirbase varchar(10),
-    weeder varchar(10).
+    weeder varchar(10),
+    index(mirbase)
 );
 
 -- populate species lookup table

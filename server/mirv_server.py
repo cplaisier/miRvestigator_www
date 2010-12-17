@@ -47,16 +47,25 @@ def start_worker(id, q):
 
         # parse params out of job
         genes = job['genes']
-        bgModel = job['bgModel']
+        if ('bgModel' in job):
+            bgModel = job['bgModel']
+        else:
+            bgModel = None
         wobble = (job['wobble'] == 'yes')
         cut = float(job['cut'])
         jobName = job['jobName']
         topRet = job['topRet']
+        mirbase_species = job['species']
         notify_mail = job['notify_mail']
 
         # condense seed models and motif sizes into arrays of ints
         seedModels = [int(job[s]) for s in ['s6','s7','s8'] if s in job and job[s]]
         motifSizes = [int(job[m]) for m in ['m6', 'm8'] if m in job and job[m]]
+        
+        # read bgModel from database if not given in request params
+        if (!bgModel):
+            species = get_species_by_mirbase_id(mirbase_species)
+            bgModel = species['weeder']
 
         try:
             # run the job

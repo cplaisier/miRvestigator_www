@@ -580,28 +580,35 @@ def read_sites(motif_id):
             log("Exception closing conection: ")
             log(exception)
 
+            create table species (
+                id int NOT NULL AUTO_INCREMENT PRIMARY KEY,
+                name varchar(100),
+                ncbi_id int,
+                ucsc_name varchar(100),
+                mirbase varchar(10),
+                weeder varchar(10),
+                index(mirbase)
+            );
 
-def get_species(motif_id):
+def get_species_by_mirbase_id(mirbase_id):
     conn = _get_db_connection()
     try:
         cursor = conn.cursor()
         cursor.execute("""
-            select entrez_gene_id, sequence, start, quality
-            from sites
-            where motif_id=%d
-            order by sort_order;""" %
-            (int(motif_id),))
-        result_set = cursor.fetchall()
-        # each site is a dictionary w/ keys: gene, start, match, site
-        sites = []
-        for row in result_set:
-            site = {}
-            site['gene']  = row[0]
-            site['site']  = row[1]
-            site['start'] = row[2]
-            site['match'] = row[3]
-            sites.append(site)
-        return sites
+            select *
+            from species
+            where mirbase='%s';""" %
+            (mirbase_id,))
+        row = cursor.fetchone()
+        species = {}
+        if (row and len(row) >= 6):
+            species['id']  = row[0]
+            species['name']  = row[1]
+            species['ncbi_id'] = row[2]
+            species['ucsc_name'] = row[3]
+            species['mirbase'] = row[4]
+            species['weeder'] = row[5]
+        return species
     finally:
         try:
             cursor.close()
