@@ -81,8 +81,8 @@ create table mirvestigator_scores (
 create table species (
     id int NOT NULL AUTO_INCREMENT PRIMARY KEY,
     name varchar(100),
-    ncbi_id int,
     ucsc_name varchar(100),
+    ncbi_id int,
     mirbase varchar(10),
     weeder varchar(10),
     index(mirbase)
