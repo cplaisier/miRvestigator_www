@@ -42,6 +42,7 @@ class miRvestigator:
     def __init__(self,pssms,seqs3pUTR,seedModel=[6,7,8], minor=True, p5=True, p3=True, textOut=True, wobble=True, wobbleCut=0.25, species='hsa'):
         print '\nmiRvestigator analysis started...'
         self.pssms = pssms
+        self.species = species
         self.miRNAs = self.setMiRNAs(0,8,minor,p5,p3)
         # Trim sequences down
         self.miRNAs_6mer_1 = self.trimSeqs(deepcopy(self.miRNAs),0,6)
@@ -50,7 +51,6 @@ class miRvestigator:
         self.miRNAs_7mer_m8 = self.trimSeqs(deepcopy(self.miRNAs),1,8)
         self.miRNAs_7mer_a1 = self.trimSeqs(deepcopy(self.miRNAs),0,7)
         self.miRNAs_8mer = self.trimSeqs(deepcopy(self.miRNAs),0,8)
-        self.species = species
         p3utrSeqs = 'X'.join(seqs3pUTR)
         dirName = 'miRNA'
         if not os.path.exists(dirName):
