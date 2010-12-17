@@ -215,6 +215,7 @@ def read_parameters(job_uuid):
 
 
 def get_job_status(job_uuid):
+    print("+++++++++++++++++++++++++++++++++        asdfasdf adsf asdf asdf asdf asdf asdf")
     conn = _get_db_connection()
     try:
         cursor = conn.cursor()
