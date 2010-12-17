@@ -103,10 +103,10 @@ def alignSeed(alignment, seed, motif):
 # stuff parameters into a dictionary and pop those onto a queue
 def submitJob(req):
     
-    print sys.stderr, "======================================================================"
-    print sys.stderr, req
-    print sys.stderr, str(req)
-    print sys.stderr, "======================================================================"
+    sys.stderr.write("}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}\n")
+    sys.stderr.write("======================================================================\n")
+    sys.stderr.write(str(req)+ "\n")
+    sys.stderr.write("======================================================================\n")
     sys.stderr.flush()
     
     # create a job object which will be queued
