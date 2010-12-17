@@ -60,7 +60,7 @@ def start_worker(id, q):
 
         species = get_species_by_mirbase_id(mirbase_species)
         bgModel = species['weeder']
-        sequence_file = "p3utrSeqs_" + species['ucsc'] + ".csv"
+        sequence_file = "p3utrSeqs_" + species['ucsc_name'] + ".csv"
 
         try:
             # run the job
