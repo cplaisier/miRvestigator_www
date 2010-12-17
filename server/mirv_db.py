@@ -230,7 +230,8 @@ def get_job_status(job_uuid):
             result['created_at'] = row[1].strftime('%Y.%m.%d %H:%M:%S')
             result['updated_at'] = row[2].strftime('%Y.%m.%d %H:%M:%S')
             result['status'] = row[3]
-            if (row[4]):
+            print("row[4] = \"" + row[4] + "\"")
+            if (row[4] is not None):
                 result['status_message'] = row[4]
         return result
     finally:
