@@ -7,7 +7,7 @@ import cPickle
 # Custom libraries
 from miRvestigator import miRvestigator
 from pssm import pssm
-from mirv_db import update_job_status, set_genes_annotated, store_motif, store_mirvestigator_scores
+from mirv_db import update_job_status, set_genes_annotated, store_motif, store_mirvestigator_scores, get_species_by_mirbase_id
 
 
 
@@ -135,11 +135,16 @@ def weeder(seqFile=None, percTargets=50, revComp=False, bgModel='HS'):
 
 
 
-def run(job_uuid, genes, seedModels, wobble, cut, bgModel, motifSizes, jobName, sequence_file, topRet=10):
+def run(job_uuid, genes, seedModels, wobble, cut, motifSizes, jobName, mirbase_species, topRet=10):
     
+
+    species = get_species_by_mirbase_id(mirbase_species)
+    bgModel = species['weeder']
+    sequence_file = "p3utrSeqs_" + species['ucsc_name'] + ".csv"
+
     cut = float(cut)
     curRunNum = randint(0,1000000)
-
+    
     # 1. Read in sequences
     seqFile = open(sequence_file,'r')
     seqLines = seqFile.readlines()
@@ -197,7 +202,8 @@ def run(job_uuid, genes, seedModels, wobble, cut, bgModel, motifSizes, jobName, 
                        minor=True,
                        p5=True, p3=True,
                        wobble=wobble, wobbleCut=cut,
-                       textOut=False)
+                       textOut=False,
+                       mirbase_species)
 
     # 6. Read in miRNAs to get mature miRNA ids
     # import gzip

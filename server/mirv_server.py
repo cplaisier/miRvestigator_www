@@ -58,13 +58,9 @@ def start_worker(id, q):
         seedModels = [int(job[s]) for s in ['s6','s7','s8'] if s in job and job[s]]
         motifSizes = [int(job[m]) for m in ['m6', 'm8'] if m in job and job[m]]
 
-        species = get_species_by_mirbase_id(mirbase_species)
-        bgModel = species['weeder']
-        sequence_file = "p3utrSeqs_" + species['ucsc_name'] + ".csv"
-
         try:
             # run the job
-            r = mirv_worker.run(job['id'], genes, seedModels, wobble, cut, bgModel, motifSizes, jobName, sequence_file, topRet)
+            r = mirv_worker.run(job['id'], genes, seedModels, wobble, cut, motifSizes, jobName, mirbase_species, topRet)
 
             # notify on success
             if r:
