@@ -63,7 +63,7 @@ def start_worker(id, q):
         motifSizes = [int(job[m]) for m in ['m6', 'm8'] if m in job and job[m]]
         
         # read bgModel from database if not given in request params
-        if (!bgModel):
+        if (not bgModel):
             species = get_species_by_mirbase_id(mirbase_species)
             bgModel = species['weeder']
 
