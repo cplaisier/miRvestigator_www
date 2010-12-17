@@ -60,11 +60,10 @@ def start_worker(id, q):
 
         try:
             # run the job
-            mirv_worker.run(job['id'], genes, seedModels, wobble, cut, bgModel, motifSizes, jobName, topRet)
+            mirv_worker.run(job['id'], genes, seedModels, wobble, cut, bgModel, motifSizes, jobName, topRet):
 
             # notify on success
             print("worker %d done job %s." % (id, job['id']))
-            update_job_status(job['id'], 'done')
             if (notify_mail):
                 adminEmailer.notify_complete( notify_mail.split(","), str(job['id']), jobName )
         except Exception as e:
