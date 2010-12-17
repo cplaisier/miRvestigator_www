@@ -325,7 +325,7 @@ def store_motif(job_uuid, pssm):
 
         # did this way rather than using execute's string substitution because I
         # kept getting a TypeError: float argument required, not str:
-        log("storing motif: " + (str(job_uuid), pssm.getName(), float(pssm.getEValue()),))
+        log("storing motif: " + str((str(job_uuid), pssm.getName(), float(pssm.getEValue()),)))
         sql = """
             insert into motifs
             (job_uuid, name, score)
