@@ -135,13 +135,13 @@ def weeder(seqFile=None, percTargets=50, revComp=False, bgModel='HS'):
 
 
 
-def run(job_uuid, genes, seedModels, wobble, cut, bgModel, motifSizes, jobName, topRet=10, eMailAddr=''):
+def run(job_uuid, genes, seedModels, wobble, cut, bgModel, motifSizes, jobName, sequence_file, topRet=10):
     
     cut = float(cut)
     curRunNum = randint(0,1000000)
 
     # 1. Read in sequences
-    seqFile = open('p3utrSeqs_Homo_sapiens.csv','r')
+    seqFile = open(sequence_file,'r')
     seqLines = seqFile.readlines()
     ids = [i.strip().split(',')[0].upper() for i in seqLines]
     sequences = [i.strip().split(',')[1] for i in seqLines]

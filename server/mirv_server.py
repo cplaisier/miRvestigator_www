@@ -47,10 +47,6 @@ def start_worker(id, q):
 
         # parse params out of job
         genes = job['genes']
-        if ('bgModel' in job):
-            bgModel = job['bgModel']
-        else:
-            bgModel = None
         wobble = (job['wobble'] == 'yes')
         cut = float(job['cut'])
         jobName = job['jobName']
@@ -61,15 +57,14 @@ def start_worker(id, q):
         # condense seed models and motif sizes into arrays of ints
         seedModels = [int(job[s]) for s in ['s6','s7','s8'] if s in job and job[s]]
         motifSizes = [int(job[m]) for m in ['m6', 'm8'] if m in job and job[m]]
-        
-        # read bgModel from database if not given in request params
-        if (not bgModel):
-            species = get_species_by_mirbase_id(mirbase_species)
-            bgModel = species['weeder']
-            
+
+        species = get_species_by_mirbase_id(mirbase_species)
+        bgModel = species['weeder']
+        sequence_file = "p3utrSeqs_" + species['ucsc'] + ".csv"
+
         try:
             # run the job
-            r = mirv_worker.run(job['id'], genes, seedModels, wobble, cut, bgModel, motifSizes, jobName, topRet)
+            r = mirv_worker.run(job['id'], genes, seedModels, wobble, cut, bgModel, motifSizes, jobName, sequence_file, topRet)
 
             # notify on success
             if r:
