@@ -139,10 +139,31 @@
       <tr><td bgcolor='#000000' colspan=2><center><font color='#cccc00' size=4><a href="#geneList" onclick="toggleVisible('geneList'); return false;" style='color: rgb(204,204,0); text-decoration: none'><b>Enter Co-Expressed Gene List &nbsp; <font color="#ff0000">[?]</font></b></a></font></center></td></tr>
       <tr id="geneList" style="display: none;"><td colspan=2 bgcolor='#333333'><font color='#ffffff'><b>What is gene Co-Expression?</b>
 <p><a href='http://en.wikipedia.org/wiki/Post-transcriptional_regulation' style='color: rgb(204,204,0)' target='_blank'>Post-transcriptional regulation</a> by a <a href='http://en.wikipedia.org/wiki/MicroRNA' style='color: rgb(204,204,0)' target='_blank'>miRNA</a> is mediated through binding to complementary sequences in the <a href="http://en.wikipedia.org/wiki/3\'_UTR" style='color: rgb(204,204,0)' target='_blank'>3' untranslated regions (UTRs)</a> of transcripts and generates a biological context-specific signature of down-regulation for these transcripts, which is called a co-expression signature. Co-expression signatures observed in transcriptome studies are thus assumed to be of biological origins whereby the expression of genes are regulated by shared factors (transcription factors, miRNAs, genetics or environmental factors). There are many methods available to identify co-expression signatures, and the miRvestigator framework does not bias toward any particular method.</p>
+<b>What species are supported?</b>
+<p>miRvestigator currently supports:
+<ul>
+    <li><a href='http://en.wikipedia.org/wiki/Caenorhabditis_elegans' style='color: rgb(204,204,0)' target='_blank'>C. elegans</a></li>
+    <li><a href='http://en.wikipedia.org/wiki/Drosophila_melanogaster' style='color: rgb(204,204,0)' target='_blank'>D. melanogaster</a></li>
+    <li><a href='http://en.wikipedia.org/wiki/Gallus_gallus' style='color: rgb(204,204,0)' target='_blank'>G. gallus</a></li>
+    <li><a href='http://en.wikipedia.org/wiki/Homo_sapiens' style='color: rgb(204,204,0)' target='_blank'>H. sapiens</a></li>
+    <li><a href='http://en.wikipedia.org/wiki/Mus_musculus' style='color: rgb(204,204,0)' target='_blank'>M. musculus</a></li>
+    <li><a href='http://en.wikipedia.org/wiki/Brown_rat' style='color: rgb(204,204,0)' target='_blank'>R. norvegicus</a></li>
+</ul>
+If the species you study has miRNAs and is not on this list please e-mail us and we will do our best to add your species of interest to miRvestigator.</p>
 <b>What if I don't have Entrez gene identifiers (IDs)?</b>
 <p>Currently the miRvestigator framework is able to take <a href='http://www.ncbi.nlm.nih.gov/gene' style='color: rgb(204,204,0)' target='_blank'>Entrez gene IDs</a> as input. To convert any other type of identifier to Entrez gene IDs please use the <a href='http://david.abcc.ncifcrf.gov/home.jsp' style='color: rgb(204,204,0)' target='_blank'>DAVID</a> bioinformatics resource <a href='http://david.abcc.ncifcrf.gov/conversion.jsp' style='color: rgb(204,204,0)' target='_blank'>gene ID conversion tool</a>. The DAVID gene ID conversion tool has a great <a href='http://david.abcc.ncifcrf.gov/helps/conversion.html' style='color: rgb(204,204,0)' target='_blank'>help page</a> please visit it if you have any questions.</p>
 <b>What types of <a href='http://en.wikipedia.org/wiki/Delimiter' style='color: rgb(255,255,255)' target='_blank'>delimiters</a> can be entered into the form?</b>
 <p>You can enter the Entrez gene IDs separated by commas, spaces, tabs or <a href='http://en.wikipedia.org/wiki/Newline' style='color: rgb(204,204,0)' target='_blank'>newlines</a>.</p></font></td></tr>
+      <tr><td bgcolor='#333333'><b><center><font color='#ffffff'>Choose species:</font></center></b></td><td bgcolor='#666666'><table width='100%' cellpadding='5%'><tr><td bgcolor='#ffffff'><center>
+      <select id='species'>
+          <option value='cel'>C. elegans</option>
+          <option value='dme'>D. melanogaster</option>
+          <option value='gga'>G. gallus</option>
+          <option value='hsa' selected>H. sapiens</option>
+          <option value='mmu'>M. musculus</option>
+          <option value='rno'>R. norvegicus</option>
+      </select>
+      </center></td></tr></table></td></tr>
       <tr><td bgcolor='#333333'><b><center><font color='#ffffff'>Name the gene list:</font></center></b></td><td bgcolor='#666666'><table width='100%' cellpadding='5%'><tr><td bgcolor='#ffffff'><center><input type='text' name='jobName' size=50></center></td></tr></table></td></tr>
       <tr><td colspan=2 bgcolor='#333333'><b><font color='#ffffff'>Enter Entrez IDs for the co-expressed genes:</font></b></br><font color='#ffffff'>(Acceptable <a href='http://en.wikipedia.org/wiki/Delimiter' style='color: rgb(204,204,0)' target='_blank'>delimiters</a> include: comma, space, tab or newline)</font></td></tr>
       <tr><td colspan=2 bgcolor='#666666'><center><textarea rows=20 cols=70 name='genes'></textarea></center></td></tr>
@@ -166,11 +187,10 @@
       <p><a href='http://159.149.109.9/modtools/' style='color: rgb(204,204,0)' target='_blank'>Weeder</a> is an <a href='http://en.wikipedia.org/wiki/Enumerative' style='color: rgb(204,204,0)' target='_blank'>enumerative algorithm</a> used to identify over-represented <a href='http://en.wikipedia.org/wiki/Sequence_motif' style='color: rgb(204,204,0)' target='_blank'>sequence motifs</a> in the miRvestigator framework.</p>
       <b>What are the motif sizes?</b>
       <p>Weeder identifies both 6 base-pair (bp) and 8bp motifs for each run. Using this option it is possible to choose which motif size is subsequently used in the miRvestigator HMM is set by this option. Picking only one of the motif sizes will make the run faster. By default we have chosen to use 8bp motifs. (<b>Note:</b> It is possible that the 6bp motif and the 8bp motif will be different.)</p>
-      <b>Background models?</b>
-      <p>Weeder uses the background model to determine whether or not an oligo is enriched above background. The Weeder documentation states that the "Default Weeder Model" should be sufficient for 3' UTRs even though it was built based up on upstream sequences, which was consistent with our findings. Although in certain cases a model built upon the 3' UTR sequences was helpful. By default the "Default Weeder Model" is chosen. (<b>Note:</b> It is likely that the 3' UTR background model would improve given more complete 3'UTR annotations.)</p>
+      <b>What background model does Weeder use?</b>
+      <p>We have utilized the annotated 3' UTR sequences for each species to build a background distribution just as was done for the promoter seqeunces.</p>
       </font></td></tr>
       <tr><td bgcolor='#333333'><b><center><font color='#ffffff'>Motif Sizes:</font></center></b></td><td bgcolor='#666666'><table cellpadding='5%' width='100%'><tr><td bgcolor='#ffffff'><center><b>6bp</b> <input type='checkbox' name='motif_6' value=6></input></center></td><td bgcolor='#ffffff'><center><b>8bp</b> <input type='checkbox' name='motif_8' value=8 checked></input></center></td></tr></table></td></tr>
-      <tr><td bgcolor='#333333'><b><center><font color='#ffffff'>Background Model:</font></center></b></td><td bgcolor='#666666'><table width=100%><tr><td bgcolor='#ffffff'><center><select name='bgModel'><option value='HS' selected>Default Weeder Model</option><option value='HS3P'>3' UTR Specific Model</option></select></center></td></tr></table></td></tr>
       <tr><td><td></tr>
       <tr><td bgcolor='#000000' colspan=2><font color='#cccc00' size=4><b><a href="#mvParam" onclick="toggleVisible('mvParam'); return false;" style='color: rgb(204,204,0); text-decoration: none'><center><b>Parameters for miRvestigator HMM &nbsp; <font color="#ff0000">[?]</font></a></b></center></font></td></tr>
       <tr id="mvParam" style="display: none;"><td colspan=2 bgcolor='#333333'><font color='#ffffff'>

@@ -39,7 +39,7 @@ import os, cPickle
 #
 class miRvestigator:
     # Initialize and start the run
-    def __init__(self,pssms,seqs3pUTR,seedModel=[6,7,8], minor=True, p5=True, p3=True, textOut=True, wobble=True, wobbleCut=0.25):
+    def __init__(self,pssms,seqs3pUTR,seedModel=[6,7,8], minor=True, p5=True, p3=True, textOut=True, wobble=True, wobbleCut=0.25, species='hsa'):
         print '\nmiRvestigator analysis started...'
         self.pssms = pssms
         self.miRNAs = self.setMiRNAs(0,8,minor,p5,p3)
@@ -379,7 +379,7 @@ class miRvestigator:
         else:
             print '\nUsing already downloaded miRNA seeds.\n'
 
-        # Read in miRNAs: miRNAs are labeled by the hsa-* names and grabbing 2-8bp
+        # Read in miRNAs: miRNAs are labeled by the <species>-* names and grabbing 2-8bp
         ### Could merge these as they come in so that don't do redundant, and also so that the labels are together
         import gzip
         miRNAFile = gzip.open('mature.fa.gz','r')
@@ -391,7 +391,7 @@ class miRvestigator:
                 break
             # Get the miRNA name
             curMiRNA = (miRNALine.lstrip('>').split(' '))[0]
-            if (curMiRNA.split('-'))[0]=='hsa':
+            if (curMiRNA.split('-'))[0]==species:
                 if (minor==True or curMiRNA.find('*')==-1) and (p5==True or curMiRNA.find('-5p')==-1) and (p3==True or curMiRNA.find('-3p')==-1):
                     # Now grab out the 2-8bp and do reverse complement on it
                     miRNAs[curMiRNA] = self.reverseComplement((seqLine.strip())[seedStart:seedEnd])
