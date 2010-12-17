@@ -60,12 +60,16 @@ def start_worker(id, q):
 
         try:
             # run the job
-            mirv_worker.run(job['id'], genes, seedModels, wobble, cut, bgModel, motifSizes, jobName, topRet):
+            r = mirv_worker.run(job['id'], genes, seedModels, wobble, cut, bgModel, motifSizes, jobName, topRet)
 
             # notify on success
-            print("worker %d done job %s." % (id, job['id']))
-            if (notify_mail):
-                adminEmailer.notify_complete( notify_mail.split(","), str(job['id']), jobName )
+            if r:
+                print("worker %d done job %s." % (id, job['id']))
+                if (notify_mail):
+                    adminEmailer.notify_complete( notify_mail.split(","), str(job['id']), jobName )
+            else:
+                print("worker %d, job %s failed." % (id, job['id']))
+
         except Exception as e:
             print("Exception in mirv_worker %d on job %s." %  (id, str(job['id'])))
             traceback.print_stack()
