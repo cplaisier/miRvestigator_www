@@ -599,8 +599,8 @@ def get_species_by_mirbase_id(mirbase_id):
         if (row and len(row) >= 6):
             species['id']  = row[0]
             species['name']  = row[1]
-            species['ncbi_id'] = row[2]
             species['ucsc_name'] = row[3]
+            species['ncbi_id'] = row[2]
             species['mirbase'] = row[4]
             species['weeder'] = row[5]
         return species
