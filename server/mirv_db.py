@@ -222,15 +222,16 @@ def get_job_status(job_uuid):
         row = cursor.fetchone()
         result = {}
         if (row==None):
-            result['created_at'] = '???';
-            result['updated_at'] = '???';
-            result['status'] = "not found";
+            result['created_at'] = '???'
+            result['updated_at'] = '???'
+            result['status'] = "not found"
             result['status_message'] = "no status found for " + str(job_uuid)
         else:
-            result['created_at'] = row[1].strftime('%Y.%m.%d %H:%M:%S');
-            result['updated_at'] = row[2].strftime('%Y.%m.%d %H:%M:%S');
-            result['status'] = row[3];
-            result['status_message'] = row[4]
+            result['created_at'] = row[1].strftime('%Y.%m.%d %H:%M:%S')
+            result['updated_at'] = row[2].strftime('%Y.%m.%d %H:%M:%S')
+            result['status'] = row[3]
+            if (row[4]):
+                result['status_message'] = row[4]
         return result
     finally:
         try:
