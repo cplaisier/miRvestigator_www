@@ -50,6 +50,7 @@ class miRvestigator:
         self.miRNAs_7mer_m8 = self.trimSeqs(deepcopy(self.miRNAs),1,8)
         self.miRNAs_7mer_a1 = self.trimSeqs(deepcopy(self.miRNAs),0,7)
         self.miRNAs_8mer = self.trimSeqs(deepcopy(self.miRNAs),0,8)
+        self.species = species
         p3utrSeqs = 'X'.join(seqs3pUTR)
         dirName = 'miRNA'
         if not os.path.exists(dirName):
@@ -391,7 +392,7 @@ class miRvestigator:
                 break
             # Get the miRNA name
             curMiRNA = (miRNALine.lstrip('>').split(' '))[0]
-            if (curMiRNA.split('-'))[0]==species:
+            if (curMiRNA.split('-'))[0]==self.species:
                 if (minor==True or curMiRNA.find('*')==-1) and (p5==True or curMiRNA.find('-5p')==-1) and (p3==True or curMiRNA.find('-3p')==-1):
                     # Now grab out the 2-8bp and do reverse complement on it
                     miRNAs[curMiRNA] = self.reverseComplement((seqLine.strip())[seedStart:seedEnd])
