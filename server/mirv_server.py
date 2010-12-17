@@ -5,7 +5,7 @@ import uuid
 import traceback
 from Queue import Full
 
-from mirv_db import create_job_in_db, update_job_status
+from mirv_db import create_job_in_db, update_job_status, get_species_by_mirbase_id
 from multiprocessing import Process, Queue, cpu_count
 import mirv_worker
 import admin_emailer
