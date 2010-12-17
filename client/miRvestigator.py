@@ -103,12 +103,6 @@ def alignSeed(alignment, seed, motif):
 # stuff parameters into a dictionary and pop those onto a queue
 def submitJob(req):
     
-    sys.stderr.write("}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}\n")
-    sys.stderr.write("======================================================================\n")
-    sys.stderr.write(str(req)+ "\n")
-    sys.stderr.write("======================================================================\n")
-    sys.stderr.flush()
-    
     # create a job object which will be queued
     job = {}
     job['created'] = datetime.datetime.now()
