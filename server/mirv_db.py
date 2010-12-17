@@ -225,6 +225,7 @@ def get_job_status(job_uuid):
             result['created_at'] = '???';
             result['updated_at'] = '???';
             result['status'] = "not found";
+            result['status_message'] = "no status found for " + str(job_uuid)
         else:
             result['created_at'] = row[1].strftime('%Y.%m.%d %H:%M:%S');
             result['updated_at'] = row[2].strftime('%Y.%m.%d %H:%M:%S');
@@ -249,8 +250,8 @@ def update_job_status(job_uuid, status, message=None):
     try:
         now = datetime.datetime.now()
         cursor = conn.cursor()
-        cursor.execute("update jobs set status='%s', updated_at='%s' where uuid='%s';"
-                       % (status, now.isoformat(), job_uuid,))
+        cursor.execute("update jobs set status='%s', updated_at='%s', status_message='%s' where uuid='%s';"
+                       % (status, now.isoformat(), message, job_uuid,))
     finally:
         try:
             cursor.close()
