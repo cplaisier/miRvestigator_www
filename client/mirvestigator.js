@@ -28,7 +28,7 @@ function getParameters(job_id, callback) {
         $("#seed_model").html(parameters.seed_model.join(", "));
         $("#model_wobble").html(parameters.model_wobble);
         if (callback)
-            callback();
+            callback(parameters);
       },
       error: function(xmlHttpRequest, textStatus, errorThrown) {
         $("#job_name").html("<p>Error getting parameters: " + textStatus + "</p>");

@@ -21,6 +21,9 @@
               context: document.body,
               dataType: "json",
               success: function(status) {
+                if (status.status == "not found") {
+                  $("#output").append("<p>Job id " + job_id + " not found.</p>");
+                }
                 if (status.status_message)
                   $("#output").append("<p>" + status.status_message + "</p>");
               },
@@ -38,7 +41,7 @@
             job_id = m[1];
             if (job_id) {
               getStatus(job_id);
-              getParameters(job_id, function() { $("#parameters").show(); });
+              getParameters(job_id, function(parameters) { if (parameters && parameters.length > 0) $("#parameters").show(); });
             }
           }
         }

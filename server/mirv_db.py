@@ -139,7 +139,7 @@ def read_parameters(job_uuid):
     conn = _get_db_connection()
     try:
         cursor = conn.cursor()
-        
+
         # job_name = user defined name
         # job_id = job_id
         # genes_submitted = number of genes submitted
@@ -153,6 +153,10 @@ def read_parameters(job_uuid):
             from parameters
             where job_uuid=%s""", (job_uuid,))
         result_set = cursor.fetchall()
+
+        # if there's nothing in the DB, return an empty dictionary
+        if (len(result_set) == 0):
+            return {}
 
         # build a dictionary of parameters
         parameters = {}
