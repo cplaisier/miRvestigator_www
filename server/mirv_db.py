@@ -592,6 +592,7 @@ def get_species_by_mirbase_id(mirbase_id):
         row = cursor.fetchone()
         print("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
         print(str(row))
+        print("mirbase_id = " + mirbase_id)
         print("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
         species = {}
         if (row and len(row) >= 6):
