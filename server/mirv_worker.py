@@ -203,7 +203,7 @@ def run(job_uuid, genes, seedModels, wobble, cut, motifSizes, jobName, mirbase_s
                        p5=True, p3=True,
                        wobble=wobble, wobbleCut=cut,
                        textOut=False,
-                       mirbase_species)
+                       species=mirbase_species)
 
     # 6. Read in miRNAs to get mature miRNA ids
     # import gzip
