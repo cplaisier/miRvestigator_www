@@ -253,8 +253,12 @@ def update_job_status(job_uuid, status, message=None):
     try:
         now = datetime.datetime.now()
         cursor = conn.cursor()
-        cursor.execute("update jobs set status='%s', updated_at='%s', status_message='%s' where uuid='%s';"
-                       % (status, now.isoformat(), message, job_uuid,))
+        if (message):
+            cursor.execute("update jobs set status='%s', updated_at='%s', status_message='%s' where uuid='%s';"
+                           % (status, now.isoformat(), message, job_uuid,))
+        else:
+            cursor.execute("update jobs set status='%s', updated_at='%s' where uuid='%s';"
+                           % (status, now.isoformat(), job_uuid,))
     finally:
         try:
             cursor.close()
