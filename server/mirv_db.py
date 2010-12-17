@@ -215,7 +215,7 @@ def read_parameters(job_uuid):
 
 
 def get_job_status(job_uuid):
-    print("+++++++++++++++++++++++++++++++++        asdfasdf adsf asdf asdf asdf asdf asdf")
+    log("+++++++++++++++++++++++++++++++++   get_job_status")
     conn = _get_db_connection()
     try:
         cursor = conn.cursor()
@@ -231,7 +231,7 @@ def get_job_status(job_uuid):
             result['created_at'] = row[1].strftime('%Y.%m.%d %H:%M:%S')
             result['updated_at'] = row[2].strftime('%Y.%m.%d %H:%M:%S')
             result['status'] = row[3]
-            print("row[4] = \"" + row[4] + "\"")
+            log("row[4] = \"" + row[4] + "\"")
             if (row[4] is not None):
                 result['status_message'] = row[4]
         return result
