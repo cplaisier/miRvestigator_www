@@ -255,7 +255,7 @@ def update_job_status(job_uuid, status, message=None):
             cursor.execute("update jobs set status='%s', updated_at='%s', status_message='%s' where uuid='%s';"
                            % (status, now.isoformat(), message, job_uuid,))
         else:
-            cursor.execute("update jobs set status='%s', updated_at='%s' where uuid='%s';"
+            cursor.execute("update jobs set status='%s', updated_at='%s', status_message=null where uuid='%s';"
                            % (status, now.isoformat(), job_uuid,))
     finally:
         try:
@@ -325,12 +325,12 @@ def store_motif(job_uuid, pssm):
 
         # did this way rather than using execute's string substitution because I
         # kept getting a TypeError: float argument required, not str:
-        log("storing motif: " + str((str(job_uuid), pssm.getName(), float(pssm.getEValue()),)))
-        log("e value = " + str(pssm.getEValue()))
         sql = """
             insert into motifs
             (job_uuid, name, score)
             values ('%s', '%s', %f);""" % (str(job_uuid), pssm.getName(), float(pssm.getEValue()),)
+
+        log("store_motif sql=" + sql)
 
         cursor.execute(sql)
         motif_id = cursor.lastrowid

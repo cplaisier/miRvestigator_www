@@ -13,16 +13,21 @@ miRvestigator web server has the following dependencies:
 Web server files located in the miRvestigator/client sub-tree need to be copied to a directory served by the Apache web server (/var/www/ in our AMI) with the following settings:
 
 <Directory /web/served/directory>
-    AddHandler mod_python .py
-    PythonHandler mod_python.publisher
-    PythonDebug On
+        AddHandler mod_python .py
+        PythonHandler mod_python.publisher
+        PythonDebug On
+        Options -Indexes FollowSymLinks MultiViews
+        AllowOverride None
+        Order allow,deny
+        allow from all
 
-    RewriteEngine ON
-    RewriteRule ^status/([a-fA-F0-9\-]+)/(.?)$ /status/index.html
-    RewriteRule ^results/([a-fA-F0-9\-]+)/(.?)$ /miRvestigator.py/results?id=$1
-    RewriteRule ^sites/csv/([0-9]+)(.?)$ /miRvestigator.py/sites_as_csv?motif_id=$1
-    RewriteRule ^scores/csv/([0-9]+)(.?)$ /miRvestigator.py/scores_as_csv?motif_id=$1
-    RewriteRule ^error/([a-fA-F0-9\-]+)/(.?)$ /error/index.html
+        RewriteEngine ON
+        RewriteRule ^status/([a-fA-F0-9\-]+)/(.?)$ /status/index.html [L]
+        RewriteRule ^results/([a-fA-F0-9\-]+)/(.?)$ /miRvestigator.py/results?id=$1 [L]
+        RewriteRule ^sites/csv/([0-9]+)(.?)$ /miRvestigator.py/sites_as_csv?motif_id=$1 [L]
+        RewriteRule ^scores/csv/([0-9]+)(.?)$ /miRvestigator.py/scores_as_csv?motif_id=$1 [L]
+        RewriteRule ^error/([a-fA-F0-9\-]+)/(.?)$ /error/index.html [L]
+        RewriteRule ^error$ /error/index.html [L]
 </Directory>
 
 MySQL and python-mysql need to be installed. A database called mirvestigator needs to be created and populated with tables like this:

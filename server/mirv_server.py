@@ -64,7 +64,7 @@ def start_worker(id, q):
 
             # notify on success
             if r:
-                print("worker %d done job %s." % (id, job['id']))
+                print("worker %d finished job %s." % (id, job['id']))
                 if (notify_mail):
                     adminEmailer.notify_complete( notify_mail.split(","), str(job['id']), jobName )
             else:
