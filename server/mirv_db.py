@@ -325,14 +325,16 @@ def store_motif(job_uuid, pssm):
     try:
         cursor = conn.cursor()
 
-        # did this way rather than using execute's string substitution because I
-        # kept getting a TypeError: float argument required, not str:
-        
+        # weeder can give a give a score of 'inf'. We handle that case by
+        # the hack of substituting a very large float, which we hope will
+        # always be greater than the next highest legitimate score
         if pssm.getEValue() == 'inf':
             weeder_score = VERY_LARGE_FLOAT
         else:
             weeder_score = float(pssm.getEValue())
 
+        # we build the query as a string rather than using execute's string substitution because I
+        # kept getting a TypeError: float argument required, not str:
         sql = """
             insert into motifs
             (job_uuid, name, score)
