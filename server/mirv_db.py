@@ -8,6 +8,10 @@ import time
 import re
 import sys
 
+# Database credentials should be changed from defaults after installation
+MYSQL_USER = "mirv"
+MYSQL_PASSWORD = "mirvestigator"
+
 VERY_LARGE_FLOAT = 1e6
 
 ## Note that several of these methods use python's string formatting
@@ -29,7 +33,7 @@ def _sanitize(s):
     return _sanitize_re.sub("", s)
 
 def _get_db_connection():
-    return MySQLdb.connect("localhost","mirv","mirvestigator","mirvestigator")
+    return MySQLdb.connect(host="localhost", user=MYSQL_USER, passwd=MYSQL_PASSWORD, db="mirvestigator")
 
 
 def create_job_in_db(job):
