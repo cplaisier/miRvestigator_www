@@ -8,6 +8,8 @@ import time
 import re
 import sys
 
+VERY_LARGE_FLOAT = 1e6
+
 ## Note that several of these methods use python's string formatting
 ## to build SQL strings, which is bad. This was done due to a problem
 ## with getting cursor.execute("insert into foo values (%s, %f, %d)", (a,b,c))
@@ -325,10 +327,16 @@ def store_motif(job_uuid, pssm):
 
         # did this way rather than using execute's string substitution because I
         # kept getting a TypeError: float argument required, not str:
+        
+        if pssm.getEValue() == 'inf':
+            weeder_score = VERY_LARGE_FLOAT
+        else:
+            weeder_score = float(pssm.getEValue())
+
         sql = """
             insert into motifs
             (job_uuid, name, score)
-            values ('%s', '%s', %f);""" % (str(job_uuid), pssm.getName(), float(pssm.getEValue()),)
+            values ('%s', '%s', %f);""" % (str(job_uuid), pssm.getName(), weeder_score,)
 
         log("store_motif sql=" + sql)
 

@@ -314,23 +314,27 @@ def results(req):
         else:
             topRet = int(topRet)
         s += '<table width=\'100%\' cellpadding=\'15%\'><tr><td bgcolor=\'#333333\'><center><b><font color=\'#ffffff\'>Motif Consensus</font></b></center></td><td bgcolor=\'#333333\'><center><b><font color=\'#ffffff\'>Top miRNA</font></b></center></td><td bgcolor=\'#333333\'><center><b><font color=\'#ffffff\'>Alignment</font></b></center></td><td bgcolor=\'#333333\'><center><b><font color=\'#ffffff\'>Viterbi P-Value</font></b></center></td><td bgcolor=\'#333333\'><center><b><font color=\'#ffffff\'>% of Input</br>Sequences with Site</font></b></center></td></tr>\n'
-        i = scoreList[0]
-        align1 = alignSeed(i['statePath'], i['miRNA.seed'], motif['name'])
-        s += '<tr><td bgcolor=\'#ffffff\'><center><a href=\'#'+motif['name']+'_miRNAs\'>'+str(motif['name'])+'</center></td><td bgcolor=\'#ffffff\'><center>'+str('</br>'.join(['<a href=\'http://mirbase.org/cgi-bin/mature.pl?mature_acc='+str(miRNADict[j.strip()])+'\' target=\'_blank\'>'+str(j.strip())+'</a>' for j in i['miRNA.name'].split('_')]))+'</center></td>\n'
-        s += '<td bgcolor=\'#ffffff\'><center><pre>'+str(align1[0])+'\n'+str(align1[1])+'\n'+str(align1[2])+'</pre></center></td>\n'
-        s += '<td bgcolor=\'#ffffff\'><center>'+str('%.2g' % float(i['vitPValue']))+'</center></td>\n'
-        # Get number or sequences with a hit
-        genesWithSite = []
-        for site in motif['sites']:
-            if not site['gene'] in genesWithSite:
-                genesWithSite.append(site['gene'])
-        percGenes = (float(len(genesWithSite))/float(annotatedSequences))*float(100)
-        if percGenes==float(100):
-            percGenes = str(100)
-        else:
-            percGenes = str('%.2g' % percGenes)
-        s += '<td bgcolor=\'#ffffff\'><center><a href=\'#'+motif['name']+'_sites\'>'+percGenes+'%</a></center></td>\n'
-        s += '</tr>\n'
+        top_score_i = 0
+        top_score_viterbi_p = float(scoreList[0]['vitPValue'])
+        while float(scoreList[top_score_i]['vitPValue']) == top_score_viterbi_p:
+            i = scoreList[top_score_i]
+            align1 = alignSeed(i['statePath'], i['miRNA.seed'], motif['name'])
+            s += '<tr><td bgcolor=\'#ffffff\'><center><a href=\'#'+motif['name']+'_miRNAs\'>'+str(motif['name'])+'</center></td><td bgcolor=\'#ffffff\'><center>'+str('</br>'.join(['<a href=\'http://mirbase.org/cgi-bin/mature.pl?mature_acc='+str(miRNADict[j.strip()])+'\' target=\'_blank\'>'+str(j.strip())+'</a>' for j in i['miRNA.name'].split('_')]))+'</center></td>\n'
+            s += '<td bgcolor=\'#ffffff\'><center><pre>'+str(align1[0])+'\n'+str(align1[1])+'\n'+str(align1[2])+'</pre></center></td>\n'
+            s += '<td bgcolor=\'#ffffff\'><center>'+str('%.2g' % float(i['vitPValue']))+'</center></td>\n'
+            # Get number or sequences with a hit
+            genesWithSite = []
+            for site in motif['sites']:
+                if not site['gene'] in genesWithSite:
+                    genesWithSite.append(site['gene'])
+            percGenes = (float(len(genesWithSite))/float(annotatedSequences))*float(100)
+            if percGenes==float(100):
+                percGenes = str(100)
+            else:
+                percGenes = str('%.2g' % percGenes)
+            s += '<td bgcolor=\'#ffffff\'><center><a href=\'#'+motif['name']+'_sites\'>'+percGenes+'%</a></center></td>\n'
+            s += '</tr>\n'
+            top_score_i += 1
         s += '</table></p>\n'
     #s += '</td></tr>\n'
     #s += '</table>\n'
