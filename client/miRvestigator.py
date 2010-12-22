@@ -222,6 +222,9 @@ def results(req):
     id = str(req.form.getfirst('id',''))
     motifs = read_motifs(id)
     parameters = read_parameters(id)
+    if (len(parameters) == 0):
+        util.redirect(req, req.construct_url("/error/%s/" % (id)))
+        return
     topRet = parameters['topRet']
     genesSubmitted = parameters['genes_submitted']
     annotatedSequences = parameters['annotated_sequences']
