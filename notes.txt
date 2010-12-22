@@ -1,0 +1,53 @@
+TODO
+
+
+x remove debugging code
+x remove old dead code
+
+in mirv_worker.py ditch deepcopys?
+x in mirv_worker.py try/catch for reporting errors?
+x if /var/www/uri doesn't exist, redirect to mirvestigator is down page
+
+x limit size of q
+
+x email on error, queue too long
+
+x limit number of genes
+x error on no genes?
+
+
+remove my credentials from s3mcd config and github
+
+
+add to AMI:
+x ssh keys for github access
+x delete git_mirv? just use git clone?
+x postfix
+x newer rewrite rules
+
+
+
+Install (using sudo apt-get install)
+mysql-server
+python-mysql
+postfix
+
+
+Apache conf
+-----------
+apache conf is in /etc/apache2/
+restart apache: /etc/init.d/apache2 restart
+configure mod_rewrite for apache2 in /etc/apache2/sites-enabled/000-default
+
+<Directory /var/www/>
+...
+
+RewriteEngine ON
+RewriteRule ^status/([a-fA-F0-9\-]+)/(.?)$ /status/index.html
+RewriteRule ^results/([a-fA-F0-9\-]+)/(.?)$ /miRvestigator.py/results?id=$1
+</Directory>
+
+
+
+to do all 6 examples concurrently takes about 22 minutes 36 seconds
+

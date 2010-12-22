@@ -1,0 +1,181 @@
+<html>
+  <head>
+  <title>miRvestigator Framework: Detect the miRNAs Driving Co-Expression Signatures</title>
+  <meta name="copyright" content="&copy; 2010 Institute for Systems Biology" />
+  <style> body { font-family: arial, sans-serif; } </style>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.4.4/jquery.min.js"></script>
+  <script src="/mirvestigator.js"></script>
+  <script language="JavaScript">
+
+      var _gaq = _gaq || [];
+      _gaq.push(['_setAccount', 'UA-19292534-1']);
+      _gaq.push(['_trackPageview']);
+
+      (function() {
+          var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+          ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+          var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+      })();
+
+      var job_id = null;
+      var polling_timer = null;
+      var current_status = null;
+      var autoredirect = true;
+
+
+      function toggleVisible(id) {
+          if (document.getElementById) {
+              obj = document.getElementById(id);
+              if (obj) {
+                  if (obj.style.display == 'none') {
+                      obj.style.display = '';
+                  } else {
+                      obj.style.display = 'none';
+                  }
+              }
+          }
+      }
+
+      function parseQueryString() {
+        var params = {};
+        var e,
+            a = /\+/g,  // Regex for replacing addition symbol with a space
+            r = /([^&;=]+)=?([^&;]*)/g,
+            d = function (s) { return decodeURIComponent(s.replace(a, " ")); },
+            q = window.location.search.substring(1);
+
+        while (e = r.exec(q))
+          params[d(e[1])] = d(e[2]);
+
+        return params
+      }
+
+      function poll() {
+        if (job_id) {
+          jQuery.ajax({
+            url: "/miRvestigator/status?id=" + job_id,
+            context: document.body,
+            dataType: "json",
+            success: function(status) {
+              if (current_status != status.status) {
+                current_status = status.status
+                if (current_status=="queued") {
+                  $("#status").text("Queued");
+                  $("#status_img").attr("src", "/images/inTheQueue.gif");
+                } else if (current_status=="running weeder") {
+                  getParameters(job_id);
+                  $("#status").text("Running Weeder");
+                  $("#status_img").attr("src", "/images/runningWeeder.gif");
+                } else if (current_status=="computing miRvestigator HMM") {
+                  $("#status").text("Running miRvestigator HMM");
+                  $("#status_img").attr("src", "/images/runningMirvestigator.gif");
+                } else if (current_status=="compiling results") {
+                  $("#status").text("Compiling Results");
+                  $("#status_img").attr("src", "/images/compilingResults.gif");
+                }
+              }
+              if (status.status=="done") {
+                stop_polling();
+                if (autoredirect) {
+                  window.location = "/results/" + job_id + "/";
+                }
+              }
+              else if (status.status=="error") {
+                stop_polling();
+                $("#status").text("Error");
+                if (autoredirect) {
+                  window.location = "/error/" + job_id + "/";
+                }
+              }
+              else if (status.status=="not found") {
+                stop_polling();
+                $("#status").text("not found");
+                if (autoredirect) {
+                  window.location = "/error/" + job_id + "/";
+                }
+              }
+            },
+            error: function(xmlHttpRequest, textStatus, errorThrown) {
+              stop_polling();
+              $("#status_output").append("<p>Error getting status: " + textStatus + "</p>");
+            }
+          });
+        }
+      }
+
+      function stop_polling() {
+        if (polling_timer) clearInterval(polling_timer);
+      }
+
+      window.onload=function() {
+        var url = window.location.pathname;
+        var m = url.match(/\/status\/([0-9a-fA-F\-]+)\/(.?)/);
+        if (m && m.length > 1) {
+          job_id = m[1];
+          if (m.length > 2) {
+            if (m[2]=="f") {
+              autoredirect = false
+            }
+          }
+          if (job_id) {
+            poll();
+            getParameters(job_id);
+            $("#refresh_link").attr("href", "/status/" + job_id + "/");
+            polling_timer = window.setInterval(function() {
+              poll();
+            }, 1000);
+          }
+        }
+      }
+  </script>
+
+  <style>
+    body { font-family: arial, sans-serif; }
+  </style>
+
+  </head>
+
+<body bgcolor='#333333'>
+    <font face='arial'><center>
+        <table><tr><td>
+        <table cellpadding='15%' cellspacing='5' bgcolor='#999966'>
+        <tr>
+        <td align='center' valign='center' bgcolor='#333333' width='80'><b><a style='color: rgb(255,0,0); text-decoration:none' href='/'>H</a><a style='color: rgb(204,204,0); text-decoration:none' href='/'>ome</a></b>
+        </td>
+        <td align='center' valign='center' bgcolor='#999966' width='80'><b>Results</b>
+        </td>
+        <td align='center' valign='center' bgcolor='#333333' width='80'><b><a style='color: rgb(255,0,0); text-decoration:none' href='/help'>H</a><a style='color: rgb(204,204,0); text-decoration:none' href='/help'>elp</a></b>
+        </td>
+        <td align='center' valign='center' bgcolor='#333333' width='80'><b><a style='color: rgb(255,0,0); text-decoration:none' href='/tutorial'>T</a><a style='color: rgb(204,204,0); text-decoration:none' href='/tutorial'>utorial</a></b>
+        </td>
+        </tr>
+        </table>
+        <table width=800 bgcolor='#999966' cellpadding='10%'><tr><td>
+        <center><table width='100%' cellpadding='15%'><tr><td align='center' valign='center' bgcolor='#333333'><font size=6><b><font color='#ff0000'>miR</font><font color='#cccc00'>vestigator Framework Status</font></b></font></td></tr></table>
+            </br>
+            <center><table width='100%' cellpadding='5%' cellspacing=3><tr><td bgcolor='#000000'><center><p><font color='#cccc00' size=4><b>Your submission is being processed...</b></font></center></tr></td>
+                    <tr><td bgcolor='#cccccc'><table width='100%' cellpadding='10%'><tr><td bgcolor='#333333' align='center' valign='center'><b><font color='#cccc00' size=4>Current Status: </font><font size=4 color='#ff0000'><span id="status"></span></font></b></td></tr><tr><td bgcolor='#ffffff'><img id="status_img" width="861" height="261" src="/images/default.gif"/></p></td></tr></table></td></tr>
+            <tr><td></td></tr>
+            <tr><td bgcolor='#000000'><center><font color='#cccc00' size=4><b>Submission Parameters</b></font></center></td></tr>    
+            <tr><td bgcolor='#cccccc'>
+                <table width='100%' cellpadding='5%'>
+                    <tr><td colspan=2 bgcolor='#333333' align='center' valign='center'><b><font color='#cccc00' size=4>Basic Parameters</font></b></td></tr>
+                    <tr><td bgcolor='#333333' align='center' valign='center'><font color='#ffffff'><b>Job Name:</b></font></td><td bgcolor='#666666' align='center' valign='center'><table width='100%' cellpadding='5%'><tr><td bgcolor='#ffffff'><center><span id="job_name"></span></center></td></tr></table></td></tr>
+                    <tr><td bgcolor='#333333' align='center' valign='center'><font color='#ffffff'><b>Job ID:</b></font></td><td bgcolor='#666666' align='center' valign='center'><table width='100%' cellpadding='5%'><tr><td bgcolor='#ffffff'><center><span id="job_id"></span></center></td></tr></table></td></tr>
+                    <tr><td bgcolor='#333333' align='center' valign='center'><font color='#ffffff'><b>Genes Submitted:</b></font></td><td bgcolor='#666666' align='center' valign='center'><table width='100%' cellpadding='5%'><tr><td bgcolor='#ffffff'><center><span id="genes_submitted"></span></center></td></tr></table></td></tr>
+                    <tr><td bgcolor='#333333' align='center' valign='center'><font color='#ffffff'><b>Genes Annotated with Sequences:</b></font></td><td bgcolor='#66666' align='center' valign='center'><table width='100%' cellpadding='5%'><tr><td bgcolor='#ffffff'><center><span id="annotated_sequences"></span></center></td></tr></table></td></tr>
+                    <tr><td colspan=2></td></tr>
+                    <tr><td colspan=2 bgcolor='#333333' align='center' valign='center'><b><font color='#cccc00' size=4>Weeder Parameters</font></b></td></tr>
+                    <tr><td bgcolor='#333333' align='center' valign='center'><font color='#ffffff'><b>Motif Sizes:</b></font></td><td bgcolor='#666666' align='center' valign='center'><table width='100%' cellpadding='5%'><tr><td bgcolor='#ffffff'><center><span id="motif_sizes"></span></center></td></tr></table></td></tr>
+                    <tr><td bgcolor='#333333' align='center' valign='center'><font color='#ffffff'><b>Background Model:</b></font></td><td bgcolor='#666666' align='center' valign='center'><table width='100%' cellpadding='5%'><tr><td bgcolor='#ffffff'><center><span id="background_model"></span></center></td></tr></table></td></tr>
+                    <tr><td colspan=2></td></tr>
+                    <tr><td colspan=2 bgcolor='#333333' align='center' valign='center'><b><font color='#cccc00' size=4>miRvestigator HMM Parameters</font></b></td></tr>
+                    <tr><td bgcolor='#333333' align='center' valign='center'><font color='#ffffff'><b>Seed Models:</b></font></td><td bgcolor='#666666' align='center' valign='center'><table width='100%' cellpadding='5%'><tr><td bgcolor='#ffffff'><center><span id="seed_model"></span></center></td></tr></table></td></tr>
+                    <tr><td bgcolor='#333333' align='center' valign='center'><font color='#ffffff'><b>Model Wobble Base-Pairing:</b></font></td><td bgcolor='#666666' align='center' valign='center'><table width='100%' cellpadding='5%'><tr><td bgcolor='#ffffff'><center><span id="model_wobble"></span></center></td></tr></table></td></tr>
+                </table>
+            </td></tr></table>
+            <p><table width='100%' cellpadding='5%'><tr><td bgcolor='#c0c0c0'><center>Need help? Please contact <font color='#0000ff'>cplaisier(at)systemsbiology.org</font> or <font color='#0000ff'>cbar(at)systemsbiology.org</font> if you have any questions, comments or concerns.<br>Developed at the <a href='http://www.systemsbiology.org' target='_blank' style='color: rgb(0,0,255)'>Institute for Systems Biology</a> in the <a href='http://baliga.systemsbiology.net/' target='_blank' style='color: rgb(0,0,255)'>Baliga Lab</a>.</center></td></tr></table></p>
+    </tr></td></table></center></tr></td></table>
+    
+</body>
+</html>

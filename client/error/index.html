@@ -1,0 +1,96 @@
+<html>
+    <head>
+      <title>miRvestigator Framework</title>
+      <meta name="copyright" content="&copy; 2010 Institute for Systems Biology" />
+      <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.4.4/jquery.min.js"></script>
+      <script src="/mirvestigator.js"></script>
+      <script type="text/javascript">
+        var _gaq = _gaq || [];
+        _gaq.push(['_setAccount', 'UA-19292534-1']);
+        _gaq.push(['_trackPageview']);
+
+        (function() {
+            var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+            ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+            var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+        })();
+
+        function getStatus(job_id) {
+          if (job_id) {
+            jQuery.ajax({
+              url: "/miRvestigator/status?id=" + job_id,
+              context: document.body,
+              dataType: "json",
+              success: function(status) {
+                if (status.status == "not found") {
+                  $("#output").append("<p>Job id " + job_id + " not found.</p>");
+                }
+                if (status.status_message)
+                  $("#output").append("<p>" + status.status_message + "</p>");
+              },
+              error: function(xmlHttpRequest, textStatus, errorThrown) {
+                $("#output").append("<p>Error getting status: " + textStatus + "</p>");
+              }
+            });
+          }
+        }
+
+        window.onload=function() {
+          var url = window.location.pathname;
+          var m = url.match(/\/\w+\/([0-9a-fA-F\-]+)\/(.?)/);
+          if (m && m.length > 1) {
+            job_id = m[1];
+            if (job_id) {
+              getStatus(job_id);
+              getParameters(job_id, function(parameters) { if (parameters && parameters.length > 0) $("#parameters").show(); });
+            }
+          }
+        }
+      </script>
+      <style>
+        #parameters {
+          display: none;
+        }
+        #output {
+          background:#333333;
+          color:#CC0000;
+          font-weight:bold;
+        }
+      </style>
+    </head>
+
+    <body bgcolor='#333333' link='#ffcc00' vlink='#ffcc00'>
+    <font face='arial'><center>
+    <table width=620 bgcolor='#999966' cellpadding='10%'><tr><td><center>
+    <table width=600 bgcolor='#333333' cellpadding='15%'><tr><td align='center' valign='center'><font size=6><b><font color='#ff0000'>miR</font><font color='#cccc00'>vestigator Framework</font></b></font></td></tr></table>
+
+    <table cellpadding='5%' cellspacing=3 width='100%'>
+    <tr><td bgcolor='#333333' style="height:20ex; padding-left:4em; padding-right:4em;"><center>
+      <b><font color='#ffffff'><p>Sorry, miRvestigator was unable to complete your request.</p></font></b>
+      <div id="output"></div>
+      <p style="font-size:small;"><a href="/">Return to miRvestigator home page</a></p>
+    </center></td></tr>
+    </table>
+    
+    <div id="parameters">
+      <table width='100%' cellpadding='5%'>
+        <tr><td colspan="2" bgcolor='#333333' align='center' valign='center'><b><font color='#cccc00' size=4>Basic Parameters</font></b></td></tr>
+        <tr><td bgcolor='#333333' align='center' valign='center'><font color='#ffffff'><b>Job Name:</b></font></td><td bgcolor='#666666' align='center' valign='center'><table width='100%' cellpadding='5%'><tr><td bgcolor='#ffffff'><center><span id="job_name"></span></center></td></tr></table></td></tr>
+        <tr><td bgcolor='#333333' align='center' valign='center'><font color='#ffffff'><b>Job ID:</b></font></td><td bgcolor='#666666' align='center' valign='center'><table width='100%' cellpadding='5%'><tr><td bgcolor='#ffffff'><center><span id="job_id"></span></center></td></tr></table></td></tr>
+        <tr><td bgcolor='#333333' align='center' valign='center'><font color='#ffffff'><b>Genes Submitted:</b></font></td><td bgcolor='#666666' align='center' valign='center'><table width='100%' cellpadding='5%'><tr><td bgcolor='#ffffff'><center><span id="genes_submitted"></span></center></td></tr></table></td></tr>
+        <tr><td bgcolor='#333333' align='center' valign='center'><font color='#ffffff'><b>Genes Annotated with Sequences:</b></font></td><td bgcolor='#66666' align='center' valign='center'><table width='100%' cellpadding='5%'><tr><td bgcolor='#ffffff'><center><span id="annotated_sequences"></span></center></td></tr></table></td></tr>
+        <tr><td colspan="2"></td></tr>
+        <tr><td colspan=2 bgcolor='#333333' align='center' valign='center'><b><font color='#cccc00' size=4>Weeder Parameters</font></b></td></tr>
+        <tr><td bgcolor='#333333' align='center' valign='center'><font color='#ffffff'><b>Motif Sizes:</b></font></td><td bgcolor='#666666' align='center' valign='center'><table width='100%' cellpadding='5%'><tr><td bgcolor='#ffffff'><center><span id="motif_sizes"></span></center></td></tr></table></td></tr>
+        <tr><td bgcolor='#333333' align='center' valign='center'><font color='#ffffff'><b>Background Model:</b></font></td><td bgcolor='#666666' align='center' valign='center'><table width='100%' cellpadding='5%'><tr><td bgcolor='#ffffff'><center><span id="background_model"></span></center></td></tr></table></td></tr>
+        <tr><td colspan="2"></td></tr>
+        <tr><td colspan="2" bgcolor='#333333' align='center' valign='center'><b><font color='#cccc00' size=4>miRvestigator HMM Parameters</font></b></td></tr>
+        <tr><td bgcolor='#333333' align='center' valign='center'><font color='#ffffff'><b>Seed Models:</b></font></td><td bgcolor='#666666' align='center' valign='center'><table width='100%' cellpadding='5%'><tr><td bgcolor='#ffffff'><center><span id="seed_model"></span></center></td></tr></table></td></tr>
+        <tr><td bgcolor='#333333' align='center' valign='center'><font color='#ffffff'><b>Model Wobble Base-Pairing:</b></font></td><td bgcolor='#666666' align='center' valign='center'><table width='100%' cellpadding='5%'><tr><td bgcolor='#ffffff'><center><span id="model_wobble"></span></center></td></tr></table></td></tr>
+      </table>
+    </div>
+
+    <table width='100%' cellpadding='5%'><tr><td bgcolor='#c0c0c0'><center>Need help? Please contact <font color='#0000ff'>cplaisier(at)systemsbiology.org</font> or <font color='#0000ff'>cbare(at)systemsbiology.org</font> if you have any questions, comments or concerns.<br>Developed at the <a href='http://www.systemsbiology.org' target='_blank' style='color: rgb(0,0,255)'>Institute for Systems Biology</a> in the <a href='http://baliga.systemsbiology.net/' target='_blank' style='color: rgb(0,0,255)'>Baliga Lab</a>.</center></td></tr></table>
+    </center></td></tr></table>
+    </body>
+</html>

@@ -1,39 +1,76 @@
-We developed this to provide a natively python web server implementation of the miRvestigator framework (please see http://github.com/cplaisier/miRvestigator). The impementation is broken up into a daemon serving up the miRvestigator python object and a client that used mod_python in an Apache2 web server to communicate with the daemon. A running example can be found at:  http://mirvestigator.systemsbiology.net
+
+miRvestigator web server
+========================
+
+  Copyright (C) 2010 by Institute for Systems Biology,
+  Seattle, Washington, USA.  All rights reserved.
+
+  This source code is distributed under the GNU Lesser
+  General Public License, the text of which is available at:
+    http://www.gnu.org/copyleft/lesser.html
+
+
+We developed this to provide a natively python web server implementation of the miRvestigator framework (please see http://github.com/cplaisier/miRvestigator). The implementation is broken up into a daemon which forks multiple worker processes that run the miRvestigator algorithm and a client running in mod_python in an Apache2 web server. A running example can be found at:  http://mirvestigator.systemsbiology.net
 
 miRvestigator web server has the following dependencies:
  * Python 2.4 or 2.6 (www.python.org)
  * Pyro 3.9.1 (http://www.xs4all.nl/~irmen/pyro3/)
  * Apache2 HTTP server (httpd.apache.org)
- * mod_pyton 3.3.1 (www.modpython.org)
+ * mod_python 3.3.1 (www.modpython.org)
  * Weeder1.4.2 (http://159.149.109.9/modtools/)
+ * MySQL
+ * python-mysql
+ * postfix (or other SMTP server)
 
-The two miRvestigator web server client files (miRvestigator.py and Scientists.org) are then installed into an Apache web served directory with the following settings:
+Web server files located in the miRvestigator/client sub-tree need to be copied to a directory served by the Apache web server (/var/www/ in our AMI) with the following settings:
 
-DirectoryIndex miRvestigator.py
 <Directory /web/served/directory>
-    AddHandler mod_python .py
-    PythonHandler mod_python.publisher
-    PythonDebug On
+  AddHandler mod_python .py
+  PythonHandler mod_python.publisher
+  PythonDebug On
+  Options -Indexes FollowSymLinks MultiViews
+  AllowOverride None
+  Order allow,deny
+  allow from all
+
+  RewriteEngine ON
+  RewriteRule ^status/([a-fA-F0-9\-]+)/(.?)$ /status/index.html [L]
+  RewriteRule ^results/([a-fA-F0-9\-]+)/(.?)$ /miRvestigator.py/results?id=$1 [L]
+  RewriteRule ^sites/csv/([0-9]+)(.?)$ /miRvestigator.py/sites_as_csv?motif_id=$1 [L]
+  RewriteRule ^scores/csv/([0-9]+)(.?)$ /miRvestigator.py/scores_as_csv?motif_id=$1 [L]
+  RewriteRule ^error/([a-fA-F0-9\-]+)/(.?)$ /error/index.html [L]
+  RewriteRule ^error$ /error/index.html [L]
 </Directory>
 
-miRvestigator web server client files:
- * miRvestigator.py - A mod_python script to do the runs.
- * Scientists.gif - An animated gif to add some levity to a compicated process.
+MySQL and python-mysql need to be installed. A database called mirvestigator needs to be created and populated with tables like this:
+mysql -p -u root --database mirvestigator < mirvestigator.sql
 
-The server can be installed anywhere but the server must be able to access the Weeder programs. We typically put these into a bin that is part of the PATH and modify the C code to point specifically at the other programs needed and the FreqFiles.
+The user 'mirvestigator'@'localhost' needs to exist and login credentials supplied in mirv_db.py. Also, see comments in mirvestigator.sql. Default username and password should be changed after installation. Mysql's root uses the name of the db as a password. This can be changed like this:
+mysqladmin -u root password NEWPASSWORD
+
+The miRvestigator/server scripts can be installed anywhere but the server must be able to access the Weeder programs. We typically put these into a bin that is part of the PATH and modify the C code to point specifically at the other programs needed and the FreqFiles. FreqFiles are used to compute background model and are located (on our AMI) in /home/ubuntu/bin/FreqFiles.
 
 The server files are:
- * miRvestigator_server_V3.py - Creates a Pyro daemon which serves up the miRvestigator class.
- * miRvestigator.py - Different than the client miRvestigator.py above, as this is the actual class that does the work for miRvestigator.
- * pssm.py - A class designed to be a container for a Positon Specific Scoring Matrix (PSSM).
- * p3utrSeqs_Homo_sapiens.csv - A csv file containing all the 3' UTR seqeunces for genes with genomic coordinates annotated with Entrez gene IDs.
+ * mirv_server.py - Creates a Pyro daemon which enqueues requests from the web tier.
+ * mirv_worker.py - server starts up a worker for each core.
+ * mirv_db.py - Interfaces with MySQL for storing requests and retrieving results.
+ * admin_emailer.py - Sends email on successful completion of jobs or on errors.
+ * miRvestigator.py - Different than the client miRvestigator.py, as this is the actual class that does the work for miRvestigator.
+ * pssm.py - A class designed to be a container for a Position Specific Scoring Matrix (PSSM).
+ * p3utrSeqs_[species_name].csv - A csv file for each species containing all the 3' UTR sequences for genes with genomic coordinates annotated with Entrez gene IDs.
 
-The miRvestigator_server_V3.py script will need to be modified to:  1. make sure that weederlauncher program location is correct, 2. make sure that the location of the URI saved file is in the web served directory and that it is writabel by the sever. Then we start up a screen instance and inside that start the daemon by:
+For custom installations, the mirv_worker.py script will need to be modified to make sure that weederlauncher program location is correct. In mirv_server.py, we write the URI of the Pyro server in a known location so that the web tier can find it (to avoid the hassle of using a name server). Make sure that the location of the Pyro URI saved file is writable by the server. Then we start up a screen instance and inside that start the daemon by:
 
-python miRvestigator_server_V3.py
+python mirv_server.py
 
-The daemon should spit out the URI and then be ready for a client to access it and run the miRvestigator framework. Test it by navigating your browser to the IP of the machine and test it out with one of the buttons that load sample data. Then you are ready to try it with some of your own data.
+The daemon should save its URI in the designated file and then be ready for a client to access it and run the miRvestigator framework. Test it by navigating to the machine with your browser and clicking one of the sample data buttons. If that works, you are ready to try it with some of your own data.
 
-If you want to change out the seqeunce data this can be done by modifying the p3utrSeqs_Homo_sapiens.csv file.
+There is a csv file for each species containing 3' UTR sequences, which needs to be placed in the miRwww_server directory.
+ * p3utrSeqs_Caenorhabditis_elegans.csv
+ * p3utrSeqs_Drosophila_melanogaster.csv
+ * p3utrSeqs_Gallus_gallus.csv
+ * p3utrSeqs_Homo_sapiens.csv
+ * p3utrSeqs_Mus_musculus.csv
+ * p3utrSeqs_Rattus_norvegicus.csv
 
-We have been able to get this up and running on EC2 using Ubuntu 10.04 LTS Lucid instance-store image (ami-da0cf8b3) from alestic.com and will provide an image that can easily be started soon. Using an EC2 High-CPU Medium Instance (1.7GB of memory, 5 EC2 compute units (2 virtual cores with 2.5 EC2 Compute Units Each, 350GB of local instance storage, 32bit OS) it took 2 minutes to analyze 13 genes in miRvestigator, and with 106 genes it took 7.4 minutes.
+We have been able to get this up and running on EC2 using Ubuntu 10.04 LTS Lucid instance-store image (ami-da0cf8b3) from alestic.com and will provide our own mirvestigator image with all dependencies installed. Using an EC2 High-CPU Medium Instance (1.7GB of memory, 5 EC2 compute units (2 virtual cores with 2.5 EC2 Compute Units Each, 350GB of local instance storage, 32bit OS) it took 2 minutes to analyze 13 genes in miRvestigator, and with 106 genes it took 7.4 minutes.

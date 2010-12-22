@@ -1,7 +1,8 @@
 #################################################################
-# @Program: miRvestigator.py                                    #
-# @Version: 1                                                   #
+# @Program: miRvestigator                                       #
+# @Version: 2                                                   #
 # @Author: Chris Plaisier                                       #
+# @Author: Christopher Bare                                     #
 # @Sponsored by:                                                #
 # Nitin Baliga, ISB                                             #
 # Institute for Systems Biology                                 #
@@ -14,7 +15,12 @@
 # If this program is used in your analysis please mention who   #
 # built it. Thanks. :-)                                         #
 #                                                               #
-# Copyrighted by Chris Plaisier  8/12/2009                      #
+# Copyright (C) 2010 by Institute for Systems Biology,          #
+# Seattle, Washington, USA.  All rights reserved.               #
+#                                                               #
+# This source code is distributed under the GNU Lesser          #
+# General Public License, the text of which is available at:    #
+#   http://www.gnu.org/copyleft/lesser.html                     #
 #################################################################
 
 from copy import deepcopy
@@ -39,9 +45,10 @@ import os, cPickle
 #
 class miRvestigator:
     # Initialize and start the run
-    def __init__(self,pssms,seqs3pUTR,seedModel=[6,7,8], minor=True, p5=True, p3=True, textOut=True, wobble=True, wobbleCut=0.25):
+    def __init__(self,pssms,seqs3pUTR,seedModel=[6,7,8], minor=True, p5=True, p3=True, textOut=True, wobble=True, wobbleCut=0.25, species='hsa'):
         print '\nmiRvestigator analysis started...'
         self.pssms = pssms
+        self.species = species
         self.miRNAs = self.setMiRNAs(0,8,minor,p5,p3)
         # Trim sequences down
         self.miRNAs_6mer_1 = self.trimSeqs(deepcopy(self.miRNAs),0,6)
@@ -379,7 +386,7 @@ class miRvestigator:
         else:
             print '\nUsing already downloaded miRNA seeds.\n'
 
-        # Read in miRNAs: miRNAs are labeled by the hsa-* names and grabbing 2-8bp
+        # Read in miRNAs: miRNAs are labeled by the <species>-* names and grabbing 2-8bp
         ### Could merge these as they come in so that don't do redundant, and also so that the labels are together
         import gzip
         miRNAFile = gzip.open('mature.fa.gz','r')
@@ -391,7 +398,7 @@ class miRvestigator:
                 break
             # Get the miRNA name
             curMiRNA = (miRNALine.lstrip('>').split(' '))[0]
-            if (curMiRNA.split('-'))[0]=='hsa':
+            if (curMiRNA.split('-'))[0]==self.species:
                 if (minor==True or curMiRNA.find('*')==-1) and (p5==True or curMiRNA.find('-5p')==-1) and (p3==True or curMiRNA.find('-3p')==-1):
                     # Now grab out the 2-8bp and do reverse complement on it
                     miRNAs[curMiRNA] = self.reverseComplement((seqLine.strip())[seedStart:seedEnd])
