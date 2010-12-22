@@ -1,4 +1,25 @@
 /**
+ * @Program: miRvestigator
+ * @Version: 2
+ * @Author: Chris Plaisier
+ * @Author: Christopher Bare
+ * @Sponsored by:
+ * Nitin Baliga, ISB
+ * Institute for Systems Biology
+ * 1441 North 34th Street
+ * Seattle, Washington  98103-8904
+ * (216) 732-2139
+ * @Also Sponsored by:
+ * Luxembourg Systems Biology Grant
+ * 
+ * If this program is used in your analysis please mention who
+ * built it. Thanks. :-)
+ * 
+ * Copyright (C) 2010 by Institute for Systems Biology,
+ * Seattle, Washington, USA.  All rights reserved.
+ */
+
+/**
  * get parameters for the current job and display them in the page.
  * if a callback function is given, call it when we're done.
  */

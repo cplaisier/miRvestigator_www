@@ -1,7 +1,8 @@
 #################################################################
-# @Program: miRvestigator.py                                    #
-# @Version: 1                                                   #
+# @Program: miRvestigator                                       #
+# @Version: 2                                                   #
 # @Author: Chris Plaisier                                       #
+# @Author: Christopher Bare                                     #
 # @Sponsored by:                                                #
 # Nitin Baliga, ISB                                             #
 # Institute for Systems Biology                                 #
@@ -14,7 +15,12 @@
 # If this program is used in your analysis please mention who   #
 # built it. Thanks. :-)                                         #
 #                                                               #
-# Copyrighted by Chris Plaisier  8/12/2009                      #
+# Copyright (C) 2010 by Institute for Systems Biology,          #
+# Seattle, Washington, USA.  All rights reserved.               #
+#                                                               #
+# This source code is distributed under the GNU Lesser          #
+# General Public License, the text of which is available at:    #
+#   http://www.gnu.org/copyleft/lesser.html                     #
 #################################################################
 
 from copy import deepcopy
