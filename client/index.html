@@ -46,6 +46,11 @@
               alert("Please choose at least on motif size for the run.");
               return false;
           }
+          // Check that if a 6bp motif has been checked that the 6mer seed model is inculded
+          if(document.forms[0].motif_6.checked==true && document.forms[0].seedModel_6.checked==false) {
+              alert("If searching for 6bp motifs you must also include the 6mer seed models. Please check to 6mer seed model box to continue");
+              return false;
+          }
           return true;
       }
       function addCelMir1()
