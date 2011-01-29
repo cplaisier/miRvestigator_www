@@ -59,7 +59,6 @@ def conv2rna(seq):
     rnaSeq = [conversion[base] for base in list(seq)]
     return ''.join(rnaSeq)
 
-
 def alignSeed(alignment, seed, motif):
     alignment.pop() # Get rid of the extra state which is added by the forwardViterbi function
     start = 1    
@@ -360,7 +359,7 @@ center><b><font color=\'#ffffff\'>Top miRNA</font></b></center></td><td bgcolor=
         top_score_i = 0
         i = scoreList[top_score_i]
         align1 = alignSeed(i['statePath'], i['miRNA.seed'], motif['name'])
-        s += '<tr><td bgcolor=\'#ffffff\' rowspan="' + str(row_count) + '"><center><a href=\'#'+motif['name']+'_miRNAs\'>'+str(motif['name'])+'</center></td><td bgcolor=\'#ffffff\'\
+        s += '<tr><td bgcolor=\'#ffffff\' rowspan="' + str(row_count) + '"><center><a href=\'#'+motif['name']+'_miRNAs\'>'+conv2rna(str(motif['name']))+'</center></td><td bgcolor=\'#ffffff\'\
 ><center>'+str('</br>'.join(['<a href=\'http://mirbase.org/cgi-bin/mature.pl?mature_acc='+str(miRNADict[j.strip()])+'\' target=\'_blank\'>'+str(j.strip())+'</a>' for j in i['miRNA.\
 name'].split('_')]))+'</center></td>\n'
         s += '<td bgcolor=\'#ffffff\'><center><pre>'+str(align1[0])+'\n'+str(align1[1])+'\n'+str(align1[2])+'</pre></center></td>\n'
@@ -437,7 +436,7 @@ name'].split('_')]))+'</center></td>\n'
                     col1 = '#cccc00'
                 elif float(i['match']) >= float(85):
                     col1 = '#00cc00'
-                s += '<tr><td bgcolor=\'#ffffff\'><center>'+str('<a href=\'http://www.ncbi.nlm.nih.gov/gene/'+str(i['gene'])+'\' target=\'_blank\'>'+str(i['gene'])+'</a>')+'</center></td><td bgcolor=\'#ffffff\'><center>'+str(i['site'])+'</center></td><td bgcolor=\'#ffffff\'><center>'+str(i['start'])+'</center></td><td bgcolor=\'#ffffff\'><font color=\''+str(col1)+'\'><center><b>'+i['match']+'</b></center></font></td></tr>'
+                s += '<tr><td bgcolor=\'#ffffff\'><center>'+str('<a href=\'http://www.ncbi.nlm.nih.gov/gene/'+str(i['gene'])+'\' target=\'_blank\'>'+str(i['gene'])+'</a>')+'</center></td><td bgcolor=\'#ffffff\'><center>'+conv2rna(str(i['site']))+'</center></td><td bgcolor=\'#ffffff\'><center>'+str(i['start'])+'</center></td><td bgcolor=\'#ffffff\'><font color=\''+str(col1)+'\'><center><b>'+i['match']+'</b></center></font></td></tr>'
         s += '</table></p>'
     s += '<p><table width=\'100%\' cellpadding=\'5%\'><tr><td bgcolor=\'#c0c0c0\'><center>Need help? Please contact <font color=\'#0000ff\'>cplaisier(at)systemsbiology.org</font> or <font color=\'#0000ff\'>cbare(at)systemsbiology.org</font> if you have any questions, comments or concerns.<br>Developed at the <a href=\'http://www.systemsbiology.org\' target=\'_blank\' style=\'color: rgb(0,0,255)\'>Institute for Systems Biology</a> in the <a href=\'http://baliga.systemsbiology.net/\' target=\'_blank\' style=\'color: rgb(0,0,255)\'>Baliga Lab</a>.</center></td></tr></table></p>'
     s += '</center></td></tr></table></td></tr></table></center></body></html>'
