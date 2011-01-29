@@ -164,7 +164,7 @@ def run(job_uuid, genes, seedModels, wobble, cut, motifSizes, jobName, mirbase_s
     
 
     species = get_species_by_mirbase_id(mirbase_species)
-    if bgModel=='def':
+    if bgModel=='3p':
         bgModel = species['weeder']
     else:
         bgModel = species['weeder'].rstrip('3P')
