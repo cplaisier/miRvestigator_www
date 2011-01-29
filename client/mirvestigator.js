@@ -40,7 +40,7 @@ function getParameters(job_id, callback) {
         $("#annotated_sequences").html(parameters.annotated_sequences);
         // }
         $("#motif_sizes").html(parameters.motif_sizes.join(", "));
-        if (parameters.bgModel=="HS") {
+        if (parameters.bgModel=="def") {
           $("#background_model").html("Default Weeder model");
         }
         else {
