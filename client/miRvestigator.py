@@ -144,7 +144,8 @@ def submitJob(req):
     job['s6'] = str(req.form.getfirst('seedModel_6',''))
     job['s7'] = str(req.form.getfirst('seedModel_7',''))
     job['s8'] = str(req.form.getfirst('seedModel_8',''))
-    #job['bgModel'] = str(req.form.getfirst('bgModel',''))
+    job['bgModel'] = str(req.form.getfirst('bgModel',''))
+    job['quality'] = str(req.form.getfirst('quality',''))
     job['species'] = str(req.form.getfirst('species',''))
     job['wobble'] = str(req.form.getfirst('wobble',''))
     job['cut'] = str(req.form.getfirst('cut',''))
@@ -229,6 +230,7 @@ def results(req):
     genesSubmitted = parameters['genes_submitted']
     annotatedSequences = parameters['annotated_sequences']
     mirbase_species = parameters['species']
+    qualityThreshold = float(parameters['quality'])
 
     # read mirbase miRNAs so we can link back to mirbase
     import gzip
@@ -366,7 +368,7 @@ name'].split('_')]))+'</center></td>\n'
         # Get number or sequences with a hit                                                                                                                                         
         genesWithSite = []
         for site in motif['sites']:
-            if not site['gene'] in genesWithSite:
+            if float(site['match']) >= qualityThreshold and not site['gene'] in genesWithSite:
                 genesWithSite.append(site['gene'])
         percGenes = (float(len(genesWithSite))/float(annotatedSequences))*float(100)
         if percGenes==float(100):
@@ -427,14 +429,15 @@ name'].split('_')]))+'</center></td>\n'
         s += '<table width="100%%" cellpadding="5%%"><tr><td style="text-align:center; font-size:10pt; background:#cccccc;"><a href="/sites/csv/%s">download table as CSV</a></td></tr></table>\n' % (motif['motif_id'],)
         s += '<table width=\'100%\' cellpadding=\'15%\'><tr><td bgcolor=\'#333333\'><center><b><font color=\'#ffffff\'>Entrez Gene ID</font></b></center></td><td bgcolor=\'#333333\'><center><b><font color=\'#ffffff\'>Sequence of Site</font></b></center></td><td bgcolor=\'#333333\'><center><b><font color=\'#ffffff\'>Start Relative to</br>Stop Codon (bp)</font></b></center></td><td bgcolor=\'#333333\'><center><b><font color=\'#ffffff\'>% Similarity to Consensus Motif</br>(Quality = </font><font color=\'#cc0000\'>High</font><font color=\'#ffffff\'> | </font><font color=\'#cccc00\'>Medium</font><font color=\'#ffffff\'> | </font><font color=\'#00cc00\'>Fair</font><font color=\'#ffffff\'>)</font></b></center></td></tr>'
         for i in motif['sites']:
-            col1 = '#000000'
-            if float(i['match']) >= float(95):
-                col1 = '#cc0000'
-            elif float(i['match']) >= float(90):
-                col1 = '#cccc00'
-            elif float(i['match']) >= float(85):
-                col1 = '#00cc00'
-            s += '<tr><td bgcolor=\'#ffffff\'><center>'+str('<a href=\'http://www.ncbi.nlm.nih.gov/gene/'+str(i['gene'])+'\' target=\'_blank\'>'+str(i['gene'])+'</a>')+'</center></td><td bgcolor=\'#ffffff\'><center>'+str(i['site'])+'</center></td><td bgcolor=\'#ffffff\'><center>'+str(i['start'])+'</center></td><td bgcolor=\'#ffffff\'><font color=\''+str(col1)+'\'><center><b>'+i['match']+'</b></center></font></td></tr>'
+            if float(i['match']) >= qualityThreshold:
+                col1 = '#000000'
+                if float(i['match']) >= float(95):
+                    col1 = '#cc0000'
+                elif float(i['match']) >= float(90):
+                    col1 = '#cccc00'
+                elif float(i['match']) >= float(85):
+                    col1 = '#00cc00'
+                s += '<tr><td bgcolor=\'#ffffff\'><center>'+str('<a href=\'http://www.ncbi.nlm.nih.gov/gene/'+str(i['gene'])+'\' target=\'_blank\'>'+str(i['gene'])+'</a>')+'</center></td><td bgcolor=\'#ffffff\'><center>'+str(i['site'])+'</center></td><td bgcolor=\'#ffffff\'><center>'+str(i['start'])+'</center></td><td bgcolor=\'#ffffff\'><font color=\''+str(col1)+'\'><center><b>'+i['match']+'</b></center></font></td></tr>'
         s += '</table></p>'
     s += '<p><table width=\'100%\' cellpadding=\'5%\'><tr><td bgcolor=\'#c0c0c0\'><center>Need help? Please contact <font color=\'#0000ff\'>cplaisier(at)systemsbiology.org</font> or <font color=\'#0000ff\'>cbare(at)systemsbiology.org</font> if you have any questions, comments or concerns.<br>Developed at the <a href=\'http://www.systemsbiology.org\' target=\'_blank\' style=\'color: rgb(0,0,255)\'>Institute for Systems Biology</a> in the <a href=\'http://baliga.systemsbiology.net/\' target=\'_blank\' style=\'color: rgb(0,0,255)\'>Baliga Lab</a>.</center></td></tr></table></p>'
     s += '</center></td></tr></table></td></tr></table></center></body></html>'

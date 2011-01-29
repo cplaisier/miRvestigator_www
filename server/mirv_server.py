@@ -78,6 +78,7 @@ def start_worker(id, q):
         topRet = job['topRet']
         mirbase_species = job['species']
         notify_mail = job['notify_mail']
+        bgModel = job['bgModel']
 
         # condense seed models and motif sizes into arrays of ints
         seedModels = [int(job[s]) for s in ['s6','s7','s8'] if s in job and job[s]]
@@ -85,7 +86,7 @@ def start_worker(id, q):
 
         try:
             # run the job
-            r = mirv_worker.run(job['id'], genes, seedModels, wobble, cut, motifSizes, jobName, mirbase_species, topRet)
+            r = mirv_worker.run(job['id'], genes, seedModels, wobble, cut, motifSizes, jobName, mirbase_species, bgModel, topRet)
 
             # notify on success
             if r:

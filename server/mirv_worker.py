@@ -160,11 +160,14 @@ def weeder(seqFile=None, percTargets=50, revComp=False, bgModel='HS'):
 
 
 
-def run(job_uuid, genes, seedModels, wobble, cut, motifSizes, jobName, mirbase_species, topRet=10):
+def run(job_uuid, genes, seedModels, wobble, cut, motifSizes, jobName, mirbase_species, bgModel, topRet=10):
     
 
     species = get_species_by_mirbase_id(mirbase_species)
-    bgModel = species['weeder']
+    if bgModel=='def':
+        bgModel = species['weeder']
+    else:
+        bgModel = species['weeder'].rstrip('3P')
     sequence_file = "p3utrSeqs_" + species['ucsc_name'] + ".csv"
 
     cut = float(cut)
