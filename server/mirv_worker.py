@@ -34,7 +34,21 @@ from miRvestigator import miRvestigator
 from pssm import pssm
 from mirv_db import update_job_status, set_genes_annotated, store_motif, store_mirvestigator_scores, get_species_by_mirbase_id
 
+# Libraries for plotting
+import numpy, corebio                     # http://numpy.scipy.org and http://code.google.com/p/corebio/
+from numpy import array, float64, log10   # http://numpy.scipy.org
+from weblogolib import *                  # http://code.google.com/p/weblogo/
 
+# Plot a PSSM using weblogo
+def plotPssm(pssm, fileName):
+    dist = numpy.array( pssm.getMatrix(), numpy.float64 ) 
+    data = LogoData.from_counts(corebio.seq.unambiguous_dna_alphabet, dist*100)
+    options = LogoOptions()
+    options.color_scheme = colorscheme.nucleotide
+    format = LogoFormat(data, options)
+    fout = open(fileName, 'w')
+    png_formatter(data, format, fout)
+    fout.close()
 
 # Reverse complement
 def reverseMe(seq):
@@ -161,7 +175,6 @@ def weeder(seqFile=None, percTargets=50, revComp=False, bgModel='HS'):
 
 
 def run(job_uuid, genes, seedModels, wobble, cut, motifSizes, jobName, mirbase_species, bgModel, topRet=10):
-    
 
     species = get_species_by_mirbase_id(mirbase_species)
     if bgModel=='3p':
@@ -211,14 +224,16 @@ def run(job_uuid, genes, seedModels, wobble, cut, motifSizes, jobName, mirbase_s
     print 'Running weeder!'
     update_job_status(job_uuid, "running weeder")
     weederPSSMs1 = weeder(seqFile='tmp/fasta/tmp'+str(curRunNum)+'.fasta', percTargets=50, revComp=False, bgModel=bgModel)
-
+    
     # 4a. Take only selected size motifs
     weederPSSMsTmp = []
     for pssm1 in weederPSSMs1:
         if 6 in motifSizes and len(pssm1.getName())==6:
             weederPSSMsTmp.append(deepcopy(pssm1))
+            plotPssm(pssm1,'/var/www/imgs/pssms/'+job_uuid+'_'+pssm1.getConsensusMoitf()+'.png')
         if 8 in motifSizes and len(pssm1.getName())==8:
             weederPSSMsTmp.append(deepcopy(pssm1))
+            plotPssm(pssm1,'/var/www/imgs/pssms/'+job_uuid+'_'+pssm1.getConsensusMotif()+'.png')
         print("pssm name = " + pssm1.getName())
     weederPSSMs1 = deepcopy(weederPSSMsTmp)
     del weederPSSMsTmp
