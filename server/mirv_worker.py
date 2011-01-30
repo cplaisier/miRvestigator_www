@@ -42,7 +42,7 @@ from weblogolib import *                  # http://code.google.com/p/weblogo/
 # Plot a PSSM using weblogo
 def plotPssm(pssm, fileName):
     dist = numpy.array( pssm.getMatrix(), numpy.float64 ) 
-    data = LogoData.from_counts(corebio.seq.unambiguous_dna_alphabet, dist*100)
+    data = LogoData.from_counts(corebio.seq.unambiguous_rna_alphabet, dist*100)
     options = LogoOptions()
     options.color_scheme = colorscheme.nucleotide
     format = LogoFormat(data, options)
