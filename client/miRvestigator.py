@@ -359,7 +359,7 @@ center><b><font color=\'#ffffff\'>Top miRNA</font></b></center></td><td bgcolor=
         top_score_i = 0
         i = scoreList[top_score_i]
         align1 = alignSeed(i['statePath'], i['miRNA.seed'], motif['name'])
-        s += '<tr><td bgcolor=\'#ffffff\' rowspan="' + str(row_count) + '"><center><a href=\'#'+motif['name']+'_miRNAs\'><img src=\'imgs/pssms/'+id+'_'+motif['name']+'.gif\' alt=\''+conv2rna(str(motif['name']))+'\'></center></td><td bgcolor=\'#ffffff\'\
+        s += '<tr><td bgcolor=\'#ffffff\' rowspan="' + str(row_count) + '"><center><a href=\'#'+motif['name']+'_miRNAs\'><img src=\'images/pssms/'+id+'_'+motif['name']+'.gif\' alt=\''+conv2rna(str(motif['name']))+'\'></center></td><td bgcolor=\'#ffffff\'\
 ><center>'+str('</br>'.join(['<a href=\'http://mirbase.org/cgi-bin/mature.pl?mature_acc='+str(miRNADict[j.strip()])+'\' target=\'_blank\'>'+str(j.strip())+'</a>' for j in i['miRNA.\
 name'].split('_')]))+'</center></td>\n'
         s += '<td bgcolor=\'#ffffff\'><center><pre>'+str(align1[0])+'\n'+str(align1[1])+'\n'+str(align1[2])+'</pre></center></td>\n'
