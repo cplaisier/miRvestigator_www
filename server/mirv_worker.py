@@ -230,7 +230,7 @@ def run(job_uuid, genes, seedModels, wobble, cut, motifSizes, jobName, mirbase_s
     for pssm1 in weederPSSMs1:
         if 6 in motifSizes and len(pssm1.getName())==6:
             weederPSSMsTmp.append(deepcopy(pssm1))
-            plotPssm(pssm1,'/var/www/images/pssms/'+str(job_uuid)+'_'+pssm1.getConsensusMoitf()+'.png')
+            plotPssm(pssm1,'/var/www/images/pssms/'+str(job_uuid)+'_'+pssm1.getConsensusMotif()+'.png')
         if 8 in motifSizes and len(pssm1.getName())==8:
             weederPSSMsTmp.append(deepcopy(pssm1))
             plotPssm(pssm1,'/var/www/images/pssms/'+str(job_uuid)+'_'+pssm1.getConsensusMotif()+'.png')
