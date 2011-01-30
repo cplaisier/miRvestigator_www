@@ -337,7 +337,7 @@ def results(req):
     if (len(motifs)==0):
         s+= '<div style="text-align:center;background:#333333;color:#cc0000;font-weight:bold;padding-top:6ex;padding-bottom:6ex;">No motifs found.</div>'
 
-    s += '<table width=\'100%\' cellpadding=\'15%\'><tr><td bgcolor=\'#333333\'><center><b><font color=\'#ffffff\'>Motif Consensus</font></b></center></td><td bgcolor=\'#333333\'><\
+    s += '<table width=\'100%\' cellpadding=\'15%\'><tr><td bgcolor=\'#333333\'><center><b><font color=\'#ffffff\'>Motif</font></b></center></td><td bgcolor=\'#333333\'><\
 center><b><font color=\'#ffffff\'>Top miRNA</font></b></center></td><td bgcolor=\'#333333\'><center><b><font color=\'#ffffff\'>Alignment</font></b></center></td><td bgcolor=\'#3333\
 33\'><center><b><font color=\'#ffffff\'>Viterbi P-Value</font></b></center></td><td bgcolor=\'#333333\'><center><b><font color=\'#ffffff\'>% of Input</br>Sequences with Site</font>\
 </b></center></td></tr>\n'
