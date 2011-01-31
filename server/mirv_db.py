@@ -379,7 +379,7 @@ def store_motif(job_uuid, pssm):
         for scores in pssm.getMatrix():
             sql = """
                 insert into pssms
-                (motif_id, position, a, t, c, g)
+                (motif_id, position, a, c, g, t)
                 values ('%s',%d,%f,%f,%f,%f);""" % (motif_id, i, float(scores[0]), float(scores[1]), float(scores[2]), float(scores[3]),)
             cursor.execute(sql)
             i += 1
