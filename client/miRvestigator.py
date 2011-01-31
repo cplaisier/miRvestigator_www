@@ -25,6 +25,7 @@
 
 from mod_python import apache
 from mod_python import util
+import os
 import re
 import sys
 import traceback
@@ -36,10 +37,24 @@ from Pyro.errors import ProtocolError
 from mirv_db import get_job_status, read_parameters, read_motifs, read_mirvestigator_scores
 import admin_emailer
 
+# Libraries for plotting
+import numpy, corebio                     # http://numpy.scipy.org and http://code.google.com/p/corebio/
+from numpy import array, float64, log10   # http://numpy.scipy.org
+from weblogolib import *                  # http://code.google.com/p/weblogo/
 
 MAX_GENES = 1000
 adminEmailer = admin_emailer.AdminEmailer()
 
+# Plot a PSSM using weblogo
+def plotPssmMatrix(pssmMatrix, fileName):
+    dist = numpy.array( pssmMatrix, numpy.float64 ) 
+    data = LogoData.from_counts(corebio.seq.unambiguous_rna_alphabet, dist*100)
+    options = LogoOptions()
+    options.color_scheme = colorscheme.nucleotide
+    format = LogoFormat(data, options)
+    fout = open(fileName, 'w')
+    png_formatter(data, format, fout)
+    fout.close()
 
 # Reverse complement
 def reverseComplement(seq):
@@ -359,6 +374,8 @@ center><b><font color=\'#ffffff\'>Top miRNA</font></b></center></td><td bgcolor=
         top_score_i = 0
         i = scoreList[top_score_i]
         align1 = alignSeed(i['statePath'], i['miRNA.seed'], motif['name'])
+        if not os.path.exists('/var/www/images/pssms/'+id+'_'+motif['name']+'.png'):
+            plotPssmMatrix(motif['matrix'],'/var/www/images/pssms/'+id+'_'+motif['name']+'.png')
         s += '<tr><td bgcolor=\'#ffffff\' rowspan="' + str(row_count) + '"><center><a href=\'#'+motif['name']+'_miRNAs\'><img src=\'/images/pssms/'+id+'_'+motif['name']+'.png\' alt=\''+conv2rna(str(motif['name']))+'\'></center></td><td bgcolor=\'#ffffff\'\
 ><center>'+str('</br>'.join(['<a href=\'http://mirbase.org/cgi-bin/mature.pl?mature_acc='+str(miRNADict[j.strip()])+'\' target=\'_blank\'>'+str(j.strip())+'</a>' for j in i['miRNA.\
 name'].split('_')]))+'</center></td>\n'

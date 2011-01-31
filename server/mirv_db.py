@@ -442,7 +442,7 @@ def read_motifs(job_uuid):
         # read pssm matrix
         for motif in motifs:
             cursor.execute("""
-                select a, t, c, g
+                select a, c, g, t
                 from pssms
                 where motif_id=%d
                 order by position;""" %
