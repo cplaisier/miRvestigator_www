@@ -70,7 +70,7 @@ def complement(seq):
 
 # Convert to RNA
 def conv2rna(seq):
-    conversion = {'A':'A', 'T':'U', 'C':'C', 'G':'G', 'N':'N', 'U':'U'}
+    conversion = {'A':'A', 'T':'U', 'C':'C', 'G':'G', 'N':'N', 'U':'U', '[':'[', ']':']'}
     rnaSeq = [conversion[base] for base in list(seq)]
     return ''.join(rnaSeq)
 
