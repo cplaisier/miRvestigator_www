@@ -237,8 +237,8 @@
       <table width=600 bgcolor='#333333' cellpadding='15%'><tr><td align='center' valign='center'><font size=6><b><font color='#ff0000'>miR</font><font color='#cccc00'>vestigator Framework</font></b></font></td></tr></table>
       <p><form action='miRvestigator.py/submitJob' method='post' onsubmit="return validateInputs();">
       <table cellpadding='5%' cellspacing=3 width='100%'>
-      <tr><td bgcolor='#000000' colspan=2><center><font color='#cccc00' size=4><a href="#whatIsMV" onclick="toggleVisible('whatIsMV'); return false;" style='color: rgb(204,204,0); text-decoration: none'><b>What is the miRvestigator Framework? &nbsp; <font color="#ff0000">[?]</font></b></a></font></center></td></tr>
-      <tr id="whatIsMV" style="display: none;"><td colspan=2 bgcolor='#333333'><font color='#ffffff'><p>The miRvestigator framework is designed to take as input a list of co-expressed genes and will return the most likely <a href='http://en.wikipedia.org/wiki/MicroRNA' style='color: rgb(204,204,0)' target='_blank'>miRNA</a> regulating these genes. It does this by searching for over-represented sequence motifs in the <a href="http://en.wikipedia.org/wiki/3\'_UTR" style='color: rgb(204,204,0)' target='_blank'>3' untranslated regions (UTRs)</a> of the genes using <a href='http://159.149.109.9/modtools/' style='color: rgb(204,204,0)' target='_blank'>Weeder</a> and then comparing this to the miRNA seed sequences in <a href='http://www.mirbase.org' style='color: rgb(204,204,0)' target='_blank'>miRBase</a> using our custom built <a href='http://github.com/cplaisier/miRvestigator/wiki/miRvestigator-hidden-Markov-Model-(HMM)' target='_blank' style='color: rgb(204,204,0)'>miRvestigator hidden Markov model (HMM)</a>.</p></font></td></tr>
+          <tr><td bgcolor='#000000' colspan=2><center><font color='#cccc00' size=4><b>What is the miRvestigator Framework?</b></font></center></td></tr>
+      <tr><td colspan=2 bgcolor='#333333'><font color='#ffffff'><p>The miRvestigator framework is designed to take as input a list of co-expressed genes and will return the most likely <a href='http://en.wikipedia.org/wiki/MicroRNA' style='color: rgb(204,204,0)' target='_blank'>miRNA</a> regulating these genes. It does this by searching for an over-represented sequence motif in the <a href="http://en.wikipedia.org/wiki/3\'_UTR" style='color: rgb(204,204,0)' target='_blank'>3' untranslated regions (UTRs)</a> of the genes using <a href='http://159.149.109.9/modtools/' style='color: rgb(204,204,0)' target='_blank'>Weeder</a> and then comparing this to the miRNA seed sequences in <a href='http://www.mirbase.org' style='color: rgb(204,204,0)' target='_blank'>miRBase</a> using our custom built <a href='http://github.com/cplaisier/miRvestigator/wiki/miRvestigator-hidden-Markov-Model-(HMM)' target='_blank' style='color: rgb(204,204,0)'>miRvestigator hidden Markov model (HMM)</a>.</p></font></td></tr>
       <tr><td colspan=2></td></tr>
       <tr><td bgcolor='#000000' colspan=2><center><font color='#cccc00' size=4><a href="#geneList" onclick="toggleVisible('geneList'); return false;" style='color: rgb(204,204,0); text-decoration: none'><b>Enter Co-Expressed Gene List &nbsp; <font color="#ff0000">[?]</font></b></a></font></center></td></tr>
       <tr id="geneList" style="display: none;"><td colspan=2 bgcolor='#333333'><font color='#ffffff'><b>What is gene Co-Expression?</b>
@@ -258,7 +258,7 @@ If the species you study has miRNAs and is not on this list please e-mail us and
 <p>Currently the miRvestigator framework is able to take <a href='http://www.ncbi.nlm.nih.gov/gene' style='color: rgb(204,204,0)' target='_blank'>Entrez gene IDs</a> as input. To convert any other type of identifier to Entrez gene IDs please use the <a href='http://david.abcc.ncifcrf.gov/home.jsp' style='color: rgb(204,204,0)' target='_blank'>DAVID</a> bioinformatics resource <a href='http://david.abcc.ncifcrf.gov/conversion.jsp' style='color: rgb(204,204,0)' target='_blank'>gene ID conversion tool</a>. The DAVID gene ID conversion tool has a great <a href='http://david.abcc.ncifcrf.gov/helps/conversion.html' style='color: rgb(204,204,0)' target='_blank'>help page</a> please visit it if you have any questions.</p>
 <b>What types of <a href='http://en.wikipedia.org/wiki/Delimiter' style='color: rgb(255,255,255)' target='_blank'>delimiters</a> can be entered into the form?</b>
 <p>You can enter the Entrez gene IDs separated by commas, spaces, tabs or <a href='http://en.wikipedia.org/wiki/Newline' style='color: rgb(204,204,0)' target='_blank'>newlines</a>.</p></font></td></tr>
-      <tr><td bgcolor='#333333'><b><center><font color='#ffffff'>Choose species:</font></center></b></td><td bgcolor='#666666'><table width='100%' cellpadding='5%'><tr><td bgcolor='#ffffff'><center>
+      <tr><td bgcolor='#333333'><b><center><font color='#ffffff'>Species:</font></center></b></td><td bgcolor='#666666'><table width='100%' cellpadding='5%'><tr><td bgcolor='#ffffff'><center>
       <select name="species" id='species'>
           <option value='cel'>C. elegans</option>
           <option value='dme'>D. melanogaster</option>
@@ -266,6 +266,14 @@ If the species you study has miRNAs and is not on this list please e-mail us and
           <option value='hsa' selected>H. sapiens</option>
           <option value='mmu'>M. musculus</option>
           <option value='rno'>R. norvegicus</option>
+      </select>
+      </center></td></tr></table></td></tr>
+      <tr><td bgcolor='#333333'><b><center><font color='#ffffff'>Gene Identifier:</font></center></b></td><td bgcolor='#666666'><table width='100%' cellpadding='5%'><tr><td bgcolor='#ffffff'><center>
+      <select name="geneId" id='geneId'>
+          <option value='entrez' selected>Entrez Gene</option>
+          <option value='symbol'>Official Gene Symbol</option>
+          <option value='ensembl'>Ensembl Gene</option>
+          <option value='refseq'>RefSeq Transcript</option>
       </select>
       </center></td></tr></table></td></tr>
       <tr><td bgcolor='#333333'><b><center><font color='#ffffff'>Name the gene list:</font></center></b></td><td bgcolor='#666666'><table width='100%' cellpadding='5%'><tr><td bgcolor='#ffffff'><center><input type='text' name='jobName' size=50></center></td></tr></table></td></tr>
