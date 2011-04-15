@@ -187,7 +187,7 @@ def weeder(seqFile=None, percTargets=50, revComp=False, bgModel='HS'):
         matches = []
         while line.find('Frequency Matrix') == -1:
             splitUp = [i for i in line.strip().split(' ') if i]
-            instances.append({'gene':seqDict[splitUp[0]], 'strand':splitUp[1], 'site':splitUp[2], 'start':splitUp[3], 'match':splitUp[4].lstrip('(').rstrip(')'), 'mfe':rnaDuplex(name,[splitUp[2]]) })
+            instances.append({'gene':seqDict[splitUp[0]], 'strand':splitUp[1], 'site':splitUp[2], 'start':splitUp[3], 'match':splitUp[4].lstrip('(').rstrip(')'), 'mfe':rnaDuplex(name,[splitUp[2]])[0] })
             line = outLines.pop(0)
         # Read in Frequency Matrix
         outLines.pop(0)
