@@ -56,6 +56,40 @@ def reverseMe(seq):
     seq.reverse()
     return ''.join(seq)
 
+# Complement
+def complement(seq):
+    complement = {'A':'T', 'T':'A', 'C':'G', 'G':'C', 'N':'N', 'U':'A'}
+    complseq = [complement[base] for base in seq]
+    return complseq
+
+# Reverse complement
+def reverseComplement(seq):
+    seq = list(seq)
+    seq.reverse()
+    return ''.join(complement(seq))
+
+# ViennaRNA RNAduplex to get minimum free energy (MFE) for
+# putative target sites.
+def rnaDuplex(motif,matches):
+    # Make a file to pipe in the motif consensus a new line then a match
+    duplexMe = []
+    for match in matches:
+        duplexMe.append(reverseComplement(moitf))
+        duplexMe.append(match.strip().lstrip('[').rstrip(']'))
+    # Run RNAduplex
+    errOut = open('stderr.out','w')
+    rnaDuplexProc = Popen("RNAduplex < duplexMe", shell=True,stdin=PIPE,stdout=PIPE,stderr=errOut)
+    output = rnaDuplexProc.communicate('\n'.join(duplexMe))
+    
+    # Read results and parse out MFE
+    mfe = []
+    while 1:
+        line = output.readline()
+        if not line:
+            break
+        mfe.append(([i for i in line.strip().split(' ') if i])[3].lstrip('(').rstrip(')'))
+    return mfe
+
 # Run weeder and parse its output
 # First weederTFBS -W 6 -e 1, then weederTFBS -W 8 -e 2, and finally adviser
 # The weeder program can be found at:  http://159.149.109.9/modtools/
@@ -152,9 +186,10 @@ def weeder(seqFile=None, percTargets=50, revComp=False, bgModel='HS'):
         outLines.pop(0)
         line = outLines.pop(0)
         instances = []
+        matches = []
         while line.find('Frequency Matrix') == -1:
             splitUp = [i for i in line.strip().split(' ') if i]
-            instances.append({'gene':seqDict[splitUp[0]], 'strand':splitUp[1], 'site':splitUp[2], 'start':splitUp[3], 'match':splitUp[4].lstrip('(').rstrip(')') })
+            instances.append({'gene':seqDict[splitUp[0]], 'strand':splitUp[1], 'site':splitUp[2], 'start':splitUp[3], 'match':splitUp[4].lstrip('(').rstrip(')'), 'mfe':rnaDuplex(name,splitUp[4].lstrip('(').rstrip(')')) })
             line = outLines.pop(0)
         # Read in Frequency Matrix
         outLines.pop(0)

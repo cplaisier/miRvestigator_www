@@ -388,17 +388,18 @@ def store_motif(job_uuid, pssm):
         # entrez_gene_id int,
         # sequence,
         # start,
-        # quality
+        # quality,
+        # mfe
                 
-        # sites is a dictionary w/ keys: gene, start, match, site
+        # sites is a dictionary w/ keys: gene, start, match, site, mfe
         i = 1
         sites = pssm.nsites
         for site in sites:
             cursor.execute("""
                 insert into sites
-                (motif_id, sort_order, entrez_gene_id, sequence, start, quality)
+                (motif_id, sort_order, entrez_gene_id, sequence, start, quality, mfe)
                 values (%d, %d, '%s', '%s', %d, '%s')""" %
-                (motif_id, i, str(site['gene']), site['site'], int(site['start']), site['match'],))
+                (motif_id, i, str(site['gene']), site['site'], int(site['start']), site['match'], site['mfe'],))
             i += 1
         
         return motif_id
@@ -457,7 +458,7 @@ def read_motifs(job_uuid):
         # each site is a dictionary w/ keys: gene, start, match, site
         for motif in motifs:
             cursor.execute("""
-                select entrez_gene_id, sequence, start, quality
+                select entrez_gene_id, sequence, start, quality, mfe
                 from sites
                 where motif_id=%d
                 order by sort_order;""" %
@@ -470,6 +471,7 @@ def read_motifs(job_uuid):
                 site['site']  = row[1]
                 site['start'] = row[2]
                 site['match'] = row[3]
+                site['mfe']   = row[4]
                 sites.append(site)
             motif['sites'] = sites
 
@@ -598,7 +600,7 @@ def read_sites(motif_id):
     try:
         cursor = conn.cursor()
         cursor.execute("""
-            select entrez_gene_id, sequence, start, quality
+            select entrez_gene_id, sequence, start, quality, mfe
             from sites
             where motif_id=%d
             order by sort_order;""" %
@@ -612,6 +614,7 @@ def read_sites(motif_id):
             site['site']  = row[1]
             site['start'] = row[2]
             site['match'] = row[3]
+            site['mfe']   = row[4]
             sites.append(site)
         return sites
     finally:
