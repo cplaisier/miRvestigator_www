@@ -398,7 +398,7 @@ def store_motif(job_uuid, pssm):
             cursor.execute("""
                 insert into sites
                 (motif_id, sort_order, entrez_gene_id, sequence, start, quality, mfe)
-                values (%d, %d, '%s', '%s', %d, '%s')""" %
+                values (%d, %d, '%s', '%s', %d, '%s', '%s')""" %
                 (motif_id, i, str(site['gene']), site['site'], int(site['start']), site['match'], site['mfe'],))
             i += 1
         

@@ -74,20 +74,18 @@ def rnaDuplex(motif,matches):
     # Make a file to pipe in the motif consensus a new line then a match
     duplexMe = []
     for match in matches:
-        duplexMe.append(reverseComplement(moitf))
+        duplexMe.append(reverseComplement(motif))
         duplexMe.append(match.strip().lstrip('[').rstrip(']'))
+    
     # Run RNAduplex
     errOut = open('stderr.out','w')
-    rnaDuplexProc = Popen("RNAduplex < duplexMe", shell=True,stdin=PIPE,stdout=PIPE,stderr=errOut)
-    output = rnaDuplexProc.communicate('\n'.join(duplexMe))
-    
+    rnaDuplexProc = Popen("RNAduplex", shell=True,stdin=PIPE,stdout=PIPE,stderr=errOut)
+    output = rnaDuplexProc.communicate('\n'.join(duplexMe))[0]
     # Read results and parse out MFE
     mfe = []
-    while 1:
-        line = output.readline()
-        if not line:
-            break
-        mfe.append(([i for i in line.strip().split(' ') if i])[4].lstrip('(').rstrip(')'))
+    for line in output.split('\n'):
+        if not line.strip()=='':
+            mfe.append(([i for i in (line.split(':')[1]).replace('(',' ').replace(')',' ').strip().split(' ') if i])[1])
     return mfe
 
 # Run weeder and parse its output
@@ -189,7 +187,7 @@ def weeder(seqFile=None, percTargets=50, revComp=False, bgModel='HS'):
         matches = []
         while line.find('Frequency Matrix') == -1:
             splitUp = [i for i in line.strip().split(' ') if i]
-            instances.append({'gene':seqDict[splitUp[0]], 'strand':splitUp[1], 'site':splitUp[2], 'start':splitUp[3], 'match':splitUp[4].lstrip('(').rstrip(')'), 'mfe':rnaDuplex(name,splitUp[4].lstrip('(').rstrip(')')) })
+            instances.append({'gene':seqDict[splitUp[0]], 'strand':splitUp[1], 'site':splitUp[2], 'start':splitUp[3], 'match':splitUp[4].lstrip('(').rstrip(')'), 'mfe':rnaDuplex(name,[splitUp[2]]) })
             line = outLines.pop(0)
         # Read in Frequency Matrix
         outLines.pop(0)
