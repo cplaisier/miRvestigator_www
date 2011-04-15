@@ -380,7 +380,7 @@ center><b><font color=\'#ffffff\'>Top miRNA</font></b></center></td><td bgcolor=
 ><center>'+str('</br>'.join(['<a href=\'http://mirbase.org/cgi-bin/mature.pl?mature_acc='+str(miRNADict[j.strip()])+'\' target=\'_blank\'>'+str(j.strip())+'</a>' for j in i['miRNA.\
 name'].split('_')]))+'</center></td>\n'
         s += '<td bgcolor=\'#ffffff\'><center><pre>'+str(align1[0])+'\n'+str(align1[1])+'\n'+str(align1[2])+'</pre></center></td>\n'
-        s += '<td bgcolor=\'#ffffff\' rowspan="' + str(row_count) + '"><center>'+str('%.2g' % float(i['vitPValue']))+'</center></td>\n'
+        s += '<td bgcolor=\'#ffffff\' rowspan="' + str(row_count) + '"><center>'+str('%.1e' % float(i['vitPValue']))+'</center></td>\n'
         # Get number or sequences with a hit                                                                                                                                         
         genesWithSite = []
         for site in motif['sites']:
