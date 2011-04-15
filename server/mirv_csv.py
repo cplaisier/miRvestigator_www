@@ -105,7 +105,7 @@ def _build_alignment_string(alignment, seed, motif):
 def sites_to_csv(sites):
     s = "Entrez Gene ID,Sequence of Site,Start Relative to Stop Codon (bp),% Similarity to Consensus Motif,Minimum Free Energy (MFE) of miRNA-mRNA Duplex\r\n"
     for site in sites:
-        s += "%s,%s,%s,%s\n" % (site['gene'], site['site'], site['start'], site['match'], site['mfe'])
+        s += "%s,%s,%s,%s,%s\n" % (site['gene'], site['site'], site['start'], site['match'], site['mfe'])
     return s
 
 # takes mirvestigator scores as a list of dictionaries and returns a csv string
