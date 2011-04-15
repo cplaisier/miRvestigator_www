@@ -103,15 +103,15 @@ def _build_alignment_string(alignment, seed, motif):
 # take sites as a list of dictionaries and returns a csv string
 # each site is a dictionary w/ keys: gene, start, match, site
 def sites_to_csv(sites):
-    s = "Entrez Gene ID,Sequence of Site,Start Relative to Stop Codon (bp),% Similarity to Consensus Motif\r\n"
+    s = "Entrez Gene ID,Sequence of Site,Start Relative to Stop Codon (bp),% Similarity to Consensus Motif,Minimum Free Energy (MFE) of miRNA-mRNA Duplex\r\n"
     for site in sites:
-        s += "%s,%s,%s,%s\n" % (site['gene'], site['site'], site['start'], site['match'])
+        s += "%s,%s,%s,%s\n" % (site['gene'], site['site'], site['start'], site['match'], site['mfe'])
     return s
 
 # takes mirvestigator scores as a list of dictionaries and returns a csv string
 # scores have keys: miRNA.name, miRNA.seed, model, statePath, vitPValue
 def mirvestigator_scores_to_csv(scores, motif):
-    s = "miRNA Name, miRNA Seed, Seed Model, Length of Alignment, Alignment, Viterbi P-Value\r\n"
+    s = "miRNA Name, miRNA Seed, Seed Model, Length of Complementarity, Complementarity, Viterbi P-Value\r\n"
     for score in scores:
         statePath = score['statePath']
         motifAlign, aligned, seedAlign, lenMatch = _build_alignment_string(score['statePath'], score['miRNA.seed'], motif)
