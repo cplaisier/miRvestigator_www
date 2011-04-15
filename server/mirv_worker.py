@@ -87,7 +87,7 @@ def rnaDuplex(motif,matches):
         line = output.readline()
         if not line:
             break
-        mfe.append(([i for i in line.strip().split(' ') if i])[3].lstrip('(').rstrip(')'))
+        mfe.append(([i for i in line.strip().split(' ') if i])[4].lstrip('(').rstrip(')'))
     return mfe
 
 # Run weeder and parse its output
