@@ -262,7 +262,7 @@ def run(job_uuid, genes, geneId, seedModels, wobble, cut, motifSizes, jobName, m
     print 'Running weeder!'
     update_job_status(job_uuid, "running weeder")
     weederPSSMs1 = weeder(seqFile='tmp/fasta/tmp'+str(curRunNum)+'.fasta', percTargets=50, revComp=False, bgModel=bgModel)
-    
+
     # 4a. Take only selected size motifs
     weederPSSMsTmp = []
     for pssm1 in weederPSSMs1:
