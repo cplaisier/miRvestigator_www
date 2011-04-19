@@ -109,7 +109,8 @@ create table gene_identifiers (
     identifier varchar(100),
     entrez_id varchar(20),
     index(identifier),
-    index(species, id_type, identifer)
+    index(species, id_type, identifer),
+    index(entrez_id)
 );
 
 create table species (
