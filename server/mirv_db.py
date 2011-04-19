@@ -770,3 +770,31 @@ def get_species_by_mirbase_id(mirbase_id):
         except Exception as exception:
             log("Exception closing conection: ")
             log(exception)
+
+# used in a dirty hack to get gene map for sites
+def get_job_id_from_motif_id(motif_id):
+    sql = """select job_uuid
+             from motifs
+             where id = '%s';
+          """ % (motif_id)
+
+    conn = _get_db_connection()
+    try:
+        cursor = conn.cursor()
+        cursor.execute(sql)
+        row = cursor.fetchone()
+        if (row == None):
+            return None
+        else:
+            return row[0]
+    finally:
+        try:
+            cursor.close()
+        except Exception as exception:
+            log("Exception closing cursor: ")
+            log(exception)
+        try:
+            conn.close()
+        except Exception as exception:
+            log("Exception closing conection: ")
+            log(exception)

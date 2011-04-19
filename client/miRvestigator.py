@@ -245,7 +245,7 @@ def results(req):
     genesSubmitted = parameters['genes_submitted']
     annotatedSequences = parameters['annotated_sequences']
     mirbase_species = parameters['species']
-    geneId = parameters['geneId']
+    geneId = parameters.get('geneId', 'entrez')
     qualityThreshold = float(parameters['quality'])
 
     gene_mapping = get_gene_mapping(id)
@@ -469,12 +469,12 @@ name'].split('_')]))+'</center></td>\n'
                     col1 = '#cccc00'
                 elif float(i['match']) >= float(85):
                     col1 = '#00cc00'
-                gene_name_map = gene_mapping[i['gene']]
-                if (geneId=='symbol' or geneId=='entrez'):
+                gene_name_map = gene_mapping.get(i['gene'], None)
+                if (gene_name_map==None or geneId=='symbol' or geneId=='entrez'):
                     gene_name = i['gene']
                 else:
                     gene_name = gene_name_map['name']
-                if (gene_name_map['symbol'] == None):
+                if (gene_name_map==None or gene_name_map['symbol'] == None):
                     gene_symbol = ''
                 else:
                     gene_symbol = ' ' + gene_name_map['symbol']

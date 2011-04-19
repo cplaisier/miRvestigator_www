@@ -102,16 +102,20 @@ def _build_alignment_string(alignment, seed, motif):
 
 # take sites as a list of dictionaries and returns a csv string
 # each site is a dictionary w/ keys: gene, start, match, site
-def sites_to_csv(sites):
-    s = "Entrez Gene ID,Sequence of Site,Start Relative to Stop Codon (bp),% Similarity to Consensus Motif,Minimum Free Energy (MFE) of miRNA-mRNA Duplex\r\n"
+def sites_to_csv(sites, geneId):
+    s = "Gene,Gene Symbol,Sequence of Site,Start Relative to Stop Codon (bp),% Similarity to Consensus Motif,Minimum Free Energy (MFE) of miRNA-mRNA Duplex\r\n"
+    if (geneId=='entrez' or geneId=='symbol'):
+        col = 'gene'
+    else:
+        col = 'name'
     for site in sites:
-        s += "%s,%s,%s,%s,%s\n" % (site['gene'], site['site'], site['start'], site['match'], site['mfe'])
+        s += "%s,%s,%s,%s,%s,%s\n" % (site.get(col,''), site.get('symbol', ''), site['site'], site['start'], site['match'], site['mfe'])
     return s
 
 # takes mirvestigator scores as a list of dictionaries and returns a csv string
 # scores have keys: miRNA.name, miRNA.seed, model, statePath, vitPValue
 def mirvestigator_scores_to_csv(scores, motif):
-    s = "miRNA Name, miRNA Seed, Seed Model, Length of Complementarity, Complementarity, Viterbi P-Value\r\n"
+    s = "miRNA Name, miRNA Seed, Seed Model, Length of Complementarity, Complementarity, Viterbi P-Value\r\n" 
     for score in scores:
         statePath = score['statePath']
         motifAlign, aligned, seedAlign, lenMatch = _build_alignment_string(score['statePath'], score['miRNA.seed'], motif)
@@ -120,7 +124,22 @@ def mirvestigator_scores_to_csv(scores, motif):
     return s
 
 def get_sites_as_csv(motif_id):
-    return sites_to_csv(mirv_db.read_sites(motif_id))
+    geneId = "entrez"
+    sites = mirv_db.read_sites(motif_id)
+
+    # a nasty hack to add alternative IDs to sites
+    job_uuid = mirv_db.get_job_id_from_motif_id(motif_id)
+    if (job_uuid):
+        params = mirv_db.read_parameters(job_uuid)
+        if (params.has_key('geneId')):
+            geneId = params['geneId']
+        gene_mapping = mirv_db.get_gene_mapping(job_uuid)
+        if (gene_mapping):
+            for site in sites:
+                site['symbol'] = gene_mapping[site['gene']]['symbol']
+                site['name'] = gene_mapping[site['gene']]['name']
+
+    return sites_to_csv(sites, geneId)
 
 def get_mirvestigator_scores_as_csv(motif_id):
     motif = mirv_db.read_motif(motif_id)
