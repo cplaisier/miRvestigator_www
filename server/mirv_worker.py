@@ -32,7 +32,7 @@ import cPickle
 # Custom libraries
 from miRvestigator import miRvestigator
 from pssm import pssm
-from mirv_db import update_job_status, set_genes_annotated, store_motif, store_mirvestigator_scores, get_species_by_mirbase_id
+from mirv_db import update_job_status, set_genes_annotated, store_motif, store_mirvestigator_scores, get_species_by_mirbase_id, map_genes_to_entrez_ids
 
 # Libraries for plotting
 import numpy, corebio                     # http://numpy.scipy.org and http://code.google.com/p/corebio/
@@ -205,9 +205,7 @@ def weeder(seqFile=None, percTargets=50, revComp=False, bgModel='HS'):
     return PSSMs
 
 
-
-
-def run(job_uuid, genes, seedModels, wobble, cut, motifSizes, jobName, mirbase_species, bgModel, topRet=10):
+def run(job_uuid, genes, geneId, seedModels, wobble, cut, motifSizes, jobName, mirbase_species, bgModel, topRet=10):
 
     species = get_species_by_mirbase_id(mirbase_species)
     if bgModel=='3p':
@@ -218,7 +216,12 @@ def run(job_uuid, genes, seedModels, wobble, cut, motifSizes, jobName, mirbase_s
 
     cut = float(cut)
     curRunNum = randint(0,1000000)
-    
+
+    # translate gene identifiers to entrez IDs
+    print "translating gene identifiers from %s to entrez IDs" % (geneId)
+    genes = map_genes_to_entrez_ids(job_uuid, geneId, mirbase_species)
+    print "genes = " + str(genes)
+
     # 1. Read in sequences
     seqFile = open(sequence_file,'r')
     seqLines = seqFile.readlines()
@@ -234,6 +237,8 @@ def run(job_uuid, genes, seedModels, wobble, cut, motifSizes, jobName, mirbase_s
     for gene in genes:
         if gene in seqs:
             miRSeqs[gene] = seqs[gene]
+
+    print "miRSeqs = " + str(miRSeqs)
 
     # if there are no matching sequences, bail out w/ a reasonable error message.
     if (len(miRSeqs)==0):

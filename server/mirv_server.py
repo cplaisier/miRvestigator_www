@@ -72,6 +72,7 @@ def start_worker(id, q):
 
         # parse params out of job
         genes = job['genes']
+        geneId = job['geneId']
         wobble = (job['wobble'] == 'yes')
         cut = float(job['cut'])
         jobName = job['jobName']
@@ -86,7 +87,7 @@ def start_worker(id, q):
 
         try:
             # run the job
-            r = mirv_worker.run(job['id'], genes, seedModels, wobble, cut, motifSizes, jobName, mirbase_species, bgModel, topRet)
+            r = mirv_worker.run(job['id'], genes, geneId, seedModels, wobble, cut, motifSizes, jobName, mirbase_species, bgModel, topRet)
 
             # notify on success
             if r:

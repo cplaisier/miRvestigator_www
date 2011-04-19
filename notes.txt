@@ -47,6 +47,15 @@ RewriteRule ^status/([a-fA-F0-9\-]+)/(.?)$ /status/index.html
 RewriteRule ^results/([a-fA-F0-9\-]+)/(.?)$ /miRvestigator.py/results?id=$1
 </Directory>
 
+Server
+-----
+We run the server within screen.
+> screen
+> python2.6 mirv_server.py
+> cnt-a, cnt-d
+
+To get back into screen, type:
+> screen -R
 
 
 to do all 6 examples concurrently takes about 22 minutes 36 seconds
