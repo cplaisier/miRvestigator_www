@@ -34,13 +34,59 @@ from miRvestigator import miRvestigator
 from pssm import pssm
 from mirv_db import update_job_status, set_genes_annotated, store_motif, store_mirvestigator_scores, get_species_by_mirbase_id
 
+# Libraries for plotting
+import numpy, corebio                     # http://numpy.scipy.org and http://code.google.com/p/corebio/
+from numpy import array, float64, log10   # http://numpy.scipy.org
+from weblogolib import *                  # http://code.google.com/p/weblogo/
 
+# Plot a PSSM using weblogo
+def plotPssm(pssm, fileName):
+    dist = numpy.array( pssm.getMatrix(), numpy.float64 ) 
+    data = LogoData.from_counts(corebio.seq.unambiguous_rna_alphabet, dist*100)
+    options = LogoOptions()
+    options.color_scheme = colorscheme.nucleotide
+    format = LogoFormat(data, options)
+    fout = open(fileName, 'w')
+    png_formatter(data, format, fout)
+    fout.close()
 
 # Reverse complement
 def reverseMe(seq):
     seq = list(seq)
     seq.reverse()
     return ''.join(seq)
+
+# Complement
+def complement(seq):
+    complement = {'A':'T', 'T':'A', 'C':'G', 'G':'C', 'N':'N', 'U':'A'}
+    complseq = [complement[base] for base in seq]
+    return complseq
+
+# Reverse complement
+def reverseComplement(seq):
+    seq = list(seq)
+    seq.reverse()
+    return ''.join(complement(seq))
+
+# ViennaRNA RNAduplex to get minimum free energy (MFE) for
+# putative target sites.
+def rnaDuplex(motif,matches):
+    # Make a file to pipe in the motif consensus a new line then a match
+    duplexMe = []
+    for match in matches:
+        duplexMe.append(reverseComplement(motif))
+        duplexMe.append(match.strip().lstrip('[').rstrip(']'))
+    
+    # Run RNAduplex
+    errOut = open('stderr.out','w')
+    rnaDuplexProc = Popen("RNAduplex", shell=True,stdin=PIPE,stdout=PIPE,stderr=errOut)
+    output = rnaDuplexProc.communicate('\n'.join(duplexMe))[0]
+    # Read results and parse out MFE
+    mfe = []
+    for line in output.split('\n'):
+        if not line.strip()=='':
+            mfe.append(([i for i in (line.split(':')[1]).replace('(',' ').replace(')',' ').strip().split(' ') if i])[1])
+    return mfe
 
 # Run weeder and parse its output
 # First weederTFBS -W 6 -e 1, then weederTFBS -W 8 -e 2, and finally adviser
@@ -138,9 +184,10 @@ def weeder(seqFile=None, percTargets=50, revComp=False, bgModel='HS'):
         outLines.pop(0)
         line = outLines.pop(0)
         instances = []
+        matches = []
         while line.find('Frequency Matrix') == -1:
             splitUp = [i for i in line.strip().split(' ') if i]
-            instances.append({'gene':seqDict[splitUp[0]], 'strand':splitUp[1], 'site':splitUp[2], 'start':splitUp[3], 'match':splitUp[4].lstrip('(').rstrip(')') })
+            instances.append({'gene':seqDict[splitUp[0]], 'strand':splitUp[1], 'site':splitUp[2], 'start':splitUp[3], 'match':splitUp[4].lstrip('(').rstrip(')'), 'mfe':rnaDuplex(name,[splitUp[2]])[0] })
             line = outLines.pop(0)
         # Read in Frequency Matrix
         outLines.pop(0)
@@ -160,11 +207,13 @@ def weeder(seqFile=None, percTargets=50, revComp=False, bgModel='HS'):
 
 
 
-def run(job_uuid, genes, seedModels, wobble, cut, motifSizes, jobName, mirbase_species, topRet=10):
-    
+def run(job_uuid, genes, seedModels, wobble, cut, motifSizes, jobName, mirbase_species, bgModel, topRet=10):
 
     species = get_species_by_mirbase_id(mirbase_species)
-    bgModel = species['weeder']
+    if bgModel=='3p':
+        bgModel = species['weeder']
+    else:
+        bgModel = species['weeder'].rstrip('3P')
     sequence_file = "p3utrSeqs_" + species['ucsc_name'] + ".csv"
 
     cut = float(cut)
@@ -214,8 +263,10 @@ def run(job_uuid, genes, seedModels, wobble, cut, motifSizes, jobName, mirbase_s
     for pssm1 in weederPSSMs1:
         if 6 in motifSizes and len(pssm1.getName())==6:
             weederPSSMsTmp.append(deepcopy(pssm1))
+            plotPssm(pssm1,'/var/www/images/pssms/'+str(job_uuid)+'_'+pssm1.getName()+'.png')
         if 8 in motifSizes and len(pssm1.getName())==8:
             weederPSSMsTmp.append(deepcopy(pssm1))
+            plotPssm(pssm1,'/var/www/images/pssms/'+str(job_uuid)+'_'+pssm1.getName()+'.png')
         print("pssm name = " + pssm1.getName())
     weederPSSMs1 = deepcopy(weederPSSMsTmp)
     del weederPSSMsTmp

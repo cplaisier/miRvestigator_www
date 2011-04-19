@@ -25,6 +25,7 @@
 
 from mod_python import apache
 from mod_python import util
+import os
 import re
 import sys
 import traceback
@@ -36,10 +37,24 @@ from Pyro.errors import ProtocolError
 from mirv_db import get_job_status, read_parameters, read_motifs, read_mirvestigator_scores
 import admin_emailer
 
+# Libraries for plotting
+import numpy, corebio                     # http://numpy.scipy.org and http://code.google.com/p/corebio/
+from numpy import array, float64, log10   # http://numpy.scipy.org
+from weblogolib import *                  # http://code.google.com/p/weblogo/
 
 MAX_GENES = 1000
 adminEmailer = admin_emailer.AdminEmailer()
 
+# Plot a PSSM using weblogo
+def plotPssmMatrix(pssmMatrix, fileName):
+    dist = numpy.array( pssmMatrix, numpy.float64 ) 
+    data = LogoData.from_counts(corebio.seq.unambiguous_rna_alphabet, dist*100)
+    options = LogoOptions()
+    options.color_scheme = colorscheme.nucleotide
+    format = LogoFormat(data, options)
+    fout = open(fileName, 'w')
+    png_formatter(data, format, fout)
+    fout.close()
 
 # Reverse complement
 def reverseComplement(seq):
@@ -55,10 +70,9 @@ def complement(seq):
 
 # Convert to RNA
 def conv2rna(seq):
-    conversion = {'A':'A', 'T':'U', 'C':'C', 'G':'G', 'N':'N', 'U':'U'}
+    conversion = {'A':'A', 'T':'U', 'C':'C', 'G':'G', 'N':'N', 'U':'U', '[':'[', ']':']'}
     rnaSeq = [conversion[base] for base in list(seq)]
     return ''.join(rnaSeq)
-
 
 def alignSeed(alignment, seed, motif):
     alignment.pop() # Get rid of the extra state which is added by the forwardViterbi function
@@ -144,7 +158,8 @@ def submitJob(req):
     job['s6'] = str(req.form.getfirst('seedModel_6',''))
     job['s7'] = str(req.form.getfirst('seedModel_7',''))
     job['s8'] = str(req.form.getfirst('seedModel_8',''))
-    #job['bgModel'] = str(req.form.getfirst('bgModel',''))
+    job['bgModel'] = str(req.form.getfirst('bgModel',''))
+    job['quality'] = str(req.form.getfirst('quality',''))
     job['species'] = str(req.form.getfirst('species',''))
     job['wobble'] = str(req.form.getfirst('wobble',''))
     job['cut'] = str(req.form.getfirst('cut',''))
@@ -229,6 +244,7 @@ def results(req):
     genesSubmitted = parameters['genes_submitted']
     annotatedSequences = parameters['annotated_sequences']
     mirbase_species = parameters['species']
+    qualityThreshold = float(parameters['quality'])
 
     # read mirbase miRNAs so we can link back to mirbase
     import gzip
@@ -336,8 +352,8 @@ def results(req):
     if (len(motifs)==0):
         s+= '<div style="text-align:center;background:#333333;color:#cc0000;font-weight:bold;padding-top:6ex;padding-bottom:6ex;">No motifs found.</div>'
 
-    s += '<table width=\'100%\' cellpadding=\'15%\'><tr><td bgcolor=\'#333333\'><center><b><font color=\'#ffffff\'>Motif Consensus</font></b></center></td><td bgcolor=\'#333333\'><\
-center><b><font color=\'#ffffff\'>Top miRNA</font></b></center></td><td bgcolor=\'#333333\'><center><b><font color=\'#ffffff\'>Alignment</font></b></center></td><td bgcolor=\'#3333\
+    s += '<table width=\'100%\' cellpadding=\'15%\'><tr><td bgcolor=\'#333333\'><center><b><font color=\'#ffffff\'>Motif</font></b></center></td><td bgcolor=\'#333333\'><\
+center><b><font color=\'#ffffff\'>Top miRNA</font></b></center></td><td bgcolor=\'#333333\'><center><b><font color=\'#ffffff\'>Complementarity</font></b></center></td><td bgcolor=\'#3333\
 33\'><center><b><font color=\'#ffffff\'>Viterbi P-Value</font></b></center></td><td bgcolor=\'#333333\'><center><b><font color=\'#ffffff\'>% of Input</br>Sequences with Site</font>\
 </b></center></td></tr>\n'
 
@@ -358,15 +374,17 @@ center><b><font color=\'#ffffff\'>Top miRNA</font></b></center></td><td bgcolor=
         top_score_i = 0
         i = scoreList[top_score_i]
         align1 = alignSeed(i['statePath'], i['miRNA.seed'], motif['name'])
-        s += '<tr><td bgcolor=\'#ffffff\' rowspan="' + str(row_count) + '"><center><a href=\'#'+motif['name']+'_miRNAs\'>'+str(motif['name'])+'</center></td><td bgcolor=\'#ffffff\'\
+        if not os.path.exists('/var/www/images/pssms/'+id+'_'+motif['name']+'.png'):
+            plotPssmMatrix(motif['matrix'],'/var/www/images/pssms/'+id+'_'+motif['name']+'.png')
+        s += '<tr><td bgcolor=\'#ffffff\' rowspan="' + str(row_count) + '"><center><a href=\'#'+motif['name']+'_miRNAs\'><img src=\'/images/pssms/'+id+'_'+motif['name']+'.png\' alt=\''+conv2rna(str(motif['name']))+'\'></center></td><td bgcolor=\'#ffffff\'\
 ><center>'+str('</br>'.join(['<a href=\'http://mirbase.org/cgi-bin/mature.pl?mature_acc='+str(miRNADict[j.strip()])+'\' target=\'_blank\'>'+str(j.strip())+'</a>' for j in i['miRNA.\
 name'].split('_')]))+'</center></td>\n'
         s += '<td bgcolor=\'#ffffff\'><center><pre>'+str(align1[0])+'\n'+str(align1[1])+'\n'+str(align1[2])+'</pre></center></td>\n'
-        s += '<td bgcolor=\'#ffffff\' rowspan="' + str(row_count) + '"><center>'+str('%.2g' % float(i['vitPValue']))+'</center></td>\n'
+        s += '<td bgcolor=\'#ffffff\' rowspan="' + str(row_count) + '"><center>'+str('%.1e' % float(i['vitPValue']))+'</center></td>\n'
         # Get number or sequences with a hit                                                                                                                                         
         genesWithSite = []
         for site in motif['sites']:
-            if not site['gene'] in genesWithSite:
+            if float(site['match']) >= qualityThreshold and not site['gene'] in genesWithSite:
                 genesWithSite.append(site['gene'])
         percGenes = (float(len(genesWithSite))/float(annotatedSequences))*float(100)
         if percGenes==float(100):
@@ -397,10 +415,10 @@ name'].split('_')]))+'</center></td>\n'
             s += 'Top <font color=\'#ff0000\' size=4>'+str(topRet)+'</font>'
         elif topRet=='all':
             s += '<font color=\'#ff0000\' size=4>All</font>'
-        s += ' miRNAs Matching the Weeder Motif</font> <font color=\'#ff0000\'>'+motif['name']+'</font> &nbsp; <font color="#ff0000">[?]</font></b></font></a></td></tr>\n'
+        s += ' miRNAs Matching the Weeder Motif</font> <font color=\'#ff0000\'>'+conv2rna(motif['name'])+'</font> &nbsp; <font color="#ff0000">[?]</font></b></font></a></td></tr>\n'
         s += '<tr id="results" style="display: none;" width=600>\n'
         s += '<td bgcolor="#333333">\n'
-        s += '<font color="#ffffff"><b>What do the columns mean?</b> <p><ul><li><b>miRNA Name</b> = The name of the name(s) for the unique seed sequence. There may be more than one miRNA annotated for a unique seed sequence because they vary in the 3\' terminus of the mature miRNA. Each miRNA is a link to it\'s entry on <a href="http://www.mirbase.org" style="color: rgb(204,204,0)" target="_blank">miRBase</a></li>&nbsp;</br> <li><b>miRNA Seed</b> = The sequence for seed that aligned best to the over-represented motif. The seed will be as long as the seed model described in the next column.</li>&nbsp;</br> <li><b>Seed Model</b> = Base-pairing models for the seed regions of a miRNA to the 3\' UTR of target transcripts. The 8mer, 7mer-m8, and 7mer-a1 models are the canonical models of miRNA to mRNA base-pairing. The 6mer models are considered marginal models as they typically have a reduced efficacy and are more likely to occur by chance alone. By default all of the seed models are used. The seed models are described in this figure:</br>&nbsp;</br><center><img src="/seedModels.gif" width=400></center></li>&nbsp;</br><li><b>Length of Alignment</b> = The length of matching (or wobble if enabled) base-pairs that align between the sequence motif and the miRNA seed sequence.</li>&nbsp;</br> <li><b>Alignment</b> = The alignment of the over-represented sequence motif on top 5\'&rArr;3\' to the miRNA seed sequence given the seed model 3\'&rArr;5\'. (<b>Note:</b> <span style=\'background-color: rgb(255,255,255);\'>&nbsp;<b><font color="#ff0000">|</font></b>&nbsp;</span> = a match, <span style=\'background-color: rgb(255,255,255);\'>&nbsp;<b><font color="#0000ff">:</font></b>&nbsp;</span> = a wobble, <span style=\'background-color: rgb(255,255,255);\'><font color="#000000">"</font> <font color="#000000">"</font></span> (space) = not a match, and for the sequences <span style=\'background-color: rgb(255,255,255);\'>&nbsp;<b><font color="#cccccc">-</font></b>&nbsp;</span> = a gapping at the start or end.)</li>&nbsp;</br> <li><b>Viterbi P-Value</b> = Significance of match between the over-represented sequence motif and the miRNA seed sequence. (<b>Note:</b> A perfect match for an 8mer seed model is 1.5e-05, for a 7mer seed model 6.1e-05, and for a 6mer seed model 0.00024.)</li></ul> <b>What is considered a good match?</b> <p>This will depend upon your data and what downstream analysis you plan to do with it. But a good rule of thumb is that if you find a perfect match for a 7mer or 8mer (Viterbi P-Value = <font color="#ff0000"><b>6.1e-05</b></font> and <font color="#ff0000"><b>1.5e-05</b></font>; respectively) this is likely to be of interest. Follow up with experimental studies will help to determine the false discovery rate for your dataset.</p></font>\n'
+        s += '<font color="#ffffff"><b>What do the columns mean?</b> <p><ul><li><b>miRNA Name</b> = The name of the name(s) for the unique seed sequence. There may be more than one miRNA annotated for a unique seed sequence because they vary in the 3\' terminus of the mature miRNA. Each miRNA is a link to it\'s entry on <a href="http://www.mirbase.org" style="color: rgb(204,204,0)" target="_blank">miRBase</a></li>&nbsp;</br> <li><b>miRNA Seed</b> = The sequence for seed that is the most compementary to the over-represented motif. The seed will be as long as the seed model described in the next column.</li>&nbsp;</br> <li><b>Seed Model</b> = Base-pairing models for the seed regions of a miRNA to the 3\' UTR of target transcripts. The 8mer, 7mer-m8, and 7mer-a1 models are the canonical models of miRNA to mRNA base-pairing. The 6mer models are considered marginal models as they typically have a reduced efficacy and are more likely to occur by chance alone. By default all of the seed models are used. The seed models are described in this figure:</br>&nbsp;</br><center><img src="/seedModels.gif" width=400></center></li>&nbsp;</br><li><b>Length of Complementarity</b> = The length of complementarity (or wobble if enabled) base-pairing between the sequence motif and the miRNA seed sequence.</li>&nbsp;</br> <li><b>Complementarity</b> = The complementarity of the over-represented sequence motif on top 5\'&rArr;3\' to the miRNA seed sequence given the seed model 3\'&rArr;5\'. (<b>Note:</b> <span style=\'background-color: rgb(255,255,255);\'>&nbsp;<b><font color="#ff0000">|</font></b>&nbsp;</span> = a complementary, <span style=\'background-color: rgb(255,255,255);\'>&nbsp;<b><font color="#0000ff">:</font></b>&nbsp;</span> = a wobble, <span style=\'background-color: rgb(255,255,255);\'><font color="#000000">"</font> <font color="#000000">"</font></span> (space) = not complementary, and for the sequences <span style=\'background-color: rgb(255,255,255);\'>&nbsp;<b><font color="#cccccc">-</font></b>&nbsp;</span> = a gapping at the start or end.)</li>&nbsp;</br> <li><b>Viterbi P-Value</b> = Significance of complementarity between the over-represented sequence motif and the miRNA seed sequence. (<b>Note:</b> A perfectly complementary 8mer seed model has a Viterbi p-value of 1.5e-05, for a 7mer seed model 6.1e-05, and for a 6mer seed model 2.4e-04.)</li></ul> <b>What is considered good complementarity?</b> <p>This will depend upon your data and what downstream analysis you plan to do with it. But a good rule of thumb is that if you find perfect complementarity for a 7mer or 8mer (Viterbi P-Value = <font color="#ff0000"><b>6.1e-05</b></font> and <font color="#ff0000"><b>1.5e-05</b></font>; respectively) this is likely to be of interest. Follow up with experimental studies will help to determine the false discovery rate for your dataset.</p></font>\n'
         s += '</td>\n'
         s += '</tr>\n'
         s += '</table>\n'
@@ -410,31 +428,32 @@ name'].split('_')]))+'</center></td>\n'
         else:
             topRet = int(topRet)
         s += '<table width="100%%" cellpadding="5%%"><tr><td style="text-align:center; font-size:10pt; background:#cccccc;"><a href="/scores/csv/%s">download table as CSV</a></td></tr></table>\n' % (motif['motif_id'],)
-        s += '<table width=\'100%\' cellpadding=\'15%\'><tr><td bgcolor=\'#333333\'><center><b><font color=\'#ffffff\'>miRNA Name</font></b></center></td><td bgcolor=\'#333333\'><center><b><font color=\'#ffffff\'>miRNA Seed</font></b></center></td><td bgcolor=\'#333333\'><center><b><font color=\'#ffffff\'>Seed Model</font></b></center></td><td bgcolor=\'#333333\'><center><b><font color=\'#ffffff\'>Length of</br>Alignment</font></b></center></td><td bgcolor=\'#333333\'><center><b><font color=\'#ffffff\'>Alignment</font></b></center></td><td bgcolor=\'#333333\'><center><b><font color=\'#ffffff\'>Viterbi P-Value</font></b></center></td></tr>'
+        s += '<table width=\'100%\' cellpadding=\'15%\'><tr><td bgcolor=\'#333333\'><center><b><font color=\'#ffffff\'>miRNA Name</font></b></center></td><td bgcolor=\'#333333\'><center><b><font color=\'#ffffff\'>miRNA Seed</font></b></center></td><td bgcolor=\'#333333\'><center><b><font color=\'#ffffff\'>Seed Model</font></b></center></td><td bgcolor=\'#333333\'><center><b><font color=\'#ffffff\'>Length of</br>Complementarity</font></b></center></td><td bgcolor=\'#333333\'><center><b><font color=\'#ffffff\'>Complementarity</font></b></center></td><td bgcolor=\'#333333\'><center><b><font color=\'#ffffff\'>Viterbi P-Value</font></b></center></td></tr>'
         for k in range(topRet):
             i = scoreList[k]
             align1 = alignSeed(i['statePath'], i['miRNA.seed'], motif['name'])
             s += '<tr><td bgcolor=\'#ffffff\'><center>'+str('</br>'.join(['<a href=\'http://mirbase.org/cgi-bin/mature.pl?mature_acc='+str(miRNADict[j.strip()])+'\' target=\'_blank\'>'+str(j.strip())+'</a>' for j in i['miRNA.name'].split('_')]))+'</center></td><td bgcolor=\'#ffffff\'><center>'+conv2rna(reverseComplement(str(i['miRNA.seed'])))+'</center></td><td bgcolor=\'#ffffff\'><center>'+str(i['model'])+'</center></td><td bgcolor=\'#ffffff\'><center>'+str(align1[3])+'</center></td><td bgcolor=\'#ffffff\'>'
             s += '<center><pre>'+str(align1[0])+'\n'+str(align1[1])+'\n'+str(align1[2])+'</pre></center>'
-            s += '</td><td bgcolor=\'#ffffff\'><center>'+str('%.2g' % float(i['vitPValue']))+'</center></td></tr>'
+            s += '</td><td bgcolor=\'#ffffff\'><center>'+str('%.1e' % float(i['vitPValue']))+'</center></td></tr>'
         s += '</table></p>'
         #'gene':seqDict[splitUp[0]], 'strand':splitUp[1], 'site':splitUp[2], 'start':splitUp[3], 'match':splitUp[4].lstrip('(').rstrip(')')
         # pssm1.nsites
-        s += '<p id=\''+motif['name']+'_sites\'><table width=\'100%\' bgcolor=\'#000000\' cellpadding=\'15%\'><tr><td align=\'center\' valign=\'center\'><a href="#sites" onclick="toggleVisible(\'sites\'); return false;" style=\'color: rgb(204,204,0); text-decoration: none\'><font size=4><b><font color=\'#cccc00\'>Position of Putative miRNA Binding Sites in Submitted Genes</br>for the Weeder Motif</font> <font color=\'#ff0000\'>'+motif['name']+'</font> &nbsp; <font color="#ff0000">[?]</font></b></font></a></td></tr>\n'
+        s += '<p id=\''+motif['name']+'_sites\'><table width=\'100%\' bgcolor=\'#000000\' cellpadding=\'15%\'><tr><td align=\'center\' valign=\'center\'><a href="#sites" onclick="toggleVisible(\'sites\'); return false;" style=\'color: rgb(204,204,0); text-decoration: none\'><font size=4><b><font color=\'#cccc00\'>Position of Putative miRNA Binding Sites in Submitted Genes</br>for the Weeder Motif</font> <font color=\'#ff0000\'>'+conv2rna(motif['name'])+'</font> &nbsp; <font color="#ff0000">[?]</font></b></font></a></td></tr>\n'
         s += '<tr id="sites" style="display: none;" width=600><td bgcolor="#333333"><font color="#ffffff">\n'
         s += '<b>Where do these sites come from?</b>\n<p>As part of the miRvestigator framework <a href="http://159.149.109.9/modtools/" style="color: rgb(204,204,0)" target="_blank">Weeder</a> provides predicted miRNA binging sites in the 3\' untranslated regions (UTRs) of the analyzed genes. Predicted binding sites were split into three different similarity bins:  <font color="#ff0000">High quality</font> - &#8805; 95% similarity to the miRNA seed sequence (red), <font color="#cccc00">Medium quality</font> 95% &#8805; similarity &#8805; 90% to the miRNA seed sequence (yellow), and <font color="#00ff00">Fair quality</font> 90% &#8805; similarity &#8805; 85% to the miRNA seed sequence (green). These sites can be used to develop follow-up experiments such as luciferase reporter assays to validate the efficacy of these sites.</p>\n<b>What do the columns mean?</b>\n<p><ul><li><b>Entrez Gene ID</b> = The NCBI Entrez gene identifier (ID) where this site resides. The Entrez gene ID is also a link to <a href="http://www.ncbi.nlm.nih.gov/gene" style="color: rgb(204,204,0)" target="_blank">NCBI gene database</a> entry for the specified gene.</li></br>&nbsp;</br>\n<li><b>Site</b> = The sequence for site identified by Weeder. If it is in square brackets indicates that the site is of lower similarity.</li></br>&nbsp;</br>\n<li><b>Start Relative to Stop Codon</b> = The 3\' UTR begins following the stop codon (which is set at 0 base-pairs (bp)). Thus the values in this column describe the start of the site in bp after the stop codon.</li></br>&nbsp;</br>\n<li><b>% Similarity to Consensus Motif</b> = The similarity of the predicted site to the consensus motif is computed as a percentage. Predicted binding sites were split into three different similarity to consensus bins:  <font color="#ff0000">High quality</font> - &#8805; 95% similarity to the miRNA seed sequence (red), <font color="#cccc00">Medium quality</font> 95% &#8805; similarity &#8805; 90% to the miRNA seed sequence (yellow), and <font color="#00ff00">Fair quality</font> 90% &#8805; similarity &#8805; 85% to the miRNA seed sequence (green).</li></ul></p>'
         s += '</font></td></td></table>'
         s += '<table width="100%%" cellpadding="5%%"><tr><td style="text-align:center; font-size:10pt; background:#cccccc;"><a href="/sites/csv/%s">download table as CSV</a></td></tr></table>\n' % (motif['motif_id'],)
-        s += '<table width=\'100%\' cellpadding=\'15%\'><tr><td bgcolor=\'#333333\'><center><b><font color=\'#ffffff\'>Entrez Gene ID</font></b></center></td><td bgcolor=\'#333333\'><center><b><font color=\'#ffffff\'>Sequence of Site</font></b></center></td><td bgcolor=\'#333333\'><center><b><font color=\'#ffffff\'>Start Relative to</br>Stop Codon (bp)</font></b></center></td><td bgcolor=\'#333333\'><center><b><font color=\'#ffffff\'>% Similarity to Consensus Motif</br>(Quality = </font><font color=\'#cc0000\'>High</font><font color=\'#ffffff\'> | </font><font color=\'#cccc00\'>Medium</font><font color=\'#ffffff\'> | </font><font color=\'#00cc00\'>Fair</font><font color=\'#ffffff\'>)</font></b></center></td></tr>'
+        s += '<table width=\'100%\' cellpadding=\'15%\'><tr><td bgcolor=\'#333333\'><center><b><font color=\'#ffffff\'>Entrez Gene ID</font></b></center></td><td bgcolor=\'#333333\'><center><b><font color=\'#ffffff\'>Sequence of Site</font></b></center></td><td bgcolor=\'#333333\'><center><b><font color=\'#ffffff\'>Start Relative to</br>Stop Codon (bp)</font></b></center></td><td bgcolor=\'#333333\'><center><b><font color=\'#ffffff\'>% Similarity to Consensus Motif</br>(Quality = </font><font color=\'#cc0000\'>High</font><font color=\'#ffffff\'> | </font><font color=\'#cccc00\'>Medium</font><font color=\'#ffffff\'> | </font><font color=\'#00cc00\'>Fair</font><font color=\'#ffffff\'>)</font></b></center></td><td bgcolor=\'#333333\'><center><b><font color=\'#ffffff\'>Minimum Free Energy (MFE)</br>of miRNA-mRNA Duplex</font></b></center></td></tr>'
         for i in motif['sites']:
-            col1 = '#000000'
-            if float(i['match']) >= float(95):
-                col1 = '#cc0000'
-            elif float(i['match']) >= float(90):
-                col1 = '#cccc00'
-            elif float(i['match']) >= float(85):
-                col1 = '#00cc00'
-            s += '<tr><td bgcolor=\'#ffffff\'><center>'+str('<a href=\'http://www.ncbi.nlm.nih.gov/gene/'+str(i['gene'])+'\' target=\'_blank\'>'+str(i['gene'])+'</a>')+'</center></td><td bgcolor=\'#ffffff\'><center>'+str(i['site'])+'</center></td><td bgcolor=\'#ffffff\'><center>'+str(i['start'])+'</center></td><td bgcolor=\'#ffffff\'><font color=\''+str(col1)+'\'><center><b>'+i['match']+'</b></center></font></td></tr>'
+            if float(i['match']) >= qualityThreshold:
+                col1 = '#000000'
+                if float(i['match']) >= float(95):
+                    col1 = '#cc0000'
+                elif float(i['match']) >= float(90):
+                    col1 = '#cccc00'
+                elif float(i['match']) >= float(85):
+                    col1 = '#00cc00'
+                s += '<tr><td bgcolor=\'#ffffff\'><center>'+str('<a href=\'http://www.ncbi.nlm.nih.gov/gene/'+str(i['gene'])+'\' target=\'_blank\'>'+str(i['gene'])+'</a>')+'</center></td><td bgcolor=\'#ffffff\'><center>'+conv2rna(str(i['site']))+'</center></td><td bgcolor=\'#ffffff\'><center>'+str(i['start'])+'</center></td><td bgcolor=\'#ffffff\'><font color=\''+str(col1)+'\'><center><b>'+i['match']+'</b></center></font></td><td bgcolor=\'#ffffff\'><center>'+str(i['mfe'])+'</center></td></tr>'
         s += '</table></p>'
     s += '<p><table width=\'100%\' cellpadding=\'5%\'><tr><td bgcolor=\'#c0c0c0\'><center>Need help? Please contact <font color=\'#0000ff\'>cplaisier(at)systemsbiology.org</font> or <font color=\'#0000ff\'>cbare(at)systemsbiology.org</font> if you have any questions, comments or concerns.<br>Developed at the <a href=\'http://www.systemsbiology.org\' target=\'_blank\' style=\'color: rgb(0,0,255)\'>Institute for Systems Biology</a> in the <a href=\'http://baliga.systemsbiology.net/\' target=\'_blank\' style=\'color: rgb(0,0,255)\'>Baliga Lab</a>.</center></td></tr></table></p>'
     s += '</center></td></tr></table></td></tr></table></center></body></html>'
