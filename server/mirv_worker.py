@@ -238,8 +238,6 @@ def run(job_uuid, genes, geneId, seedModels, wobble, cut, motifSizes, jobName, m
         if gene in seqs:
             miRSeqs[gene] = seqs[gene]
 
-    print "miRSeqs = " + str(miRSeqs)
-
     # if there are no matching sequences, bail out w/ a reasonable error message.
     if (len(miRSeqs)==0):
         print("no matching sequences found for genes in job " + str(job_uuid))
