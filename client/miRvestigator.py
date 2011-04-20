@@ -34,7 +34,7 @@ import json
 import Pyro.core
 import mirv_csv
 from Pyro.errors import ProtocolError
-from mirv_db import get_job_status, read_parameters, read_motifs, read_mirvestigator_scores
+from mirv_db import get_job_status, read_parameters, read_motifs, read_mirvestigator_scores, get_gene_mapping
 import admin_emailer
 
 # Libraries for plotting
@@ -168,6 +168,7 @@ def submitJob(req):
     job['topRet'] = str(req.form.getfirst('topRet',''))
     job['jobName'] = str(req.form.getfirst('jobName',''))
     job['notify_mail'] = str(req.form.getfirst('notify_mail',None))
+    job['geneId'] = str(req.form.getfirst('geneId', 'entrez'))
 
     try:
         # connect to miR server via Pyro
@@ -227,6 +228,16 @@ def scores_as_csv(req):
     req.headers_out.add("Content-disposition", 'attachment; filename=mirvestigator_scores.csv')
     return csv
 
+def genes(req):
+    id = str(req.form.getfirst('id',''))
+    csv = mirv_csv.get_genes_as_csv(id)
+    req.content_type='text/csv'
+    req.headers_out.add("Cache-Control", 'must-revalidate')
+    req.headers_out.add("Pragma", 'must-revalidate')
+    req.headers_out.add("Content-disposition", 'attachment; filename=mirvestigator_sites.csv')
+    return csv
+    
+
 # display results
 def results(req):
     # need weederPSSMs1
@@ -244,7 +255,10 @@ def results(req):
     genesSubmitted = parameters['genes_submitted']
     annotatedSequences = parameters['annotated_sequences']
     mirbase_species = parameters['species']
+    geneId = parameters.get('geneId', 'entrez')
     qualityThreshold = float(parameters['quality'])
+
+    gene_mapping = get_gene_mapping(id)
 
     # read mirbase miRNAs so we can link back to mirbase
     import gzip
@@ -268,14 +282,20 @@ def results(req):
     s += '<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.4.4/jquery.min.js"></script>\n'
     s += '<script src="/mirvestigator.js"></script>\n'
     s += '<script type="text/javascript">\n  var _gaq = _gaq || [];\n  _gaq.push([\'_setAccount\', \'UA-19292534-1\']);\n  _gaq.push([\'_trackPageview\']);\n  (function() {\n    var ga = document.createElement(\'script\');\n    ga.type = \'text/javascript\';\n    ga.async = true;\n    ga.src = (\'https:\' == document.location.protocol ? \'https://ssl\' : \'http://www\') + \'.google-analytics.com/ga.js\';\n    var s = document.getElementsByTagName(\'script\')[0];\n    s.parentNode.insertBefore(ga, s);\n  })();\n'
-    s += 'function toggleVisible(id) {\n'
+    s += 'function toggleVisible(id, link_elem) {\n'
     s += '  if (document.getElementById) {\n'
     s += '    obj = document.getElementById(id);\n'
     s += '    if (obj) {\n'
     s += '      if (obj.style.display == \'none\') {\n'
     s += '        obj.style.display = \'\'\n'
+    s += '        if (link_elem) {\n'
+    s += '          link_elem.innerHTML = \'[-]\';\n'
+    s += '        }\n'
     s += '      } else {\n'
     s += '        obj.style.display = \'none\'\n'
+    s += '        if (link_elem) {\n'
+    s += '          link_elem.innerHTML = \'[+]\';\n'
+    s += '        }\n'
     s += '      }\n'
     s += '    }\n'
     s += '  }\n'
@@ -315,6 +335,8 @@ def results(req):
     s += '</td>\n'
     s += '<td align=\'center\' valign=\'center\' bgcolor=\'#333333\' width=\'80\'><b><a style=\'color: rgb(255,0,0); text-decoration:none\' href=\'/tutorial\'>T</a><a style=\'color: rgb(204,204,0); text-decoration:none\' href=\'/tutorial\'>utorial</a></b>\n'
     s += '</td>\n'
+    s += '<td align="center" valign="center" bgcolor="#333333" width="0"><b>'
+    s += '<a style="color: rgb(255,0,0); text-decoration:none" href="/citation">C</a><a style="color: rgb(204,204,0); text-decoration:none" href="/citation">itation</a></b></td>\n'
     s += '</tr>\n'
     s += '</table>\n'
     s += '<table bgcolor=\'#999966\' cellpadding=\'10%\'>\n'
@@ -333,7 +355,9 @@ def results(req):
     s += '<tr><td colspan=2 bgcolor=\'#333333\' align=\'center\' valign=\'center\'><b><font color=\'#cccc00\' size=4>Basic Parameters</font></b></td></tr>\n'
     s += '<tr><td bgcolor=\'#333333\' align=\'center\' valign=\'center\'><font color=\'#ffffff\'><b>Job Name:</b></font></td><td bgcolor=\'#666666\' align=\'center\' valign=\'center\'><table width=\'100%\' cellpadding=\'5%\'><tr><td bgcolor=\'#ffffff\'><center><span id="job_name"></span></center></td></tr></table></td></tr>\n'
     s+= '<tr><td bgcolor=\'#333333\' align=\'center\' valign=\'center\'><font color=\'#ffffff\'><b>Job ID:</b></font></td><td bgcolor=\'#666666\' align=\'center\' valign=\'center\'><table width=\'100%\' cellpadding=\'5%\'><tr><td bgcolor=\'#ffffff\'><center><span id="job_id"></span></center></td></tr></table></td></tr>\n'
-    s += '<tr><td bgcolor=\'#333333\' align=\'center\' valign=\'center\'><font color=\'#ffffff\'><b>Genes Submitted:</b></font></td><td bgcolor=\'#666666\' align=\'center\' valign=\'center\'><table width=\'100%\' cellpadding=\'5%\'><tr><td bgcolor=\'#ffffff\'><center><span id="genes_submitted"></span></center></td></tr></table></td></tr>\n'
+    s += '<tr><td bgcolor=\'#333333\' align=\'center\' valign=\'center\'><font color=\'#ffffff\'><b>Genes Submitted:</b></font>'
+    s += '<span style="font-size:30%;color:#ff0000">(<a href="/genes/' + id + '/">gene mapping as CSV</a>)</span>'
+    s += '</td><td bgcolor=\'#666666\' align=\'center\' valign=\'center\'><table width=\'100%\' cellpadding=\'5%\'><tr><td bgcolor=\'#ffffff\'><center><span id="genes_submitted"></span></center></td></tr></table></td></tr>\n'
     s += '<tr><td bgcolor=\'#333333\' align=\'center\' valign=\'center\'><font color=\'#ffffff\'><b>Genes Annotated with Sequences:</b></font></td><td bgcolor=\'#66666\' align=\'center\' valign=\'center\'><table width=\'100%\' cellpadding=\'5%\'><tr><td bgcolor=\'#ffffff\'><center><span id="annotated_sequences"></span></center></td></tr></table></td></tr>\n'
     s += '<tr><td colspan=2></td></tr>\n'
     s += '<tr><td colspan=2 bgcolor=\'#333333\' align=\'center\' valign=\'center\'><b><font color=\'#cccc00\' size=4>Weeder Parameters</font></b></td></tr>\n'
@@ -386,11 +410,14 @@ name'].split('_')]))+'</center></td>\n'
         for site in motif['sites']:
             if float(site['match']) >= qualityThreshold and not site['gene'] in genesWithSite:
                 genesWithSite.append(site['gene'])
-        percGenes = (float(len(genesWithSite))/float(annotatedSequences))*float(100)
-        if percGenes==float(100):
-            percGenes = str(100)
+        if (annotatedSequences==0):
+            percGenes = "?error?"
         else:
-            percGenes = str('%.2g' % percGenes)
+            percGenes = (float(len(genesWithSite))/float(annotatedSequences))*float(100)
+            if percGenes==float(100):
+                percGenes = str(100)
+            else:
+                percGenes = str('%.2g' % percGenes)
         s += '<td bgcolor=\'#ffffff\' rowspan="' + str(row_count) + '"><center><a href=\'#'+motif['name']+'_sites\'>'+percGenes+'%</a></center></td>\n'
         s += '</tr>\n'
         top_score_i += 1
@@ -410,12 +437,13 @@ name'].split('_')]))+'</center></td>\n'
     #s += '</td></tr>\n'
     #s += '</table>\n'
     for motif in motifs:
-        s += '<p  id=\''+motif['name']+'_miRNAs\'><table width=\'100%\'cellpadding=\'15%\'>\n<tr>\n<td align=\'center\' valign=\'center\' bgcolor=\'#000000\'>\n<a href="#results" onclick="toggleVisible(\'results\'); return false;" style=\'color: rgb(204,204,0); text-decoration: none\'><font size=4><b><font color=\'#cccc00\'>'
+        s += '<p  id=\''+motif['name']+'_miRNAs\'><table width=\'100%\'cellpadding=\'15%\'>\n<tr>\n<td align=\'center\' valign=\'center\' bgcolor=\'#000000\'>\n<font size=4><b><font color=\'#cccc00\'>'
         if not topRet=='all':
             s += 'Top <font color=\'#ff0000\' size=4>'+str(topRet)+'</font>'
         elif topRet=='all':
             s += '<font color=\'#ff0000\' size=4>All</font>'
-        s += ' miRNAs Matching the Weeder Motif</font> <font color=\'#ff0000\'>'+conv2rna(motif['name'])+'</font> &nbsp; <font color="#ff0000">[?]</font></b></font></a></td></tr>\n'
+        s += ' miRNAs Matching the Weeder Motif</font> <font color=\'#ff0000\'>'+conv2rna(motif['name'])+'</font> &nbsp;'
+        s += '<a href="#results" onclick="toggleVisible(\'results\', this); return false;" style=\'color: #ff0000; text-decoration: none\'>[+]</a></b></font></td></tr>\n'
         s += '<tr id="results" style="display: none;" width=600>\n'
         s += '<td bgcolor="#333333">\n'
         s += '<font color="#ffffff"><b>What do the columns mean?</b> <p><ul><li><b>miRNA Name</b> = The name of the name(s) for the unique seed sequence. There may be more than one miRNA annotated for a unique seed sequence because they vary in the 3\' terminus of the mature miRNA. Each miRNA is a link to it\'s entry on <a href="http://www.mirbase.org" style="color: rgb(204,204,0)" target="_blank">miRBase</a></li>&nbsp;</br> <li><b>miRNA Seed</b> = The sequence for seed that is the most compementary to the over-represented motif. The seed will be as long as the seed model described in the next column.</li>&nbsp;</br> <li><b>Seed Model</b> = Base-pairing models for the seed regions of a miRNA to the 3\' UTR of target transcripts. The 8mer, 7mer-m8, and 7mer-a1 models are the canonical models of miRNA to mRNA base-pairing. The 6mer models are considered marginal models as they typically have a reduced efficacy and are more likely to occur by chance alone. By default all of the seed models are used. The seed models are described in this figure:</br>&nbsp;</br><center><img src="/seedModels.gif" width=400></center></li>&nbsp;</br><li><b>Length of Complementarity</b> = The length of complementarity (or wobble if enabled) base-pairing between the sequence motif and the miRNA seed sequence.</li>&nbsp;</br> <li><b>Complementary Base-Pairing</b> = The complementarity of the over-represented sequence motif on top 5\'&rArr;3\' to the miRNA seed sequence given the seed model 3\'&rArr;5\'. (<b>Note:</b> <span style=\'background-color: rgb(255,255,255);\'>&nbsp;<b><font color="#ff0000">|</font></b>&nbsp;</span> = a complementary, <span style=\'background-color: rgb(255,255,255);\'>&nbsp;<b><font color="#0000ff">:</font></b>&nbsp;</span> = a wobble, <span style=\'background-color: rgb(255,255,255);\'><font color="#000000">"</font> <font color="#000000">"</font></span> (space) = not complementary, and for the sequences <span style=\'background-color: rgb(255,255,255);\'>&nbsp;<b><font color="#cccccc">-</font></b>&nbsp;</span> = a gapping at the start or end.)</li>&nbsp;</br> <li><b>Viterbi P-Value</b> = Significance of complementarity between the over-represented sequence motif and the miRNA seed sequence. (<b>Note:</b> A perfectly complementary 8mer seed model has a Viterbi p-value of 1.5e-05, for a 7mer seed model 6.1e-05, and for a 6mer seed model 2.4e-04.)</li></ul> <b>What is considered good complementarity?</b> <p>This will depend upon your data and what downstream analysis you plan to do with it. But a good rule of thumb is that if you find perfect complementarity for a 7mer or 8mer (Viterbi P-Value = <font color="#ff0000"><b>6.1e-05</b></font> and <font color="#ff0000"><b>1.5e-05</b></font>; respectively) this is likely to be of interest. Follow up with experimental studies will help to determine the false discovery rate for your dataset.</p></font>\n'
@@ -438,12 +466,14 @@ name'].split('_')]))+'</center></td>\n'
         s += '</table></p>'
         #'gene':seqDict[splitUp[0]], 'strand':splitUp[1], 'site':splitUp[2], 'start':splitUp[3], 'match':splitUp[4].lstrip('(').rstrip(')')
         # pssm1.nsites
-        s += '<p id=\''+motif['name']+'_sites\'><table width=\'100%\' bgcolor=\'#000000\' cellpadding=\'15%\'><tr><td align=\'center\' valign=\'center\'><a href="#sites" onclick="toggleVisible(\'sites\'); return false;" style=\'color: rgb(204,204,0); text-decoration: none\'><font size=4><b><font color=\'#cccc00\'>Position of Putative miRNA Binding Sites in Submitted Genes</br>for the Weeder Motif</font> <font color=\'#ff0000\'>'+conv2rna(motif['name'])+'</font> &nbsp; <font color="#ff0000">[?]</font></b></font></a></td></tr>\n'
+        s += '<p id=\''+motif['name']+'_sites\'><table width=\'100%\' bgcolor=\'#000000\' cellpadding=\'15%\'><tr><td align=\'center\' valign=\'center\'><font size=4><b><font color=\'#cccc00\'>Position of Putative miRNA Binding Sites in Submitted Genes</br>for the Weeder Motif</font> <font color=\'#ff0000\'>'+conv2rna(motif['name'])+'</font> &nbsp;'
+        s += '<a href="#sites" onclick="toggleVisible(\'sites\', this); return false;" style=\'color: #ff0000; text-decoration: none\'>[+]</a></b></font></td></tr>\n'
         s += '<tr id="sites" style="display: none;" width=600><td bgcolor="#333333"><font color="#ffffff">\n'
         s += '<b>Where do these sites come from?</b>\n<p>As part of the miRvestigator framework <a href="http://159.149.109.9/modtools/" style="color: rgb(204,204,0)" target="_blank">Weeder</a> provides predicted miRNA binging sites in the 3\' untranslated regions (UTRs) of the analyzed genes. Predicted binding sites were split into three different similarity bins:  <font color="#ff0000">High quality</font> - &#8805; 95% similarity to the miRNA seed sequence (red), <font color="#cccc00">Medium quality</font> 95% &#8805; similarity &#8805; 90% to the miRNA seed sequence (yellow), and <font color="#00ff00">Fair quality</font> 90% &#8805; similarity &#8805; 85% to the miRNA seed sequence (green). These sites can be used to develop follow-up experiments such as luciferase reporter assays to validate the efficacy of these sites.</p>\n<b>What do the columns mean?</b>\n<p><ul><li><b>Entrez Gene ID</b> = The NCBI Entrez gene identifier (ID) where this site resides. The Entrez gene ID is also a link to <a href="http://www.ncbi.nlm.nih.gov/gene" style="color: rgb(204,204,0)" target="_blank">NCBI gene database</a> entry for the specified gene.</li></br>&nbsp;</br>\n<li><b>Site</b> = The sequence for site identified by Weeder. If it is in square brackets indicates that the site is of lower similarity.</li></br>&nbsp;</br>\n<li><b>Start Relative to Stop Codon</b> = The 3\' UTR begins following the stop codon (which is set at 0 base-pairs (bp)). Thus the values in this column describe the start of the site in bp after the stop codon.</li></br>&nbsp;</br>\n<li><b>% Similarity to Consensus Motif</b> = The similarity of the predicted site to the consensus motif is computed as a percentage. Predicted binding sites were split into three different similarity to consensus bins:  <font color="#ff0000">High quality</font> - &#8805; 95% similarity to the miRNA seed sequence (red), <font color="#cccc00">Medium quality</font> 95% &#8805; similarity &#8805; 90% to the miRNA seed sequence (yellow), and <font color="#00ff00">Fair quality</font> 90% &#8805; similarity &#8805; 85% to the miRNA seed sequence (green).</li></ul></p>'
         s += '</font></td></td></table>'
         s += '<table width="100%%" cellpadding="5%%"><tr><td style="text-align:center; font-size:10pt; background:#cccccc;"><a href="/sites/csv/%s">download table as CSV</a></td></tr></table>\n' % (motif['motif_id'],)
-        s += '<table width=\'100%\' cellpadding=\'15%\'><tr><td bgcolor=\'#333333\'><center><b><font color=\'#ffffff\'>Entrez Gene ID</font></b></center></td><td bgcolor=\'#333333\'><center><b><font color=\'#ffffff\'>Sequence of Site</font></b></center></td><td bgcolor=\'#333333\'><center><b><font color=\'#ffffff\'>Start Relative to</br>Stop Codon (bp)</font></b></center></td><td bgcolor=\'#333333\'><center><b><font color=\'#ffffff\'>% Similarity to Consensus Motif</br>(Quality = </font><font color=\'#cc0000\'>High</font><font color=\'#ffffff\'> | </font><font color=\'#cccc00\'>Medium</font><font color=\'#ffffff\'> | </font><font color=\'#00cc00\'>Fair</font><font color=\'#ffffff\'>)</font></b></center></td><td bgcolor=\'#333333\'><center><b><font color=\'#ffffff\'>Minimum Free Energy (MFE)</br>of miRNA-mRNA Duplex</font></b></center></td></tr>'
+        s += '<table width=\'100%\' cellpadding=\'15%\'><tr><td bgcolor=\'#333333\'><center><b><font color=\'#ffffff\'>Gene</font></b></center></td><td bgcolor=\'#333333\'><center><b><font color=\'#ffffff\'>Gene symbol</font><\
+/b></center></td><td bgcolor=\'#333333\'><center><b><font color=\'#ffffff\'>Sequence of Site</font></b></center></td><td bgcolor=\'#333333\'><center><b><font color=\'#ffffff\'>Start Relative to</br>Stop Codon (bp)</font></b></center></td><td bgcolor=\'#333333\'><center><b><font color=\'#ffffff\'>% Similarity to Consensus Motif</br>(Quality = </font><font color=\'#cc0000\'>High</font><font color=\'#ffffff\'> | </font><font color=\'#cccc00\'>Medium</font><font color=\'#ffffff\'> | </font><font color=\'#00cc00\'>Fair</font><font color=\'#ffffff\'>)</font></b></center></td><td bgcolor=\'#333333\'><center><b><font color=\'#ffffff\'>Minimum Free Energy (MFE)</br>of miRNA-mRNA Duplex</font></b></center></td></tr>'
         for i in motif['sites']:
             if float(i['match']) >= qualityThreshold:
                 col1 = '#000000'
@@ -453,7 +483,16 @@ name'].split('_')]))+'</center></td>\n'
                     col1 = '#cccc00'
                 elif float(i['match']) >= float(85):
                     col1 = '#00cc00'
-                s += '<tr><td bgcolor=\'#ffffff\'><center>'+str('<a href=\'http://www.ncbi.nlm.nih.gov/gene/'+str(i['gene'])+'\' target=\'_blank\'>'+str(i['gene'])+'</a>')+'</center></td><td bgcolor=\'#ffffff\'><center>'+conv2rna(str(i['site']))+'</center></td><td bgcolor=\'#ffffff\'><center>'+str(i['start'])+'</center></td><td bgcolor=\'#ffffff\'><font color=\''+str(col1)+'\'><center><b>'+i['match']+'</b></center></font></td><td bgcolor=\'#ffffff\'><center>'+str(i['mfe'])+'</center></td></tr>'
+                gene_name_map = gene_mapping.get(i['gene'], None)
+                if (gene_name_map==None or geneId=='symbol' or geneId=='entrez'):
+                    gene_name = i['gene']
+                else:
+                    gene_name = gene_name_map['name']
+                if (gene_name_map==None or gene_name_map['symbol'] == None):
+                    gene_symbol = ''
+                else:
+                    gene_symbol = ' ' + gene_name_map['symbol']
+                s += '<tr><td bgcolor=\'#ffffff\'><center>'+str('<a href=\'http://www.ncbi.nlm.nih.gov/gene/'+str(i['gene'])+'\' target=\'_blank\'>'+gene_name+'</a>')+'<td bgcolor=\'#ffffff\'><center>'+gene_symbol+'</center></td>'+'</center></td><td bgcolor=\'#ffffff\'><center>'+conv2rna(str(i['site']))+'</center></td><td bgcolor=\'#ffffff\'><center>'+str(i['start'])+'</center></td><td bgcolor=\'#ffffff\'><font color=\''+str(col1)+'\'><center><b>'+i['match']+'</b></center></font></td><td bgcolor=\'#ffffff\'><center>'+str(i['mfe'])+'</center></td></tr>'
         s += '</table></p>'
     s += '<p><table width=\'100%\' cellpadding=\'5%\'><tr><td bgcolor=\'#c0c0c0\'><center>Need help? Please contact <font color=\'#0000ff\'>cplaisier(at)systemsbiology.org</font> or <font color=\'#0000ff\'>cbare(at)systemsbiology.org</font> if you have any questions, comments or concerns.<br>Developed at the <a href=\'http://www.systemsbiology.org\' target=\'_blank\' style=\'color: rgb(0,0,255)\'>Institute for Systems Biology</a> in the <a href=\'http://baliga.systemsbiology.net/\' target=\'_blank\' style=\'color: rgb(0,0,255)\'>Baliga Lab</a>.</center></td></tr></table></p>'
     s += '</center></td></tr></table></td></tr></table></center></body></html>'

@@ -81,7 +81,7 @@ def create_job_in_db(job):
                 cursor.execute("insert into parameters (job_uuid, name, value) values (%s, %s, %s);",
                                (job_uuid, k, str(v),) )
 
-       #store genes
+        #store genes
         if (job['genes']):
             for gene in job['genes']:
                 gene = _sanitize(gene)[0:20]
@@ -301,6 +301,117 @@ def update_job_status(job_uuid, status, message=None):
             log(exception)
 
 
+def map_genes_to_entrez_ids(job_uuid, geneId, species):
+    # update the genes table by joining with the gene_identifers table
+    # note that this is really slow w/out an index on gene_identifiers
+    # (species,id_type,identifier)
+
+    if (geneId == "entrez"):
+        # entrez_ids just map to themselves. No validation here,
+        # cause we'll discover bad entrez ids when we try to map
+        # them to sequences. If we want to validate here, we need
+        # to make sure we have entries in gene_identifiers for all
+        # genes for which we have sequences.
+        sql = "update genes set entrez_id = name where job_uuid='%s';" % (job_uuid)
+    else:
+        # if we're given some other type of ID, try to map it back
+        # to entrez ids
+        sql = """update genes g join gene_identifiers gi on g.name = gi.identifier
+                 set g.entrez_id = gi.entrez_id
+                 where gi.species = '%s'
+                 and gi.id_type = '%s'
+                 and g.job_uuid = '%s';
+              """ % (species, geneId, job_uuid)
+
+    sql2 = "select distinct(entrez_id) from genes where job_uuid = '%s' and entrez_id is not null;" % (job_uuid)
+
+    conn = _get_db_connection()
+    try:
+        cursor = conn.cursor()
+        cursor.execute(sql)
+        cursor.execute(sql2)
+        result_set = cursor.fetchall()
+        entrez_ids = []
+        for row in result_set:
+            entrez_ids.append(row[0])
+        return entrez_ids
+    finally:
+        try:
+            cursor.close()
+        except Exception as exception:
+            log("Exception closing cursor: ")
+            log(exception)
+        try:
+            conn.close()
+        except Exception as exception:
+            log("Exception closing conection: ")
+            log(exception)
+
+def get_gene_mapping(job_uuid):
+    
+    sql = """select g.name, g.entrez_id, g.sequence, gi.identifier as symbol
+             from genes g left join gene_identifiers gi on g.entrez_id=gi.entrez_id
+             where g.job_uuid = '%s'
+               and gi.id_type = 'symbol'
+          """ % (job_uuid)
+
+    conn = _get_db_connection()
+    try:
+        cursor = conn.cursor()
+        cursor.execute(sql)
+        result_set = cursor.fetchall()
+        gene_mappings = {}
+        for row in result_set:
+            gene_mappings[row[1]] = {'name':row[0], 'sequence':row[2], 'symbol':row[3]}
+        return gene_mappings
+    finally:
+        try:
+            cursor.close()
+        except Exception as exception:
+            log("Exception closing cursor: ")
+            log(exception)
+        try:
+            conn.close()
+        except Exception as exception:
+            log("Exception closing conection: ")
+            log(exception)
+
+
+# not used
+def get_gene_dictionary(genes, geneId, species):
+    gene_dictionary = {}
+    gene_list = ",".join([ "'%s'" % (_sanitize(gene)) for gene in genes])
+    sql = "select identifier, entrez_id from gene_identifiers where species='%s' and id_type='%s' and identifier in (%s)" % (species, geneId, gene_list)
+    conn = _get_db_connection()
+    try:
+        cursor = conn.cursor()
+        cursor.execute(sql)
+        while(True):
+            row = cursor.fetchone()
+            if row == None:
+                break
+            gene_dictionary[row[0]] = row[1]
+
+        # add unmapped keys
+        lc_keys = [key.lower() for key in gene_dictionary.keys()]
+        for gene in genes:
+            if gene.lower() not in lc_keys:
+                gene_dictionary[gene] = None
+
+        return gene_dictionary
+    finally:
+        try:
+            cursor.close()
+        except Exception as exception:
+            log("Exception closing cursor: ")
+            log(exception)
+        try:
+            conn.close()
+        except Exception as exception:
+            log("Exception closing conection: ")
+            log(exception)
+
+# not used
 def store_genes(job_uuid, genes):
     conn = _get_db_connection()
     try:
@@ -334,7 +445,7 @@ def set_genes_annotated(job_uuid, sequence_dict):
         if (sequence_dict):
             for gene in sequence_dict.keys():
                 gene = _sanitize(gene)[0:20]
-                cursor.execute("update genes set sequence=true where job_uuid='%s' and name='%s';" %
+                cursor.execute("update genes set sequence=true where job_uuid='%s' and entrez_id='%s';" %
                                (job_uuid, gene,) )
     finally:
         try:
@@ -648,6 +759,34 @@ def get_species_by_mirbase_id(mirbase_id):
             species['mirbase'] = row[4]
             species['weeder'] = row[5]
         return species
+    finally:
+        try:
+            cursor.close()
+        except Exception as exception:
+            log("Exception closing cursor: ")
+            log(exception)
+        try:
+            conn.close()
+        except Exception as exception:
+            log("Exception closing conection: ")
+            log(exception)
+
+# used in a dirty hack to get gene map for sites
+def get_job_id_from_motif_id(motif_id):
+    sql = """select job_uuid
+             from motifs
+             where id = '%s';
+          """ % (motif_id)
+
+    conn = _get_db_connection()
+    try:
+        cursor = conn.cursor()
+        cursor.execute(sql)
+        row = cursor.fetchone()
+        if (row == None):
+            return None
+        else:
+            return row[0]
     finally:
         try:
             cursor.close()

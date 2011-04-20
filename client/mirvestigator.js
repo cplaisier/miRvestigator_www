@@ -48,6 +48,7 @@ function getParameters(job_id, callback) {
         }
         $("#seed_model").html(parameters.seed_model.join(", "));
         $("#model_wobble").html(parameters.model_wobble);
+	$("#est_time").html("~" + estimate_running_time(parameters.annotated_sequences) + " minutes");
         if (callback)
             callback(parameters);
       },
@@ -57,5 +58,10 @@ function getParameters(job_id, callback) {
       }
     });
   }
+}
+
+// estimate running time (to the nearest minute) based on the number of sequences
+function estimate_running_time(n) {
+    return Math.round((4 * n + 215) / 60);
 }
 

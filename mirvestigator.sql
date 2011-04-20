@@ -56,6 +56,7 @@ create table parameters (
 create table genes (
     job_uuid char(36) NOT NULL,
     name varchar(100),
+    entrez_id varchar(20),
     sequence boolean,
     index(job_uuid)
 );
@@ -86,6 +87,7 @@ create table sites (
     sequence varchar(20),
     start int,
     quality varchar(100),
+    mfe varchar(50),
     index(motif_id)
 );
 
@@ -99,6 +101,16 @@ create table mirvestigator_scores (
     alignment varchar(100),               -- statePath
     viterbi_p float,                      -- vitPValue
     index(motif_id)
+);
+
+create table gene_identifiers (
+    species varchar(20),
+    id_type varchar(20),
+    identifier varchar(100),
+    entrez_id varchar(20),
+    index(identifier),
+    index(species, id_type, identifer),
+    index(entrez_id)
 );
 
 create table species (

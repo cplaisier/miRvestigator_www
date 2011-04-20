@@ -44,9 +44,24 @@ configure mod_rewrite for apache2 in /etc/apache2/sites-enabled/000-default
 
 RewriteEngine ON
 RewriteRule ^status/([a-fA-F0-9\-]+)/(.?)$ /status/index.html
+RewriteRule ^genes/([a-fA-F0-9\-]+)/(.?)$ /miRvestigator.py/genes?id=$1
 RewriteRule ^results/([a-fA-F0-9\-]+)/(.?)$ /miRvestigator.py/results?id=$1
+RewriteRule ^sites/csv/([0-9]+)(.?)$ /miRvestigator.py/sites_as_csv?motif_id=$1
+RewriteRule ^scores/csv/([0-9]+)(.?)$ /miRvestigator.py/scores_as_csv?motif_id=$1
+RewriteRule ^error/([a-fA-F0-9\-]+)/(.?)$ /error/index.html [L]
+RewriteRule ^error$ /error/index.html [L]
+
 </Directory>
 
+Server
+-----
+We run the server within screen.
+> screen
+> python2.6 mirv_server.py
+> cnt-a, cnt-d
+
+To get back into screen, type:
+> screen -R
 
 
 to do all 6 examples concurrently takes about 22 minutes 36 seconds
