@@ -228,6 +228,16 @@ def scores_as_csv(req):
     req.headers_out.add("Content-disposition", 'attachment; filename=mirvestigator_scores.csv')
     return csv
 
+def genes(req):
+    id = str(req.form.getfirst('id',''))
+    csv = mirv_csv.get_genes_as_csv(id)
+    req.content_type='text/csv'
+    req.headers_out.add("Cache-Control", 'must-revalidate')
+    req.headers_out.add("Pragma", 'must-revalidate')
+    req.headers_out.add("Content-disposition", 'attachment; filename=mirvestigator_sites.csv')
+    return csv
+    
+
 # display results
 def results(req):
     # need weederPSSMs1
@@ -343,7 +353,9 @@ def results(req):
     s += '<tr><td colspan=2 bgcolor=\'#333333\' align=\'center\' valign=\'center\'><b><font color=\'#cccc00\' size=4>Basic Parameters</font></b></td></tr>\n'
     s += '<tr><td bgcolor=\'#333333\' align=\'center\' valign=\'center\'><font color=\'#ffffff\'><b>Job Name:</b></font></td><td bgcolor=\'#666666\' align=\'center\' valign=\'center\'><table width=\'100%\' cellpadding=\'5%\'><tr><td bgcolor=\'#ffffff\'><center><span id="job_name"></span></center></td></tr></table></td></tr>\n'
     s+= '<tr><td bgcolor=\'#333333\' align=\'center\' valign=\'center\'><font color=\'#ffffff\'><b>Job ID:</b></font></td><td bgcolor=\'#666666\' align=\'center\' valign=\'center\'><table width=\'100%\' cellpadding=\'5%\'><tr><td bgcolor=\'#ffffff\'><center><span id="job_id"></span></center></td></tr></table></td></tr>\n'
-    s += '<tr><td bgcolor=\'#333333\' align=\'center\' valign=\'center\'><font color=\'#ffffff\'><b>Genes Submitted:</b></font></td><td bgcolor=\'#666666\' align=\'center\' valign=\'center\'><table width=\'100%\' cellpadding=\'5%\'><tr><td bgcolor=\'#ffffff\'><center><span id="genes_submitted"></span></center></td></tr></table></td></tr>\n'
+    s += '<tr><td bgcolor=\'#333333\' align=\'center\' valign=\'center\'><font color=\'#ffffff\'><b>Genes Submitted:</b></font>'
+    s += '<span style="font-size:30%;color:#ff0000">(<a href="/genes/' + id + '/">gene mapping as CSV</a>)</span>'
+    s += '</td><td bgcolor=\'#666666\' align=\'center\' valign=\'center\'><table width=\'100%\' cellpadding=\'5%\'><tr><td bgcolor=\'#ffffff\'><center><span id="genes_submitted"></span></center></td></tr></table></td></tr>\n'
     s += '<tr><td bgcolor=\'#333333\' align=\'center\' valign=\'center\'><font color=\'#ffffff\'><b>Genes Annotated with Sequences:</b></font></td><td bgcolor=\'#66666\' align=\'center\' valign=\'center\'><table width=\'100%\' cellpadding=\'5%\'><tr><td bgcolor=\'#ffffff\'><center><span id="annotated_sequences"></span></center></td></tr></table></td></tr>\n'
     s += '<tr><td colspan=2></td></tr>\n'
     s += '<tr><td colspan=2 bgcolor=\'#333333\' align=\'center\' valign=\'center\'><b><font color=\'#cccc00\' size=4>Weeder Parameters</font></b></td></tr>\n'

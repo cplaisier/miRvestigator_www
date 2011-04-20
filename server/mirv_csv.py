@@ -145,3 +145,11 @@ def get_mirvestigator_scores_as_csv(motif_id):
     motif = mirv_db.read_motif(motif_id)
     return mirvestigator_scores_to_csv(mirv_db.read_mirvestigator_scores(motif_id), motif['name'])
 
+def get_genes_as_csv(job_uuid):
+    genes = mirv_db.get_gene_mapping(job_uuid)
+    s = "Gene,Entrez Gene ID,Gene Symbol,Sequence found\r\n"
+    for entrez in genes.keys():
+        gene = genes[entrez]
+        s += "%s,%s,%s,%s\n" % (gene.get('name',''), entrez, gene.get('symbol',''), gene.get('sequence',''))
+    return s
+    

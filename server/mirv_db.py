@@ -350,7 +350,7 @@ def map_genes_to_entrez_ids(job_uuid, geneId, species):
 def get_gene_mapping(job_uuid):
     
     sql = """select g.name, g.entrez_id, g.sequence, gi.identifier as symbol
-             from genes g join gene_identifiers gi on g.entrez_id=gi.entrez_id
+             from genes g left join gene_identifiers gi on g.entrez_id=gi.entrez_id
              where g.job_uuid = '%s'
                and gi.id_type = 'symbol'
           """ % (job_uuid)
