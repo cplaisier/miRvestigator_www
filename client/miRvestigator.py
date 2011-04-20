@@ -335,6 +335,8 @@ def results(req):
     s += '</td>\n'
     s += '<td align=\'center\' valign=\'center\' bgcolor=\'#333333\' width=\'80\'><b><a style=\'color: rgb(255,0,0); text-decoration:none\' href=\'/tutorial\'>T</a><a style=\'color: rgb(204,204,0); text-decoration:none\' href=\'/tutorial\'>utorial</a></b>\n'
     s += '</td>\n'
+    s += '<td align="center" valign="center" bgcolor="#333333" width="0"><b>'
+    s += '<a style="color: rgb(255,0,0); text-decoration:none" href="/citation">C</a><a style="color: rgb(204,204,0); text-decoration:none" href="/citation">itation</a></b></td>\n'
     s += '</tr>\n'
     s += '</table>\n'
     s += '<table bgcolor=\'#999966\' cellpadding=\'10%\'>\n'
