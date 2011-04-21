@@ -377,7 +377,7 @@ def results(req):
 
     s += '<table width=\'100%\' cellpadding=\'15%\'><tr><td bgcolor=\'#333333\'><center><b><font color=\'#ffffff\'>Motif</font></b></center></td><td bgcolor=\'#333333\'><\
 center><b><font color=\'#ffffff\'>Top miRNA</font></b></center></td><td bgcolor=\'#333333\'><center><b><font color=\'#ffffff\'>Complementary Base-Pairing</font></b></center></td><td bgcolor=\'#3333\
-33\'><center><b><font color=\'#ffffff\'>Complementarity P-Value</font></b></center></td><td bgcolor=\'#333333\'><center><b><font color=\'#ffffff\'>% of Input</br>Sequences with Site</font>\
+33\'><center><b><font color=\'#ffffff\'>Complementarity</br>P-Value</font></b></center></td><td bgcolor=\'#333333\'><center><b><font color=\'#ffffff\'>% of Input</br>Sequences with Site</font>\
 </b></center></td></tr>\n'
 
     for motif in motifs:
@@ -455,7 +455,7 @@ name'].split('_')]))+'</center></td>\n'
         else:
             topRet = int(topRet)
         s += '<table width="100%%" cellpadding="5%%"><tr><td style="text-align:center; font-size:10pt; background:#cccccc;"><a href="/scores/csv/%s">Download table as CSV</a></td></tr></table>\n' % (motif['motif_id'],)
-        s += '<table width=\'100%\' cellpadding=\'15%\'><tr><td bgcolor=\'#333333\'><center><b><font color=\'#ffffff\'>miRNA Name</font></b></center></td><td bgcolor=\'#333333\'><center><b><font color=\'#ffffff\'>miRNA Seed</font></b></center></td><td bgcolor=\'#333333\'><center><b><font color=\'#ffffff\'>Seed Model</font></b></center></td><td bgcolor=\'#333333\'><center><b><font color=\'#ffffff\'>Length of</br>Complementarity</font></b></center></td><td bgcolor=\'#333333\'><center><b><font color=\'#ffffff\'>Complementary Base-Pairing</font></b></center></td><td bgcolor=\'#333333\'><center><b><font color=\'#ffffff\'>Complementary P-Value</font></b></center></td></tr>'
+        s += '<table width=\'100%\' cellpadding=\'15%\'><tr><td bgcolor=\'#333333\'><center><b><font color=\'#ffffff\'>miRNA Name</font></b></center></td><td bgcolor=\'#333333\'><center><b><font color=\'#ffffff\'>miRNA Seed</font></b></center></td><td bgcolor=\'#333333\'><center><b><font color=\'#ffffff\'>Seed Model</font></b></center></td><td bgcolor=\'#333333\'><center><b><font color=\'#ffffff\'>Length of</br>Complementarity</font></b></center></td><td bgcolor=\'#333333\'><center><b><font color=\'#ffffff\'>Complementary Base-Pairing</font></b></center></td><td bgcolor=\'#333333\'><center><b><font color=\'#ffffff\'>Complementarity</br>P-Value</font></b></center></td></tr>'
         for k in range(topRet):
             i = scoreList[k]
             align1 = alignSeed(i['statePath'], i['miRNA.seed'], motif['name'])
