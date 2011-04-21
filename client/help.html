@@ -185,7 +185,7 @@
                                                         <p>After the job has finished processing you will be taken automatically to the results page (seed Example Results Page Below) with the results for your run. The results page can also be bookmarked so that you can return to view the results at a later time. Results will be kept for at least two months.</p>
                                                         <p><center><b>Example Results Page:</b></br><img src="/images/results_page.gif" width="600"></center></p>
                                                         <b>Do I have to stay on the status page in order to see the results?</b>
-                                                        <p>No you do not. Either by bookmarking the status page or by giving your e-mail address you can easily retrieve your results at a later time.</p>
+                                                        <p>No you do not. Either by bookmarking the status page or by giving your e-mail address you can easily retrieve your results at a later time. (<b>NOTE:</b> If you don't recieve e-mails please check your e-mail address, spam filter and add <u>mirvestigator@systemsbiology.org</u> to your address book. Typically by adding an e-mail address to your address book will allow e-mails from that address to bypass the spam filter.)</p>
                                                         <b>Can I retrieve my results with just the job id?</b>
                                                         <p>The job ID is a long character string that is unique for each job. If you retain this you can click on the results link at the top of any page (except the results page) to access the results from a previous run.</p>
                                                     </font>
@@ -268,14 +268,35 @@
                                                     <p>As part of the parameters for the run you can set the target site quality threshold to filter for perfect complementarity (100% Identity), perfect complementarity and 1bp discrepancies (95% Identity), or down to 2bp discrepancies. We recommend sticking with 100% or 95% identity thresholds as these are the most similar to the canonical view of the mechanistic action of miRNA binding through the seed sequence with 7bp or 8bp of similarity between the miRNA seed sequence and the target mRNA. If using a 6bp motif only use 100% identity threshold, and follow these up with extensive experimental vaidation.</p>
                                                     <b>What do the columns mean?</b>
                                                     <p><ul>
-                                                        <li><b>Entrez Gene ID</b> = The NCBI Entrez gene identifier (ID) where this site resides. The Entrez gene ID is also a link to <a href="http://www.ncbi.nlm.nih.gov/gene" style="color: rgb(204,204,0)" target="_blank">NCBI gene database</a> entry for the specified gene.</li>
+                                                        <li><b>Gene</b> = gene identifier from the input set that links to the mapped Entrez identifier page on NCBI.</li>
+                                                        &nbsp;</br>
+                                                        <li><b>Gene Symbol</b> = Official gene symbol if available.</li>
                                                         &nbsp;</br>
                                                         <li><b>Site</b> = The sequence for site identified by Weeder. If it is in square brackets indicates that the site is of lower similarity.</li>
                                                         &nbsp;</br>
                                                         <li><b>Start Relative to Stop Codon</b> = The 3' UTR begins following the stop codon (which is set at 0 base-pairs (bp)). Thus the values in this column describe the start of the site in bp after the stop codon.</li>
                                                         &nbsp;</br>
                                                         <li><b>% Similarity to Consensus Motif</b> = The similarity of the predicted site to the consensus motif is computed as a percentage. Predicted binding sites were split into three different similarity to consensus bins:  <font color="#ff0000">High quality</font> - &#8805; 95% similarity to the miRNA seed sequence (red), <font color="#cccc00">Medium quality</font> 95% &#8805; similarity &#8805; 90% to the miRNA seed sequence (yellow), and <font color="#00ff00">Fair quality</font> 90% &#8805; similarity &#8805; 85% to the miRNA seed sequence (green).</li>
+                                                        &nbsp;</br>
+                                                        <li><b>Minimum Free Energy (MFE) of mRNA-miRNA Duplex</b> = the minimum free energy (MFE) of duplexing for the reverse complement of the motif consensus sequence and putative target site sequences using the ViennaRNA package.</li>
                                                     </ul></p>
+                                                    </font>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td colspan=2></td>
+                                            </tr>
+                                            <tr>
+                                                <td bgcolor='#000000' colspan=2>
+                                                    <center><font color='#cccc00' size=4><b>Other Implementations of miRvestigator</b></font></center>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td bgcolor='#333333'>
+                                                    <font color='#ffffff'>
+                                                        <p><b>Stand-alone miRvestigator for High-Throughput Screening of Motifs</b></p>
+                                                        <p>This is a command-line program to identify miRNAs from a Position Specific Scoring Matrix. A PSSM is read from a user specified file and is then passed to miRvestigator which downloads the mature miRNA seed seqeunces from miRbase.org and compares these mature seed sequences against the PSSM. This is accomplished by converting the PSSM into a Hidden Markov Model (HMM), very similar to a profile HMM, and then using the Viterbi algorithm to simultaneously align and calcualte a probabilty for the alighment of the miRNA seed to the HMM. A p-value is calculated by exhaustively comparing all potential miRNA seed sequneces that could bind to 3' UTRs, and using simulations the p-value for the Viterbi probability is the optimal metric for gauging miRNA seed to PSSM similarity.</br><ul><li><a href="http://github.com/cplaisier/miRvesitgator_standalone" style="color: rgb(204,204,0)" target="_blank">miRvestigator Stand-alone</a> - Please follow instructions on readme.</li></ul></p>
+                                                    </p>
                                                     </font>
                                                 </td>
                                             </tr>
