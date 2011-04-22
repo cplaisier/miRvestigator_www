@@ -48,7 +48,12 @@ function getParameters(job_id, callback) {
         }
         $("#seed_model").html(parameters.seed_model.join(", "));
         $("#model_wobble").html(parameters.model_wobble);
-	$("#est_time").html("~" + estimate_running_time(parameters.annotated_sequences) + " minutes");
+	if (parameters.annotated_sequences && parameters.annotated_sequences>0) {
+	    $("#est_time").html("~ " + estimate_running_time(parameters.annotated_sequences) + " minutes");
+	}
+	else {
+	    $("#est_time").html("n/a");
+	}
         if (callback)
             callback(parameters);
       },
