@@ -169,6 +169,8 @@ def submitJob(req):
     job['jobName'] = str(req.form.getfirst('jobName',''))
     job['notify_mail'] = str(req.form.getfirst('notify_mail',None))
     job['geneId'] = str(req.form.getfirst('geneId', 'entrez'))
+    job['viral'] = str(req.form.getfirst('viral',''))
+
 
     try:
         # connect to miR server via Pyro
@@ -257,10 +259,21 @@ def results(req):
     mirbase_species = parameters['species']
     geneId = parameters.get('geneId', 'entrez')
     qualityThreshold = float(parameters['quality'])
-
+    if 'viral' in parameters.keys() and parameters['viral']=='True':
+        viral = True
+    else:
+        viral = False
     gene_mapping = get_gene_mapping(id)
 
     # read mirbase miRNAs so we can link back to mirbase
+    viralSpecies = []
+    if viral==True:
+        inFile = open('/home/ubuntu/miRwww_server/organism.txt','r')
+        for line in inFile.readlines():
+            splitUp = line.strip().split('\t')
+            if splitUp[1]=='VRL':
+                viralSpecies.append(splitUp[0])
+        inFile.close()
     import gzip
     miRNAFile = gzip.open('/home/ubuntu/miRwww_server/mature.fa.gz','r')
     miRNADict = {}
@@ -273,6 +286,8 @@ def results(req):
         miRNAData = miRNALine.lstrip('>').split(' ')
         curMiRNA = miRNAData[0]
         if (curMiRNA.split('-'))[0]==mirbase_species:
+            miRNADict[curMiRNA] = miRNAData[1]
+        if viral==True and ((curMiRNA.split('-'))[0] in viralSpecies):
             miRNADict[curMiRNA] = miRNAData[1]
     miRNAFile.close()
 

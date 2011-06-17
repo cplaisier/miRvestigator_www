@@ -205,7 +205,7 @@ def weeder(seqFile=None, percTargets=50, revComp=False, bgModel='HS'):
     return PSSMs
 
 
-def run(job_uuid, genes, geneId, seedModels, wobble, cut, motifSizes, jobName, mirbase_species, bgModel, topRet=10):
+def run(job_uuid, genes, geneId, seedModels, wobble, cut, motifSizes, jobName, mirbase_species, bgModel, topRet=10, viral=False):
 
     species = get_species_by_mirbase_id(mirbase_species)
     if bgModel=='3p':
@@ -282,7 +282,8 @@ def run(job_uuid, genes, geneId, seedModels, wobble, cut, motifSizes, jobName, m
                        p5=True, p3=True,
                        wobble=wobble, wobbleCut=cut,
                        textOut=False,
-                       species=mirbase_species)
+                       species=mirbase_species,
+                       viral = viral)
 
     # 6. Read in miRNAs to get mature miRNA ids
     # import gzip

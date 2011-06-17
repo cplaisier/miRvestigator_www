@@ -45,10 +45,13 @@ import os, cPickle
 #
 class miRvestigator:
     # Initialize and start the run
-    def __init__(self,pssms,seqs3pUTR,seedModel=[6,7,8], minor=True, p5=True, p3=True, textOut=True, wobble=True, wobbleCut=0.25, species='hsa'):
+    def __init__(self,pssms,seqs3pUTR,seedModel=[6,7,8], minor=True, p5=True, p3=True, textOut=True, wobble=True, wobbleCut=0.25, species='hsa',viral=False):
         print '\nmiRvestigator analysis started...'
         self.pssms = pssms
         self.species = species
+        self.viral = viral
+        if self.viral==True:
+            print '\nIncluding viral miRNAs...'
         self.miRNAs = self.setMiRNAs(0,8,minor,p5,p3)
         # Trim sequences down
         self.miRNAs_6mer_1 = self.trimSeqs(deepcopy(self.miRNAs),0,6)
@@ -367,7 +370,25 @@ class miRvestigator:
             return(seqs)
     
     # Get the miRNAs to compare against
-    def setMiRNAs(self,seedStart,seedEnd, minor=True, p5=True, p3=True):
+    def setMiRNAs(self, seedStart, seedEnd, minor=True, p5=True, p3=True):
+        viralSpecies = []
+        if self.viral==True and not os.path.exists('organism.txt'):
+            from ftplib import FTP
+            ftp1 = FTP('mirbase.org')
+            ftp1.login()
+            ftp1.cwd('/pub/mirbase/CURRENT/')
+            outFile = open('organism.txt','wb')
+            ftp1.retrbinary('RETR organism.txt',outFile.write)
+            outFile.close()
+            ftp1.quit()
+        if self.viral==True:
+            inFile = open('organism.txt','r')
+            for line in inFile.readlines():
+                splitUp = line.strip().split('\t')
+                if splitUp[1]=='VRL':
+                    viralSpecies.append(splitUp[0])
+            inFile.close()
+        print 'Viral species are: '+str(viralSpecies)
         if not os.path.exists('mature.fa.gz'):
             print '\nDownloading miRNA seeds from miRBase.org...'
             # Grab down the latest miRNA data from mirbase.org:
@@ -376,6 +397,7 @@ class miRvestigator:
             ftp1 = FTP('mirbase.org')
             ftp1.login()
             ftp1.cwd('/pub/mirbase/CURRENT/')
+            
             # Get the miRBase.org version number for reference.
             self.miRNAver = (ftp1.pwd().split('/'))[-1]
             outFile = open('mature.fa.gz','wb')
@@ -402,6 +424,8 @@ class miRvestigator:
                 if (minor==True or curMiRNA.find('*')==-1) and (p5==True or curMiRNA.find('-5p')==-1) and (p3==True or curMiRNA.find('-3p')==-1):
                     # Now grab out the 2-8bp and do reverse complement on it
                     miRNAs[curMiRNA] = self.reverseComplement((seqLine.strip())[seedStart:seedEnd])
+            elif self.viral==True and ((curMiRNA.split('-'))[0] in viralSpecies):
+                miRNAs[curMiRNA] = self.reverseComplement((seqLine.strip())[seedStart:seedEnd])
         miRNAFile.close()
         
         # How many distinct kMers in miRNAs

@@ -71,6 +71,7 @@ def start_worker(id, q):
         print("worker %d computing job %s." % (id, job['id']))
 
         # parse params out of job
+        print job
         genes = job['genes']
         geneId = job['geneId']
         wobble = (job['wobble'] == 'yes')
@@ -80,6 +81,10 @@ def start_worker(id, q):
         mirbase_species = job['species']
         notify_mail = job['notify_mail']
         bgModel = job['bgModel']
+        if job['viral']=='True':
+            viral = True
+        else:
+            viral = False
 
         # condense seed models and motif sizes into arrays of ints
         seedModels = [int(job[s]) for s in ['s6','s7','s8'] if s in job and job[s]]
@@ -87,7 +92,7 @@ def start_worker(id, q):
 
         try:
             # run the job
-            r = mirv_worker.run(job['id'], genes, geneId, seedModels, wobble, cut, motifSizes, jobName, mirbase_species, bgModel, topRet)
+            r = mirv_worker.run(job['id'], genes, geneId, seedModels, wobble, cut, motifSizes, jobName, mirbase_species, bgModel, topRet, viral)
 
             # notify on success
             if r:
