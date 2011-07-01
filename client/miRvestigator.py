@@ -414,9 +414,21 @@ center><b><font color=\'#ffffff\'>Top miRNA</font></b></center></td><td bgcolor=
         align1 = alignSeed(i['statePath'], i['miRNA.seed'], motif['name'])
         if not os.path.exists('/var/www/images/pssms/'+id+'_'+motif['name']+'.png'):
             plotPssmMatrix(motif['matrix'],'/var/www/images/pssms/'+id+'_'+motif['name']+'.png')
-        s += '<tr><td bgcolor=\'#ffffff\' rowspan="' + str(row_count) + '"><center><a href=\'#'+motif['name']+'_miRNAs\'><img src=\'/images/pssms/'+id+'_'+motif['name']+'.png\' alt=\''+conv2rna(str(motif['name']))+'\'></center></td><td bgcolor=\'#ffffff\'\
-><center>'+str('</br>'.join(['<a href=\'http://mirbase.org/cgi-bin/mature.pl?mature_acc='+str(miRNADict[j.strip()])+'\' target=\'_blank\'>'+str(j.strip())+'</a>' for j in i['miRNA.\
-name'].split('_')]))+'</center></td>\n'
+
+        s += '<tr>'
+        s += '<td bgcolor=\'#ffffff\' rowspan="' + str(row_count) + '"><center><a href=\'#'+motif['name']+'_miRNAs\'><img src=\'/images\
+/pssms/'+id+'_'+motif['name']+'.png\' alt=\''+conv2rna(str(motif['name']))+'\'></center></td>'
+        s += '<td bgcolor=\'#ffffff\'><center>'
+        miRNAs = []
+        for miRNA_name in i['miRNA.name'].split('_'):
+            miRNA_name = miRNA_name.strip()
+            if miRNADict.has_key(miRNA_name):
+                miRNAs.append('<a href=\'http://mirbase.org/cgi-bin/mature.pl?mature_acc='+str(miRNADict[miRNA_name])+'\' target=\'_blank\'>'+miRNA_name+'</a>')
+            else:
+                miRNAs.append(miRNA_name)
+        s += '</br>'.join(miRNAs)
+        s += '</center></td>\n'
+
         s += '<td bgcolor=\'#ffffff\'><center><pre>'+str(align1[0])+'\n'+str(align1[1])+'\n'+str(align1[2])+'</pre></center></td>\n'
         s += '<td bgcolor=\'#ffffff\' rowspan="' + str(row_count) + '"><center>'+str('%.1e' % float(i['vitPValue']))+'</center></td>\n'
         # Get number or sequences with a hit                                                                                                                                         
@@ -439,8 +451,18 @@ name'].split('_')]))+'</center></td>\n'
         while float(scoreList[top_score_i]['vitPValue']) == top_score_viterbi_p:
             i = scoreList[top_score_i]
             align1 = alignSeed(i['statePath'], i['miRNA.seed'], motif['name'])
-            s += '<tr><td bgcolor=\'#ffffff\'><center>'+str('</br>'.join(['<a href=\'http://mirbase.org/cgi-bin/mature.pl?mature_acc='+str(miRNADict[j.strip()])+'\' target=\'_blank\
-\'>'+str(j.strip())+'</a>' for j in i['miRNA.name'].split('_')]))+'</center></td>\n'
+            s += '<tr>'
+            s += '<td bgcolor=\'#ffffff\'><center>'
+            miRNAs = []
+            for miRNA_name in i['miRNA.name'].split('_'):
+                miRNA_name = miRNA_name.strip()
+                if miRNADict.has_key(miRNA_name):
+                    miRNAs.append('<a href=\'http://mirbase.org/cgi-bin/mature.pl?mature_acc='+str(miRNADict[miRNA_name])+'\' target=\'_blank\'>'+miRNA_name+'</a>')
+                else:
+                    miRNAs.append(miRNA_name)
+            s += '</br>'.join(miRNAs)
+            s += '</center></td>\n'
+                    
             s += '<td bgcolor=\'#ffffff\'><center><pre>'+str(align1[0])+'\n'+str(align1[1])+'\n'+str(align1[2])+'</pre></center></td>\n'
             s += '</tr>\n'
             top_score_i += 1
@@ -474,9 +496,26 @@ name'].split('_')]))+'</center></td>\n'
         for k in range(topRet):
             i = scoreList[k]
             align1 = alignSeed(i['statePath'], i['miRNA.seed'], motif['name'])
-            s += '<tr><td bgcolor=\'#ffffff\'><center>'+str('</br>'.join(['<a href=\'http://mirbase.org/cgi-bin/mature.pl?mature_acc='+str(miRNADict[j.strip()])+'\' target=\'_blank\'>'+str(j.strip())+'</a>' for j in i['miRNA.name'].split('_')]))+'</center></td><td bgcolor=\'#ffffff\'><center>'+conv2rna(reverseComplement(str(i['miRNA.seed'])))+'</center></td><td bgcolor=\'#ffffff\'><center>'+str(i['model'])+'</center></td><td bgcolor=\'#ffffff\'><center>'+str(align1[3])+'</center></td><td bgcolor=\'#ffffff\'>'
-            s += '<center><pre>'+str(align1[0])+'\n'+str(align1[1])+'\n'+str(align1[2])+'</pre></center>'
-            s += '</td><td bgcolor=\'#ffffff\'><center>'+str('%.1e' % float(i['vitPValue']))+'</center></td></tr>'
+            s += '<tr>'
+            s += '<td bgcolor=\'#ffffff\'><center>'
+            
+            # generate links to mirbase miRNAs
+            miRNAs = []
+            for miRNA_name in i['miRNA.name'].split('_'):
+                miRNA_name = miRNA_name.strip()
+                if miRNADict.has_key(miRNA_name):
+                    miRNAs.append('<a href=\'http://mirbase.org/cgi-bin/mature.pl?mature_acc='+str(miRNADict[miRNA_name])+'\' target=\'_blank\'>'+miRNA_name+'</a>')
+                else:
+                    miRNAs.append(miRNA_name)
+            
+            s += '</br>'.join(miRNAs)
+            s += '</center></td>'
+
+            s += '<td bgcolor=\'#ffffff\'><center>'+conv2rna(reverseComplement(str(i['miRNA.seed'])))+'</center></td>'
+            s += '<td bgcolor=\'#ffffff\'><center>'+str(i['model'])+'</center></td><td bgcolor=\'#ffffff\'><center>'+str(align1[3])+'</center></td>'
+            s += '<td bgcolor=\'#ffffff\'><center><pre>'+str(align1[0])+'\n'+str(align1[1])+'\n'+str(align1[2])+'</pre></center></td>'
+            s += '<td bgcolor=\'#ffffff\'><center>'+str('%.1e' % float(i['vitPValue']))+'</center></td>'
+            s += '</tr>'
         s += '</table></p>'
         #'gene':seqDict[splitUp[0]], 'strand':splitUp[1], 'site':splitUp[2], 'start':splitUp[3], 'match':splitUp[4].lstrip('(').rstrip(')')
         # pssm1.nsites
