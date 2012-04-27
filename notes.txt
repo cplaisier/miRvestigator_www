@@ -66,3 +66,7 @@ To get back into screen, type:
 
 to do all 6 examples concurrently takes about 22 minutes 36 seconds
 
+
+April 26, 2012
+--------------
+added Danio Rerio

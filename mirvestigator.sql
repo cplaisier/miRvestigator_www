@@ -131,6 +131,6 @@ insert into species (name, ucsc_name, ncbi_id, mirbase, weeder) values('H. sapie
 insert into species (name, ucsc_name, ncbi_id, mirbase, weeder) values('C. elegans',      'Caenorhabditis_elegans',  6239, 'cel', 'CE3P');
 insert into species (name, ucsc_name, ncbi_id, mirbase, weeder) values('C. familiaris',   'Canis_familiaris',        9615, 'cfa', 'CF3P');
 insert into species (name, ucsc_name, ncbi_id, mirbase, weeder) values('M. musculus',     'Mus_musculus',           10090, 'mmu', 'MM3P');
-
+insert into species (name, ucsc_name, ncbi_id, mirbase, weeder) values('D. rerio',        'Danio_rerio',             7955, 'dre', 'DR3P');
 
 
