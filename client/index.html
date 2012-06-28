@@ -255,6 +255,36 @@
            document.forms[0].wobble[1].checked = true
            document.forms[0].jobName.value='kshv-miR-K12-2 (Sample)'
       }
+      function addDreMir221()
+      {
+           document.forms[0].genes.value="327541, 563633, 567724, 386967, 407986, 559221, 334133, 794090, 393336, 556136, 393709, 386643, 792196, 792832, 553166, 81582, 492508, 792231, 327176, 30496, 393696, 393914, 406298, 799961, 563124, 336099, 792182, 570276, 796589, 794401, 282672"
+           document.forms[0].species.value='dre'
+           document.forms[0].viral[0].checked = false
+           document.forms[0].geneId.value='entrez'
+           document.forms[0].bgModel.value='3p'
+           document.forms[0].motif_6.checked=false
+           document.forms[0].motif_8.checked=true
+           document.forms[0].seedModel_6.checked=true
+           document.forms[0].seedModel_7.checked=true
+           document.forms[0].seedModel_8.checked=true
+           document.forms[0].wobble[1].checked = true
+           document.forms[0].jobName.value='dre-miR-221 (Sample)'
+      }
+      function addDreMir430()
+      {
+           document.forms[0].genes.value="324137, 30072, 492332, 573189, 394235, 30517, 335737, 556185, 402821, 393554, 561543, 337223, 386967, 321795, 555160, 30702, 406369, 30602, 406513, 573888, 325470, 335866, 323216, 324841, 554669, 561599, 394130, 554769, 399482, 352944, 324481, 406291, 450000, 406474, 30331, 445494, 333952, 394151, 325217, 406531, 445484, 334565, 378740, 373121, 492783, 386975, 322670, 369193, 393221, 406853, 554589, 393444, 171480, 393808, 494076, 406729, 493916, 393582, 445103, 30146, 393908, 558047, 403037, 436820, 30639, 30701, 406620, 394037, 492806, 403041, 494032, 565970, 436698, 30084, 359841, 30768, 393868, 572595, 572606, 572747, 572777, 572782, 573040, 573060, 573177, 573184, 573193, 573199, 573203, 573210, 573217, 573227, 573232, 573333, 573379, 573668, 336959, 436928, 335722, 406768, 402888, 445144, 573061, 406283, 449771, 368733, 436778, 327154, 415166, 406561, 406736, 393421, 436688, 406364, 321064, 325492, 393119, 373083, 494453, 335124, 324140, 353294, 259191, 573486, 394098, 321928, 393203, 335642, 114463, 334195, 407665, 406733, 323266, 406410, 393283, 337237, 560326, 403021, 327206, 30699, 325979, 445110, 335495, 406443, 327184, 493609, 327599, 324985, 368417, 171465, 572628, 334097, 399692, 406625, 114460, 565144, 404608, 386701, 30301, 445291, 492504, 406464, 327313, 554695, 335916, 572771, 394105, 30541, 30578, 393111, 406509, 494030, 563909, 393696, 335838, 415180, 393122, 492499, 323706, 393110, 436766, 436922, 393323, 393858, 386807, 554438, 492801, 393512, 393953, 327512, 30141, 447906, 334015, 407985, 393777, 541500, 334839, 449674, 324560, 554964, 402886, 393402, 406370, 394087, 569786, 554817, 493613, 140816, 334868, 494108, 573471, 65230, 368330, 334130, 393171, 403032, 325288, 393184, 394014, 142986, 394135, 572983, 447833, 373882, 337489, 334036, 555280, 323579, 573200, 406619, 406664, 393152, 368897, 334121, 394028, 406845, 555149, 394147, 555974, 30083, 334749, 406311, 404040, 321465, 368390"
+           document.forms[0].species.value='dre'
+           document.forms[0].viral[0].checked = false
+           document.forms[0].geneId.value='entrez'
+           document.forms[0].bgModel.value='3p'
+           document.forms[0].motif_6.checked=false
+           document.forms[0].motif_8.checked=true
+           document.forms[0].seedModel_6.checked=true
+           document.forms[0].seedModel_7.checked=true
+           document.forms[0].seedModel_8.checked=true
+           document.forms[0].wobble[1].checked = true
+           document.forms[0].jobName.value='dre-miR-430 (Sample)'
+      }
       </script>
       <style>
       body { font-family: arial, sans-serif; }
@@ -311,6 +341,7 @@ If the species you study has miRNAs and is not on this list please e-mail us and
       <select name="species" id='species'>
           <option value='cel'>C. elegans</option>
           <option value='dme'>D. melanogaster</option>
+          <option value='dre'>D. rerio</option>
           <option value='gga'>G. gallus</option>
           <option value='hsa' selected>H. sapiens</option>
           <option value='mmu'>M. musculus</option>
@@ -339,6 +370,10 @@ If the species you study has miRNAs and is not on this list please e-mail us and
           <tr><td bgcolor='#333333' colspan=2><center><i><b><font color='#ffffff' size=2>M. musculus</font></b></i></center></td><td bgcolor='#333333'><center><i><b><font color='#ffffff' size=2>R. norvegicus</font></b></i></center></td></tr>
           <tr><td bgcolor='#ffffff'><center><input type='button' value='mmu-miR-1' onClick='javascript:addMmuMir1()'></center></td><td bgcolor='#ffffff'><center><input type='button' value='mmu-miR-122' onClick='javascript:addMmuMir122()'></center></td><td bgcolor='#ffffff'><center><input type='button' value='rno-miR-1' onClick='javascript:addRnoMir1()'></center></td></center></td></tr>
           <tr><td colspan='3' bgcolor='#333333'><center><i><b><font color='#ffffff' size=2>Kaposi-Sarcoma-Associated Herpes Virus</font></b></i></center></td></tr><tr><td bgcolor='#ffffff' colspan='3'><center><input type='button' value='kshv-miR-K12-2' onClick='javascript:addKshvMirK122()'></center></td></tr>
+          <tr><td colspan='3' bgcolor='#333333'><center><i><b><font color='#ffffff' size=2>D. rerio</font></b></i></center></td><td>&nbsp;</td></tr>
+          <tr><td bgcolor='#ffffff' colspan='1'><center><input type='button' value='dre-miR-221' onClick='javascript:addDreMir221()'></center></td>
+              <td bgcolor='#ffffff' colspan='2'><center><input type='button' value='dre-miR-430' onClick='javascript:addDreMir430()'></center></td>
+              </tr>
 
       </table></td></tr>
       <tr id="sampData" style="display: none;"><td colspan=2 bgcolor='#333333'><font color='#ffffff'>
@@ -363,7 +398,17 @@ If the species you study has miRNAs and is not on this list please e-mail us and
   <li><b><i>R. norvegicus</i></b>
   <ul><li><a href='http://www.mirbase.org/cgi-bin/mature.pl?mature_acc=MIMAT0003125' style='color: rgb(204,204,0)' target='_blank'><b>rno-miR-1</b></a> - TargetScan 5.1 rno-miR-1 target gene predictions.<p><a href='http://www.ncbi.nlm.nih.gov/pubmed/15652477' target='_blank' style='color: rgb(255,255,204)'>Lewis BP, Burge CB, Bartel DP. Conserved seed pairing, often flanked by adenosines, indicates that thousands of human genes are microRNA targets.<i>Cell</i> <b>120(1)</b>:15-20 (2005).</a></p></li></ul></li>
   <li><b><i>H. sapiens infected with Kaposi-Sarcoma-Associated Herpes Virus</i></b>
-  <ul><li><a href='http://mirbase.org/cgi-bin/mature.pl?mature_acc=MIMAT0002183' style='color: rgb(204,204,0)' target='_blank'><b>kshv-miR-K12-2</b></a> - Predicted targets of KSHV.<p><a href='http://www.ncbi.nlm.nih.gov/pubmed/20628498' target='_blank' style='color: rgb(255,255,204)'>Laganà A, Forte S, Russo F, Giugno R, Pulvirenti A, Ferro A. Prediction of human targets for viral-encoded microRNAs by thermodynamics and empirical constraints. <i>J RNAi Gene Silencing</i>. 2010 May 24;<b>6(1)<b>:379-85.</a></p></li></ul></li></ul>
+  <ul><li><a href='http://mirbase.org/cgi-bin/mature.pl?mature_acc=MIMAT0002183' style='color: rgb(204,204,0)' target='_blank'><b>kshv-miR-K12-2</b></a> - Predicted targets of KSHV.<p><a href='http://www.ncbi.nlm.nih.gov/pubmed/20628498' target='_blank' style='color: rgb(255,255,204)'>Laganà A, Forte S, Russo F, Giugno R, Pulvirenti A, Ferro A. Prediction of human targets for viral-encoded microRNAs by thermodynamics and empirical constraints. <i>J RNAi Gene Silencing</i>. 2010 May 24;<b>6(1)</b>:379-85.</a></p></li></ul></li>
+  <li><b><i>D. rerio</i></b>
+    <ul>
+      <li><a href='http://mirbase.org/cgi-bin/mature.pl?mature_acc=MIMAT0001288' style='color: rgb(204,204,0)' target='_blank'><b>dre-miR-221</b></a> - PITA predicted targets.
+      <p><a href='http://www.ncbi.nlm.nih.gov/pubmed/22168751' target='_blank' style='color: rgb(255,255,204)'>Yang R, Dai Z, Chen S, Chen L. MicroRNA-mediated gene regulation plays a minor role in the transcriptomic plasticity of cold-acclimated zebrafish brain tissue. <i>BMC Genomics</i>. 2011 Dec 14;<b>12</b>:605.</a></p></li>
+      <li><a href='http://mirbase.org/cgi-bin/mature.pl?mature_acc=MIMAT0001423' style='color: rgb(204,204,0)' target='_blank'><b>dre-miR-430</b></a> - Reported 2 fold down-regulated by dre-miR-430 mimic added to MZdicer cell line.
+      <p><a href='http://www.ncbi.nlm.nih.gov/pubmed/16484454' target='_blank' style='color: rgb(255,255,204)'>Giraldez AJ, Mishima Y, Rihel J, Grocock RJ, Van Dongen S, Inoue K, Enright AJ, Schier AF. Zebrafish MiR-430 promotes deadenylation and clearance of maternal mRNAs. <i>Science</i>. 2006 Apr 7;<b>312(5770)</b>:75-9.</a></p></li>
+    </ul>
+  </li>
+</ul>
+
       </font></td></tr>
       <tr><td><td></tr>
       <tr><td bgcolor='#000000' colspan=2><font color='#cccc00' size=4><b><center><b>Parameters for Weeder &nbsp;<a href="#weederParam" onclick="toggleVisible('weederParam', this); return false;" style='color: #ff0000; text-decoration: none'>[+]</a></b></center></font></td></tr>
