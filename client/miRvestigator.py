@@ -36,6 +36,8 @@ import mirv_csv
 from Pyro.errors import ProtocolError
 from mirv_db import get_job_status, read_parameters, read_motifs, read_mirvestigator_scores, get_gene_mapping
 import admin_emailer
+import conf
+
 
 # Libraries for plotting
 import numpy, corebio                     # http://numpy.scipy.org and http://code.google.com/p/corebio/
@@ -174,7 +176,7 @@ def submitJob(req):
 
     try:
         # connect to miR server via Pyro
-        uriFile = open('/var/www/uri','r')
+        uriFile = open(conf.tmp_dir+'/uri','r')
         uri = uriFile.readline().strip()
         uriFile.close()
         miR_server = Pyro.core.getProxyForURI(uri)
@@ -268,14 +270,14 @@ def results(req):
     # read mirbase miRNAs so we can link back to mirbase
     viralSpecies = []
     if viral==True:
-        inFile = open('/home/ubuntu/miRwww_server/organism.txt','r')
+        inFile = open(conf.viral_species_filename,'r')
         for line in inFile.readlines():
             splitUp = line.strip().split('\t')
             if splitUp[1]=='VRL':
                 viralSpecies.append(splitUp[0])
         inFile.close()
     import gzip
-    miRNAFile = gzip.open('/home/ubuntu/miRwww_server/mature.fa.gz','r')
+    miRNAFile = gzip.open(conf.mirna_filename,'r')
     miRNADict = {}
     while 1:
         miRNALine = miRNAFile.readline()
@@ -412,8 +414,8 @@ center><b><font color=\'#ffffff\'>Top miRNA</font></b></center></td><td bgcolor=
         top_score_i = 0
         i = scoreList[top_score_i]
         align1 = alignSeed(i['statePath'], i['miRNA.seed'], motif['name'])
-        if not os.path.exists('/var/www/images/pssms/'+id+'_'+motif['name']+'.png'):
-            plotPssmMatrix(motif['matrix'],'/var/www/images/pssms/'+id+'_'+motif['name']+'.png')
+        if not os.path.exists(conf.pssm_images_dir+'/'+id+'_'+motif['name']+'.png'):
+            plotPssmMatrix(motif['matrix'],conf.pssm_images_dir+'/'+id+'_'+motif['name']+'.png')
 
         s += '<tr>'
         s += '<td bgcolor=\'#ffffff\' rowspan="' + str(row_count) + '"><center><a href=\'#'+motif['name']+'_miRNAs\'><img src=\'/images\

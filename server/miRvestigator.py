@@ -26,6 +26,8 @@
 from copy import deepcopy
 from sys import stdout
 import os, cPickle
+import conf
+
 
 # A class designed to compute and hold the information from analyzing
 # miRNA seeds against motifs from 3' UTRs.
@@ -372,24 +374,24 @@ class miRvestigator:
     # Get the miRNAs to compare against
     def setMiRNAs(self, seedStart, seedEnd, minor=True, p5=True, p3=True):
         viralSpecies = []
-        if self.viral==True and not os.path.exists('organism.txt'):
+        if self.viral==True and not os.path.exists(conf.viral_species_filename):
             from ftplib import FTP
             ftp1 = FTP('mirbase.org')
             ftp1.login()
             ftp1.cwd('/pub/mirbase/CURRENT/')
-            outFile = open('organism.txt','wb')
+            outFile = open(conf.viral_species_filename,'wb')
             ftp1.retrbinary('RETR organism.txt',outFile.write)
             outFile.close()
             ftp1.quit()
         if self.viral==True:
-            inFile = open('organism.txt','r')
+            inFile = open(conf.viral_species_filename,'r')
             for line in inFile.readlines():
                 splitUp = line.strip().split('\t')
                 if splitUp[1]=='VRL':
                     viralSpecies.append(splitUp[0])
             inFile.close()
         print 'Viral species are: '+str(viralSpecies)
-        if not os.path.exists('mature.fa.gz'):
+        if not os.path.exists(conf.mirna_filename):
             print '\nDownloading miRNA seeds from miRBase.org...'
             # Grab down the latest miRNA data from mirbase.org:
             #  ftp://mirbase.org/pub/mirbase/CURRENT/mature.fa.gz
@@ -400,7 +402,7 @@ class miRvestigator:
             
             # Get the miRBase.org version number for reference.
             self.miRNAver = (ftp1.pwd().split('/'))[-1]
-            outFile = open('mature.fa.gz','wb')
+            outFile = open(conf.mirna_filename,'wb')
             ftp1.retrbinary('RETR mature.fa.gz',outFile.write)
             outFile.close()
             ftp1.quit()
@@ -411,7 +413,7 @@ class miRvestigator:
         # Read in miRNAs: miRNAs are labeled by the <species>-* names and grabbing 2-8bp
         ### Could merge these as they come in so that don't do redundant, and also so that the labels are together
         import gzip
-        miRNAFile = gzip.open('mature.fa.gz','r')
+        miRNAFile = gzip.open(conf.mirna_filename,'r')
         miRNAs = {}
         while 1:
             miRNALine = miRNAFile.readline()

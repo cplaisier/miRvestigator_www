@@ -34,6 +34,8 @@ from mirv_db import create_job_in_db, update_job_status, get_species_by_mirbase_
 from multiprocessing import Process, Queue, cpu_count
 import mirv_worker
 import admin_emailer
+import conf
+
 
 
 
@@ -190,7 +192,7 @@ if __name__ == '__main__':
     uri = daemon.connect(test_server, 'miR_server')
 
     print uri
-    uriOut = open('/var/www/uri','w')
+    uriOut = open(conf.tmp_dir+'/uri','w')
     uriOut.write(str(uri))
     uriOut.close()
 
