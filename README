@@ -18,9 +18,11 @@ miRvestigator web server has the following dependencies:
  * Apache2 HTTP server (httpd.apache.org)
  * mod_python 3.3.1 (www.modpython.org)
  * Weeder1.4.2 (http://159.149.109.9/modtools/)
+ * WebLogo (for motif logo plots)
  * MySQL
  * python-mysql
  * postfix (or other SMTP server)
+ * ViennaRNA (for RNA free energy calculation)
 
 Web server files located in the miRvestigator/client sub-tree need to be copied to a directory served by the Apache web server (/var/www/ in our AMI) with the following settings:
 
@@ -41,6 +43,8 @@ Web server files located in the miRvestigator/client sub-tree need to be copied 
   RewriteRule ^error/([a-fA-F0-9\-]+)/(.?)$ /error/index.html [L]
   RewriteRule ^error$ /error/index.html [L]
 </Directory>
+
+Adding MultiviewsMatch Handlers is required for urls like /miRvestigator/status?id=XXX to match miRvestigator.py.
 
 MySQL and python-mysql need to be installed. A database called mirvestigator needs to be created and populated with tables like this:
 mysql -p -u root --database mirvestigator < mirvestigator.sql
