@@ -1,0 +1,116 @@
+How to set up Garda (a CentOS machine) for mirvestigator.
+
+#----------------------------------------------------------
+# SQLite (a dependency of Python)
+#----------------------------------------------------------
+cd /local/install
+curl -O http://www.sqlite.org/sqlite-autoconf-3071300.tar.gz
+tar -xvzf sqlite-autoconf-3071300.tar.gz
+cd sqlite-autoconf-3071300
+./configure --prefix /local/sqlite
+mkdir -p /local/sqlite
+make
+make install
+
+#----------------------------------------------------------
+# Python 2.7.3
+#----------------------------------------------------------
+cd /local/install
+curl -O http://www.python.org/ftp/python/2.7.3/Python-2.7.3.tar.bz2
+tar -xvjf Python-2.7.3.tar.bz2
+cd Python-2.7.3
+vi setup.py
+# add path to sqlite
+./configure --prefix /local/python --enable-shared
+make
+make install
+export PATH=/local/python/bin:$PATH
+export PYTHONHOME=/local/python
+# python: error while loading shared libraries: libpython2.7.so.1.0: cannot open shared object file: No such file or directory
+export LD_LIBRARY_PATH=/local/python/lib
+python --version
+> 2.7.3
+
+#----------------------------------------------------------
+# PIP & Python modules
+#----------------------------------------------------------
+curl -O http://pypi.python.org/packages/2.7/s/setuptools/setuptools-0.6c11-py2.7.eggsh setuptools-0.6c11-py2.7.egg --prefix=/local/python
+
+curl -O https://raw.github.com/pypa/pip/master/contrib/get-pip.py
+python get-pip.py
+
+pip install pyro
+
+# asked Erik to
+yum install mysql-devel
+pip install mysql-python
+pip install numpy
+pip install corebio
+
+curl -O http://corebio.googlecode.com/svn/dist/CoreBio-0.5.0.tar.gz
+python setup.py install
+
+curl -O http://weblogo.googlecode.com/files/weblogo-3.2.tar.gz
+python setup.py install
+
+#----------------------------------------------------------
+# Weeder
+#----------------------------------------------------------
+cd /local/install
+curl -O http://159.149.109.9/modtools/downloads/weeder1.4.2.tar.gz
+tar -xvzf weeder1.4.2.tar.gz
+./compileall
+
+Note that weeder has to be modified to run from within Python. Hard coded paths in
+weederlauncher.c and weederTFBS.c need to be adapted to the local environment,
+pointing to FreqFiles and to the other executables. I put the executables in 
+/local/mirvestigator/bin/ and FreqFiles in /local/mirvestigator/data/.
+
+#----------------------------------------------------------
+# mod_python
+#----------------------------------------------------------
+curl -O http://archive.apache.org/dist/httpd/modpython/mod_python-3.3.1.tgztar -xzvf mod_python-3.3.1.tgz 
+./configure --prefix /local/python
+# error: Neither static nor DSO option available, there is no point in continuing.
+# asked Erik to
+yum install httpd_devel
+make
+connobject.c: In function ‘_conn_read’:
+connobject.c:142: error: request for member ‘next’ in something not a structure or union
+apxs:Error: Command failed with rc=65536
+
+# (see http://forums.cpanel.net/f5/mod_python-130953.html), I changed:
+# !(b == APR_BRIGADE_SENTINEL(b) ||
+# to
+# !(b == APR_BRIGADE_SENTINEL(bb) ||
+
+make
+make install
+
+/usr/bin/install -c -d /usr/lib64/httpd/modules
+/usr/bin/install -c src/mod_python.so /usr/lib64/httpd/modules
+/usr/bin/install: cannot create regular file `/usr/lib64/httpd/modules/mod_python.so': Permission denied
+
+sudo /etc/init.d/httpd start
+
+#----------------------------------------------------------
+# ViennaRNA
+#----------------------------------------------------------
+The ViennaRNA package is needed for the program RNAduplex
+Download and untar ViennaRNA-1.8.5
+
+./configure --prefix /local/python
+make
+make install
+
+Make reports errors, but RNAduplex is built, so I didn't investigate further
+
+
+
+Add to path:
+/local/ViennaRNA-1.8.5/Progs/
+/local/mirvestigator/bin
+/local/python/bin
+
+
+Got error: File does not exist: /local/mirvestigator/client/seedModels.gif
