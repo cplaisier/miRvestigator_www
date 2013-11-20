@@ -31,7 +31,7 @@ import sys
 import traceback
 
 
-MAIL_HOST = 'localhost'
+MAIL_HOST = 'mailhost'
 
 
 notify_msg_text_template = """Your miRvestigator job %(job_name)s is finished.
@@ -146,8 +146,8 @@ def sendHtml(sender, recipients, subject, text, html):
 
 class AdminEmailer:
     def __init__(self):
-        self.mirv = 'mirvestigator@systemsbiology.org'
-        self.admins = ['cbare@systemsbiology.org', 'cplaisier@systemsbiology.org']
+        self.mirv = 'noreply@noreply.systemsbiology.net'
+        self.admins = ['wwu@systemsbiology.org', 'cplaisier@systemsbiology.org']
         self.sent_at = None
         self.two_hours = datetime.timedelta(hours=2)
 
