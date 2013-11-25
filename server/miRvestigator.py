@@ -63,55 +63,61 @@ class miRvestigator:
         self.miRNAs_7mer_a1 = self.trimSeqs(deepcopy(self.miRNAs),0,7)
         self.miRNAs_8mer = self.trimSeqs(deepcopy(self.miRNAs),0,8)
         p3utrSeqs = 'X'.join(seqs3pUTR)
-        dirName = 'miRNA'
-        if not os.path.exists(dirName):
-            os.mkdir(dirName) 
+
+        # species-specific output directory
+        self.outdir = os.path.join(conf.tmp_dir, species, 'miRNA')
+        if not os.path.exists(self.outdir):
+            os.makedirs(self.outdir)
+        perm_6mers_pkl = os.path.join(self.outdir, 'permKMers_6mers.pkl')
+        perm_7mers_pkl = os.path.join(self.outdir, 'permKMers_7mers.pkl')
+        perm_8mers_pkl = os.path.join(self.outdir, 'permKMers_8mers.pkl')
+
         if 6 in seedModel:
             print 'Screening out 6mers not present in 3\' UTRs...'
-            if not os.path.exists('miRNA/permKMers_6mers.pkl'):
+            if not os.path.exists(perm_6mers_pkl):
                 permKMers_6mer = self.allKmers(6)
                 tmpKMers = []
                 for i in permKMers_6mer:
-                    if not p3utrSeqs.find(i)==-1:
+                    if not p3utrSeqs.find(i) == -1:
                         tmpKMers.append(i)
                 self.permKMers_6mer = tmpKMers
-                pklFile = open('miRNA/permKMers_6mers.pkl','wb')
+                pklFile = open(perm_6mers_pkl, 'wb')
                 cPickle.dump(self.permKMers_6mer,pklFile)
             else:
-                pklFile = open('miRNA/permKMers_6mers.pkl','rb')
+                pklFile = open(perm_6mers_pkl, 'rb')
                 self.permKMers_6mer = cPickle.load(pklFile)
             pklFile.close()
 
         if 7 in seedModel:
             print 'Screening out 7mers not present in 3\' UTRs...'
-            if not os.path.exists('miRNA/permKMers_7mers.pkl'):
+            if not os.path.exists(perm_7mers_pkl):
                 permKMers_7mer = self.allKmers(7)
                 tmpKMers = []
                 for i in permKMers_7mer:
-                    if not p3utrSeqs.find(i)==-1:
+                    if not p3utrSeqs.find(i) == -1:
                         tmpKMers.append(i)
                 self.permKMers_7mer = tmpKMers
-                pklFile = open('miRNA/permKMers_7mers.pkl','wb')
-                cPickle.dump(self.permKMers_7mer,pklFile)
+                pklFile = open(perm_7mers_pkl, 'wb')
+                cPickle.dump(self.permKMers_7mer, pklFile)
             else:
-                pklFile = open('miRNA/permKMers_7mers.pkl','rb')
+                pklFile = open(perm_7mers_pkl, 'rb')
                 self.permKMers_7mer = cPickle.load(pklFile)
             pklFile.close()
 
         if 8 in seedModel:
             print 'Screening out 8mers not present in 3\' UTRs...'
-            if not os.path.exists('miRNA/permKMers_8mers.pkl'):
+            if not os.path.exists(perm_8mers_pkl):
                 permKMers_8mer = self.allKmers(8)
             
                 tmpKMers = []
                 for i in permKMers_8mer:
-                    if not p3utrSeqs.find(i)==-1:
+                    if not p3utrSeqs.find(i) == -1:
                         tmpKMers.append(i)
                 self.permKMers_8mer = tmpKMers
-                pklFile = open('miRNA/permKMers_8mers.pkl','wb')
-                cPickle.dump(self.permKMers_8mer,pklFile)
+                pklFile = open(perm_8mers_pkl, 'wb')
+                cPickle.dump(self.permKMers_8mer, pklFile)
             else:
-                pklFile = open('miRNA/permKMers_8mers.pkl','rb')
+                pklFile = open(perm_8mers_pkl, 'rb')
                 self.permKMers_8mer = cPickle.load(pklFile)
             pklFile.close()
         print 'Done.\n'
@@ -242,14 +248,11 @@ class miRvestigator:
             print 'Done.\n'
             ## Do viterbi for each miRNA and store data
             print 'Starting miRNA detection for '+str(pssm.getConsensusMotif())+':'
-            if textOut==True:
+            if textOut:
                 writeMeOut = {}
-                dirName = 'miRNA'
-                if not os.path.exists(dirName):
-                    os.mkdir(dirName) 
-                outFile = open(dirName+'/'+str(pssm.getName())+'.csv','w')
+                outFile = open(self.outdir + '/'+str(pssm.getName())+'.csv','w')
                 outFile.write('miRNAname,miRNAseed,AlignStart,AlignStop,AlignLength,AlignmentModel,MotifAlign (5\'->3\'),Align,SeedAlign(3\'->5\'),P(Total),P-valueTotal,P(Viterbi),P-valueViterbi') # Header
-                out2File = open(dirName+'/'+str(pssm.getName())+'_all.csv','w')
+                out2File = open(self.outdir + '/' +str(pssm.getName())+'_all.csv','w')
                 headNum = 0
                 if 6 in seedModel:
                     headNum += 3
