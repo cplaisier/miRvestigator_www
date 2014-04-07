@@ -32,6 +32,7 @@ import datetime
 import time
 import re
 import sys
+from collections import defaultdict
 
 # Database credentials should be changed from defaults after installation
 MYSQL_USER = "mirv"
@@ -165,6 +166,16 @@ def find_old_jobs(cutoff_datetime):
             log("Exception closing conection: ")
             log(exception)
 
+def get_unfinished_jobs():
+    conn = _get_db_connection()
+    cursor = conn.cursor()
+    
+    cursor.execute("select j.uuid, name, value from jobs j join parameters p on j.uuid = p.job_uuid where j.status not in ('done', 'error')")
+    result = defaultdict(dict)
+    for row in cursor.fetchall():
+        result[row[0]][row[1]] = row[2]
+    cursor.close()
+    return result
 
 def read_parameters(job_uuid):
     conn = _get_db_connection()

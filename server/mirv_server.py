@@ -138,6 +138,13 @@ class MiRvestigatorServer(Pyro.core.ObjBase):
     def setQueue(self, q):
         self.q = q
 
+    def pickup_unfinished(self):
+        print "continuing unfinished jobs..."
+        for uuid, job in mirv_db.get_unfinished_jobs().items():
+            job['id'] = uuid
+            self.q.put(job, block=False)
+        print "unfinished jobs queued"
+
     def submit_job(self, job):
         id = uuid.uuid1()
         job['id'] = id
@@ -189,6 +196,7 @@ if __name__ == '__main__':
     daemon = Pyro.core.Daemon()
     test_server = MiRvestigatorServer()
     test_server.setQueue(q)
+    test_server.pickup_unfinished()
     uri = daemon.connect(test_server, 'miR_server')
 
     print uri
