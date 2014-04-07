@@ -30,7 +30,7 @@ import uuid
 import traceback
 from Queue import Full
 
-from mirv_db import create_job_in_db, update_job_status, get_species_by_mirbase_id
+from mirv_db import create_job_in_db, update_job_status, get_species_by_mirbase_id, get_unfinished_jobs
 from multiprocessing import Process, Queue, cpu_count
 import mirv_worker
 import admin_emailer
@@ -140,7 +140,7 @@ class MiRvestigatorServer(Pyro.core.ObjBase):
 
     def pickup_unfinished(self):
         print "continuing unfinished jobs..."
-        for uuid, job in mirv_db.get_unfinished_jobs().items():
+        for uuid, job in get_unfinished_jobs().items():
             job['id'] = uuid
             self.q.put(job, block=False)
         print "unfinished jobs queued"
