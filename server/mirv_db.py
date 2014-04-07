@@ -377,6 +377,25 @@ def get_gene_mapping(job_uuid):
             log(exception)
 
 
+def check_entrez_genes(species, genes):
+  conn = _get_db_connection()
+  num_found = 0
+  for gene in genes:
+    cursor = conn.cursor()
+    cursor.execute('select count(*) from gene_identifiers where species=%s and entrez_id=%s',
+                   (species, gene))
+    num_found += cursor.fetchone()[0]
+    cursor.close()
+  conn.close()
+  return num_found
+
+def check_genes(id_type, species, genes):
+  conn = _get_db_connection()
+  cursor.execute()
+  cursor.execute('select count(*) from gene_identifiers where species=%s and id_type=%s and identifier=%s', (species, id_type, gene))
+  cursor.close()
+  conn.close()
+
 # not used
 def get_gene_dictionary(genes, geneId, species):
     gene_dictionary = {}

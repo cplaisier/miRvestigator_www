@@ -34,7 +34,7 @@ import json
 import Pyro.core
 import mirv_csv
 from Pyro.errors import ProtocolError
-from mirv_db import get_job_status, read_parameters, read_motifs, read_mirvestigator_scores, get_gene_mapping
+from mirv_db import get_job_status, read_parameters, read_motifs, read_mirvestigator_scores, get_gene_mapping, check_entrez_genes, check_genes
 import admin_emailer
 import conf
 
@@ -173,6 +173,16 @@ def submitJob(req):
     job['geneId'] = str(req.form.getfirst('geneId', 'entrez'))
     job['viral'] = str(req.form.getfirst('viral',''))
 
+    id_type = job['geneId']
+    if id_type == 'entrez':
+      num_found = check_entrez_genes(job['species'], job['genes'])
+    else:
+      num_found = check_genes(id_type, job['species'], job['genes'])
+
+    if num_found == 0:
+      req.log_error("request did not contain any valid genes")
+      util.redirect(req, req.construct_url("/error"))
+      return
 
     try:
         # connect to miR server via Pyro
