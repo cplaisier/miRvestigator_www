@@ -178,7 +178,7 @@ def get_unfinished_jobs():
     for job_uuid in result:
         cursor = conn.cursor()
         cursor.execute("select name from genes where job_uuid = %s", [job_uuid])
-        job['genes'] = [row[0] for row in cursor.fetchall()]
+        result[job_uuid]['genes'] = [row[0] for row in cursor.fetchall()]
         cursor.close()
     return result
 
