@@ -408,7 +408,6 @@ def check_entrez_genes(species, genes):
 def check_genes(id_type, species, genes):
   conn = _get_db_connection()
   cursor = conn.cursor()
-  cursor.execute()
   cursor.execute('select count(*) from gene_identifiers where species=%s and id_type=%s and identifier=%s', (species, id_type, gene))
   cursor.close()
   conn.close()
