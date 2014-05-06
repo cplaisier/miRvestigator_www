@@ -406,11 +406,15 @@ def check_entrez_genes(species, genes):
   return num_found
 
 def check_genes(id_type, species, genes):
-  conn = _get_db_connection()
-  cursor = conn.cursor()
-  cursor.execute('select count(*) from gene_identifiers where species=%s and id_type=%s and identifier=%s', (species, id_type, gene))
-  cursor.close()
-  conn.close()
+    num_found = 0
+    conn = _get_db_connection()
+    cursor = conn.cursor()
+    for gene in genes:
+        cursor.execute('select count(*) from gene_identifiers where species=%s and id_type=%s and identifier=%s', (species, id_type, gene))
+        num_found += cursor.fetchone()[0]
+    cursor.close()
+    conn.close()
+    return num_found
 
 # not used
 def get_gene_dictionary(genes, geneId, species):
